@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# 1. Force HTTPS and non-WWW (Professional look)
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^(.*)$ https://therails.pk/$1 [L,R=301]
+
+# 2. Add Charset Encoding
+AddDefaultCharset UTF-8
+
+# 3. SPA REWRITE RULE (Important for Refresh)
+# Yeh rule har request ko index.html par redirect karega
+# taake Clean URLs refresh karne par bhi kaam karein.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L,QSA]

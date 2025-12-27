@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The RAILSPK - Pakistan Railways Hub | Vlogs & Reviews</title>
+    <meta name="description" content="Discover the beauty of Pakistan Railways. Authentic train reviews, high-definition travel vlogs, and real-time community updates.">
+    <meta name="keywords" content="Pakistan Railways, Train Reviews, Travel Vlogs, Green Line Express, Pak Business Express, RAILSPK">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://therails.pk/">
+    <meta property="og:title" content="The RAILSPK - Pakistan Railways Hub">
+    <meta property="og:description" content="Official digital portal for Pakistan Railways vlogs, reviews, and updates.">
+    <meta property="og:image" content="https://therails.pk/images/train_background.jpg">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://www.googleapis.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+
+    <!-- Lazy Loaded Adsense & Analytics -->
+    <script>
+        window.addEventListener('load', () => {
+            const gtScript = document.createElement('script');
+            gtScript.async = true;
+            gtScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-QL2CKH2MBL';
+            document.head.appendChild(gtScript);
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-QL2CKH2MBL');
+
+            const adsScript = document.createElement('script');
+            adsScript.async = true;
+            adsScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8566339481152239';
+            adsScript.crossOrigin = 'anonymous';
+            document.head.appendChild(adsScript);
+        });
+    </script>
+
+    <link rel="icon" href="images/favicon.ico" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        
+        html { scroll-behavior: smooth; transition: background-color 0.3s ease; }
+        .stars { color: #f59e0b; }
+
+        .hero-slide { opacity: 0; transition: opacity 1.5s ease-in-out; position: absolute; inset: 0; }
+        .hero-slide.active { opacity: 1; }
+        .slide { transition: opacity 0.4s ease-in-out; position: absolute; inset: 0; }
+        .slide.hidden { display: none; }
+
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: fadeIn 0.4s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .social-link { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .social-link:hover { transform: translateY(-5px); }
+        .fb-hover:hover { color: #1877F2 !important; }
+        .yt-hover:hover { color: #FF0000 !important; }
+        .ig-hover:hover { color: #E4405F !important; }
+        .wa-hover:hover { color: #25D366 !important; }
+
+        body { transition: background-color 0.3s, color 0.3s; }
+        .line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; line-clamp: 4; }
+        #upload-spinner { border-top-color: #4f46e5; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .reaction-btn { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reaction-btn:hover { transform: scale(1.2); }
+        .reaction-btn:active { transform: scale(0.9); }
+    </style>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { 'rail-dark': '#111827', 'rail-accent': '#4f46e5' } } }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-900 dark:bg-rail-dark dark:text-gray-200 font-sans antialiased overflow-x-hidden transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-rail-dark/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-white/5">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 md:h-20 text-gray-900 dark:text-white">
+            <a href="/home" onclick="routeTo(event, '/home')" class="text-xl md:text-3xl font-extrabold text-gray-900 dark:text-white font-heading">
+                The <span class="text-rail-accent">RAILSPK</span>
+            </a>
+            <div class="flex items-center space-x-2 md:space-x-8">
+                <nav class="hidden lg:flex space-x-8 text-sm uppercase tracking-widest font-bold">
+                    <a href="/home" onclick="routeTo(event, '/home')" class="nav-link hover:text-rail-accent transition">Home</a>
+                    <a href="/reviews" onclick="routeTo(event, '/reviews')" class="nav-link hover:text-rail-accent transition">Reviews</a> 
+                    <a href="/community" onclick="routeTo(event, '/community')" class="nav-link hover:text-rail-accent transition">Community</a>
+                    <a href="/about" onclick="routeTo(event, '/about')" class="nav-link hover:text-rail-accent transition">About</a>
+                </nav>
+                <div class="flex items-center space-x-2 md:space-x-3 border-l border-gray-200 dark:border-gray-700 pl-3 md:pl-8">
+                    <button id="admin-trigger" class="hidden sm:inline-flex items-center px-4 md:px-5 py-2 bg-rail-accent/10 dark:bg-rail-accent/20 text-rail-accent rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-rail-accent hover:text-white transition-all shadow-sm">Admin</button>
+                    <button id="theme-toggle" class="relative inline-flex items-center p-2 md:p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-200 hover:bg-rail-accent/10 focus:outline-none transition-all shadow-sm">
+                        <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                    </button>
+                    <button class="lg:hidden p-2 text-gray-500 dark:text-gray-200" onclick="toggleMenu()">
+                        <svg class="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-rail-dark border-b border-gray-200 dark:border-gray-700 shadow-2xl p-6 space-y-4 absolute w-full z-[60]">
+            <a href="/home" class="block font-black text-lg uppercase" onclick="routeTo(event, '/home'); toggleMenu();">Home</a>
+            <a href="/reviews" class="block font-black text-lg uppercase" onclick="routeTo(event, '/reviews'); toggleMenu();">Reviews</a>
+            <a href="/community" class="block font-black text-lg uppercase" onclick="routeTo(event, '/community'); toggleMenu();">Community</a>
+            <a href="/about" class="block font-black text-lg uppercase" onclick="routeTo(event, '/about'); toggleMenu();">About</a>
+            <button onclick="checkAdmin(); toggleMenu();" class="w-full py-3 bg-rail-accent text-white rounded-xl font-black uppercase tracking-widest shadow-lg">Admin Access</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Views -->
+        <section id="home-view" class="page-view">
+            <div class="relative h-[60vh] md:h-[80vh] w-full overflow-hidden bg-rail-dark text-white text-gray-900 dark:text-white">
+                <div id="hero-slideshow" class="absolute inset-0">
+                    <div class="hero-slide active bg-cover bg-center" style="background-image: url('images/train_background.jpg');">
+                        <div class="absolute inset-0 bg-black/60"></div>
+                    </div>
+                    <div class="hero-slide bg-cover bg-center" style="background-image: url('images/train_background2.jpeg');">
+                        <div class="absolute inset-0 bg-black/60"></div>
+                    </div>
+                </div>
+                <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+                    <h1 class="text-4xl sm:text-6xl md:text-9xl font-black mb-4 md:mb-6 font-heading tracking-tighter uppercase italic drop-shadow-2xl">The <span class="text-rail-accent">RAILSPK</span></h1>
+                    <p class="text-base md:text-3xl mb-8 md:mb-10 max-w-4xl font-light text-gray-200 text-shadow-lg text-gray-100 text-gray-100">Official digital portal for Pakistan Railways vlogs, reviews, and updates.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 md:gap-6 w-full sm:w-auto text-gray-900 dark:text-white">
+                        <a href="/reviews" onclick="routeTo(event, '/reviews')" class="bg-rail-accent hover:bg-rail-accent/80 text-white px-8 md:px-12 py-4 md:py-5 rounded-xl md:rounded-2xl font-black transition shadow-2xl hover:scale-105 transform text-center text-shadow-lg">View Reviews</a>
+                        <a href="/community" onclick="routeTo(event, '/community')" class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 md:px-12 py-4 md:py-5 rounded-xl md:rounded-2xl font-black hover:bg-white/20 transition text-center text-shadow-lg">Join Community</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-6 py-12 md:py-24 text-gray-900 dark:text-white">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-16 gap-6 md:gap-8">
+                    <div>
+                        <h2 class="text-3xl md:text-5xl font-black mb-2 md:mb-4 uppercase italic">Latest <span class="text-rail-accent">Journeys</span></h2>
+                        <p class="text-gray-500 dark:text-gray-400 font-medium font-sans text-sm md:text-base">Fresh content from our official YouTube channel.</p>
+                    </div>
+                    <select id="video-filter" class="w-full md:w-auto bg-gray-100 dark:bg-gray-800 border-none rounded-xl md:rounded-2xl p-4 md:p-5 outline-none ring-1 ring-gray-200 dark:ring-gray-700 font-bold">
+                        <option value="long">Long Vlogs</option>
+                        <option value="medium">Medium Content</option>
+                        <option value="short">Short Clips</option>
+                    </select>
+                </div>
+                <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
+                    <div class="col-span-full text-center py-20 text-gray-400 font-black animate-pulse uppercase italic">Synchronizing journeys...</div>
+                </div>
+                <div class="mt-12 md:mt-16 text-center px-4">
+                    <button id="load-more-btn" class="w-full md:w-auto bg-rail-accent text-white px-10 md:px-14 py-4 md:py-5 rounded-xl md:rounded-2xl font-black shadow-xl hover:scale-105 transition transform uppercase tracking-widest text-gray-900 dark:text-white text-gray-900 dark:text-white">Load More Vlogs</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- REVIEWS VIEW -->
+        <section id="reviews-view" class="page-view">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white">
+                <h2 class="text-3xl md:text-6xl font-black text-center mb-4 md:mb-6 font-heading tracking-tight underline decoration-rail-accent decoration-4 md:decoration-8 underline-offset-4 md:underline-offset-8 uppercase italic text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">Train Scorecards</h2>
+                <p class="text-center text-gray-500 dark:text-gray-400 mb-10 md:mb-20 text-sm md:text-xl font-medium tracking-widest uppercase font-sans text-gray-900 dark:text-white">Performance Metrics & Passenger Ratings</p>
+                <div id="scorecards-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12"></div>
+            </div>
+        </section>
+
+        <!-- COMMUNITY VIEW -->
+        <section id="community-view" class="page-view">
+            <div class="max-w-screen-xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                <div class="flex justify-between items-center mb-10 md:mb-16 pb-6 md:pb-8 border-b border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                    <h2 class="text-3xl md:text-6xl font-black font-heading tracking-tighter italic uppercase text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">Official <span class="text-rail-accent">Broadcasts</span></h2>
+                    <span class="hidden sm:block text-xs font-black uppercase tracking-widest text-gray-400">Live Cloud Feed</span>
+                </div>
+
+                <div id="admin-panel" class="hidden mb-12 md:mb-16 bg-rail-accent/5 border-2 md:border-4 border-dashed border-rail-accent p-6 md:p-12 rounded-3xl md:rounded-[4rem] animate-fade-in text-gray-900 dark:text-white">
+                    <h3 class="text-xl md:text-3xl font-black mb-6 text-rail-accent uppercase italic font-heading">New Announcement</h3>
+                    <form id="update-form" class="space-y-4 md:space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 text-gray-900 dark:text-white">
+                            <div class="space-y-2 text-gray-900 dark:text-white">
+                                <label class="text-xs font-black uppercase tracking-widest text-gray-400">Headline</label>
+                                <input type="text" id="update-title" placeholder="Enter headline" required class="w-full bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-sm text-lg md:text-xl font-bold outline-none ring-1 ring-gray-200 dark:ring-gray-700">
+                            </div>
+                            <div class="space-y-2 text-gray-900 dark:text-white">
+                                <label class="text-xs font-black uppercase tracking-widest text-rail-accent">Post Image (Direct Upload)</label>
+                                <input type="file" id="update-image-file" accept="image/*" class="w-full bg-white dark:bg-gray-800 p-3 md:p-4 rounded-2xl md:rounded-3xl shadow-sm text-sm outline-none ring-1 ring-gray-200 dark:ring-gray-700 cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-gray-900 dark:text-white">
+                            <label class="text-xs font-black uppercase tracking-widest text-gray-400">Broadcast Content</label>
+                            <textarea id="update-content" placeholder="Type details..." required class="w-full bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl md:rounded-3xl h-32 md:h-44 outline-none ring-1 ring-gray-200 dark:ring-gray-700 shadow-sm"></textarea>
+                        </div>
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                            <p class="text-xs md:text-sm text-gray-500 font-bold uppercase tracking-widest italic">Visibility: Public Community Feed</p>
+                            <button type="submit" id="update-btn" class="w-full sm:w-auto bg-rail-accent text-white px-10 md:px-14 py-4 md:py-5 rounded-xl md:rounded-2xl font-black shadow-2xl hover:scale-105 transition transform flex items-center justify-center gap-3">
+                                <span id="btn-text">PUBLISH BROADCAST</span>
+                                <div id="upload-spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full text-gray-900 dark:text-white text-gray-900 dark:text-white"></div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="updates-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                    <p id="updates-status" class="text-center py-20 col-span-full text-gray-400 font-black tracking-widest animate-pulse uppercase text-gray-900 dark:text-white text-gray-900 dark:text-white">CONNECTING TO RAILWAY CLOUD...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT VIEW -->
+        <section id="about-view" class="page-view">
+            <div class="max-w-screen-xl mx-auto px-6 py-12 md:py-32 text-center text-gray-900 dark:text-white">
+                <span class="text-rail-accent font-black tracking-[0.2em] md:tracking-[0.3em] uppercase mb-4 md:mb-6 block font-sans text-sm md:text-base text-gray-900 dark:text-white text-gray-900 dark:text-white">The Hub Mission</span>
+                <h2 class="text-4xl md:text-7xl lg:text-9xl font-black mb-8 md:mb-12 tracking-tighter uppercase italic text-gray-900 dark:text-white">RAILSPK HUB</h2>
+                <p class="text-lg md:text-3xl text-gray-500 dark:text-gray-400 leading-relaxed max-w-5xl mx-auto mb-16 md:mb-24 font-light text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                    RAILSPK is a digital archive for Pakistan Railways. Documenting the evolution of the national carrier through cinematics and authentic reviews.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 text-gray-900 dark:text-white">
+                    <div class="bg-gray-50 dark:bg-gray-800/50 p-8 md:p-12 rounded-3xl md:rounded-[3.5rem] border border-gray-100 dark:border-gray-700 shadow-xl text-gray-900 dark:text-white"><span id="stat-subs" class="text-3xl md:text-5xl font-black text-rail-accent block mb-2 italic tracking-tighter">10K+</span><span class="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Subscribers</span></div>
+                    <div class="bg-gray-50 dark:bg-gray-800/50 p-8 md:p-12 rounded-3xl md:rounded-[3.5rem] border border-gray-100 dark:border-gray-700 shadow-xl text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><span id="stat-views" class="text-3xl md:text-5xl font-black text-rail-accent block mb-2 italic tracking-tighter">500K+</span><span class="text-[10px] md:text-xs font-black text-gray-500 uppercase font-bold uppercase text-gray-900 dark:text-white">Total Views</span></div>
+                    <div class="bg-gray-50 dark:bg-gray-800/50 p-8 md:p-12 rounded-3xl md:rounded-[3.5rem] border border-gray-100 dark:border-gray-700 shadow-xl text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><span id="stat-videos" class="text-3xl md:text-5xl font-black text-rail-accent block mb-2 italic tracking-tighter text-gray-900 dark:text-white text-gray-900 dark:text-white"><span class="text-gray-900 dark:text-white text-gray-900 dark:text-white">150+</span></span><span class="text-[10px] md:text-xs font-black text-gray-500 uppercase font-bold font-sans">Travel Vlogs</span></div>
+                    <div class="bg-gray-50 dark:bg-gray-800/50 p-8 md:p-12 rounded-3xl md:rounded-[3.5rem] border border-gray-100 dark:border-gray-700 shadow-xl text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><span class="text-3xl md:text-5xl font-black text-rail-accent block italic tracking-tighter">9</span><span class="text-[10px] md:text-xs font-black text-gray-500 uppercase font-bold font-sans">Train Scores</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Legal Views -->
+        <section id="terms-view" class="page-view"><div class="max-w-4xl mx-auto px-6 py-12 md:py-24 text-gray-900 dark:text-white"><h2 class="text-3xl md:text-5xl font-black mb-8 uppercase italic text-rail-accent">Terms of Service</h2><div class="space-y-6 text-gray-600 dark:text-gray-300 font-sans leading-relaxed text-sm md:text-lg"><p>Welcome to RAILSPK. By using this site, you agree to comply with our usage terms regarding informational train content.</p></div></div></section>
+        <section id="privacy-view" class="page-view"><div class="max-w-4xl mx-auto px-6 py-12 md:py-24 text-gray-900 dark:text-white"><h2 class="text-3xl md:text-5xl font-black mb-8 uppercase italic text-rail-accent text-gray-900 dark:text-white">Privacy Policy</h2><div class="space-y-6 text-gray-600 dark:text-gray-300 font-sans leading-relaxed text-sm md:text-lg text-gray-900 dark:text-white"><p>At RAILSPK, we protect your voluntarily shared feedback data and anonymous analytics patterns.</p></div></div></section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 md:py-24 text-center border-t border-gray-100 dark:border-gray-800 mt-12 md:mt-20 text-gray-900 dark:text-white px-6">
+        <div class="flex justify-center space-x-6 md:space-x-10 mb-8 md:mb-12">
+            <a href="https://facebook.com/therailspk" target="_blank" class="social-link fb-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-facebook"></i></a>
+            <a href="https://youtube.com/@RAILSPK" target="_blank" class="social-link yt-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-youtube"></i></a>
+            <a href="https://instagram.com/therailspk" target="_blank" class="social-link ig-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-instagram"></i></a>
+            <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHwv3O" target="_blank" class="social-link wa-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p class="text-gray-400 text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-black mb-4 italic font-sans text-gray-900 dark:text-white">© 2025 The RAILSPK | Digital Legacy Project</p>
+        <div class="flex justify-center space-x-6 text-[10px] font-bold uppercase tracking-widest text-gray-500 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+            <a href="/privacy" onclick="routeTo(event, '/privacy')" class="hover:text-rail-accent transition">Privacy Policy</a>
+            <a href="/terms" onclick="routeTo(event, '/terms')" class="hover:text-rail-accent transition">Terms of Service</a>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        let db, auth, user;
+        let YT_KEY = "AIzaSyAax2bSR8u33U5DKCSt8ffEmEyGHbnquWU", YT_CHANNEL = "UC0jiPBcE-2QbiBLt2m3MHSQ";
+        let yt_token = null, yt_duration = 'long';
+        let adminAuthorised = false;
+
+        const rawAppId = (typeof __app_id !== 'undefined' && __app_id) ? __app_id : 'railspk-official-1de54';
+        const currentAppId = rawAppId.split('/').pop().replace(/[^a-zA-Z0-9_-]/g, '_'); 
+
+        const fbConfigUser = {
+            apiKey: "AIzaSyCfoXeQk-6ubcJZz3ES7c6yE2IWSFp2z9A",
+            authDomain: "railspk-official-1de54.firebaseapp.com",
+            projectId: "railspk-official-1de54",
+            storageBucket: "railspk-official-1de54.firebasestorage.app",
+            messagingSenderId: "282037027182",
+            appId: "1:282037027182:web:6b4f8bb420eb410374c17f",
+            measurementId: "G-55M746HE42"
+        };
+
+        const trainsData = [
+            { id: 'greenline', name: 'Green Line Express', route: 'Karachi ⟷ Islamabad', rating: '★★★★★', slides: ['greenline_1.webp', 'greenline_2.webp', 'greenline_3.webp', 'greenline_4.webp', 'greenline_5.webp', 'greenline_6.webp', 'greenline_7.webp', 'greenline_8.webp', 'greenline_9.webp', 'greenline_10.webp', 'greenline_11.webp'], fares: [ { class: "AC Business", price: "Rs. 11,500" }, { class: "AC Standard", price: "Rs. 9,000" }, { class: "Economy", price: "Rs. 4,500" } ] },
+            { id: 'pakbusiness', name: 'Pak Business Express', route: 'Karachi ⟷ Lahore', rating: '★★★★', slides: ['business_1.webp', 'business_2.webp', 'business_3.webp', 'business_4.webp', 'business_5.webp', 'business_6.webp', 'business_7.webp', 'business_8.webp'], fares: [ { class: "AC Business", price: "Rs. 9,500" }, { class: "AC Standard", price: "Rs. 7,500" }, { class: "Economy", price: "Rs. 3,800" } ] },
+            { id: 'shalimar', name: 'Shalimar Express', route: 'Karachi ⟷ Lahore (FSD)', rating: '★★★★★', slides: ['shalimar_1.jpg', 'shalimar_4.jpg', 'shalimar_5.jpg', 'Shalimar_6.jpg', 'shalimar_7.jpg', 'shalimar_8.jpg'], fares: [ { class: "AC Business", price: "Rs. 9,000" }, { class: "AC Standard", price: "Rs. 7,000" }, { class: "Economy", price: "Rs. 3,500" } ] },
+            { id: 'karakoram', name: 'Karakoram Express', route: 'Karachi ⟷ Lahore', rating: '★★★★', slides: ['coming_soon.avif'], fares: [ { class: "AC Business", price: "Rs. 9,500" }, { class: "Economy", price: "Rs. 3,800" } ] },
+            { id: 'allamaiqbal', name: 'Allama Iqbal Express', route: 'Karachi ⟷ Sialkot', rating: '★★★', slides: ['coming_soon.avif'], fares: [ { class: "Economy", price: "Rs. 3,200" } ] },
+            { id: 'karachi', name: 'Karachi Express', route: 'Karachi ⟷ Lahore', rating: '★★★★', slides: ['coming_soon.avif'], fares: [ { class: "AC Sleeper", price: "Rs. 13,000" }, { class: "AC Business", price: "Rs. 9,500" }, { class: "AC Standard", price: "Rs. 7,500" }, { class: "Economy", price: "Rs. 3,800" } ] },
+            { id: 'millat', name: 'Millat Express', route: 'Karachi ⟷ Faisalabad', rating: '★★★', slides: ['coming_soon.avif'], fares: [ { class: "AC Business", price: "Rs. 9,000" }, { class: "Economy", price: "Rs. 3,500" } ] },
+            { id: 'zakaria', name: 'B. Zakaria Express', route: 'Karachi ⟷ Multan', rating: '★★', slides: ['coming_soon.avif'], fares: [ { class: "AC Business", price: "Rs. 8,500" }, { class: "Economy", price: "Rs. 3,000" } ] },
+            { id: 'fareed', name: 'Fareed Express', route: 'Karachi ⟷ Lahore (PKP)', rating: '★★', slides: ['coming_soon.avif'], fares: [ { class: "AC Business", price: "Rs. 8,500" }, { class: "Economy", price: "Rs. 3,200" } ] }
+        ];
+
+        async function initFirebase() {
+            try {
+                let finalConfig = fbConfigUser;
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) finalConfig = (typeof __firebase_config === 'string') ? JSON.parse(__firebase_config) : __firebase_config;
+                if (!firebase.apps.length) firebase.initializeApp(finalConfig);
+                db = firebase.firestore();
+                auth = firebase.auth();
+                auth.onAuthStateChanged(async (u) => {
+                    user = u;
+                    if (user) {
+                        console.log("Firebase Auth Verified.");
+                        await fetchYoutubeConfig();
+                        startReviewsListener(); 
+                        fetchUpdates();
+                        handleRouting();
+                    }
+                });
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await auth.signInWithCustomToken(__initial_auth_token).catch(() => auth.signInAnonymously());
+                else await auth.signInAnonymously();
+            } catch (err) { console.error("Firebase Error."); }
+        }
+
+        async function fetchYoutubeConfig() {
+            try {
+                if (!user) return;
+                const doc = await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('config').doc('youtube').get();
+                if (doc.exists) { YT_KEY = doc.data().key; YT_CHANNEL = doc.data().channelId; }
+            } catch (e) { }
+        }
+
+        function startReviewsListener() {
+            if (!user) return;
+            db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews')
+                .onSnapshot(snap => {
+                    const all = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    trainsData.forEach(train => {
+                        const list = document.getElementById(`reviews-list-${train.id}`);
+                        if (!list) return;
+                        const filtered = all.filter(r => r.trainId === train.id).sort((a,b) => b.timestamp - a.timestamp);
+                        if (!filtered.length) list.innerHTML = '<p class="italic text-gray-400">No reviews yet.</p>';
+                        else {
+                            list.innerHTML = filtered.map(r => `
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm mb-4 animate-fadeIn text-gray-900 dark:text-white">
+                                    <div class="flex justify-between mb-2">
+                                        <p class="text-rail-accent font-black text-[10px] uppercase">${escapeHTML(r.name)}</p>
+                                        <span class="stars text-[10px] font-black">${'★'.repeat(r.rating)}</span>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-300 font-medium leading-tight text-sm text-gray-900 dark:text-white">"${escapeHTML(r.comment)}"</p>
+                                    ${r.reply ? `
+                                    <div class="mt-3 bg-rail-accent/10 p-3 rounded-xl border-l-4 border-rail-accent">
+                                        <p class="text-[9px] font-black uppercase text-rail-accent mb-1 text-gray-900 dark:text-white">RAILSPK OFFICIAL REPLY</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300 italic text-gray-900 dark:text-white text-gray-900 dark:text-white">"${escapeHTML(r.reply)}"</p>
+                                    </div>` : ''}
+                                    ${adminAuthorised && !r.reply ? `<button onclick="replyToReview('${r.id}')" class="mt-3 text-[10px] font-black uppercase text-rail-accent hover:underline">Reply Back</button>` : ''}
+                                </div>`).join('');
+                        }
+                    });
+                }, err => { console.warn("Snapshot Error"); });
+        }
+
+        async function replyToReview(id) {
+            const reply = prompt("Type official reply:");
+            if (!reply || !user) return;
+            try { await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').doc(id).update({ reply }); alert("Reply sent."); }
+            catch (e) { alert("Permission denied."); }
+        }
+
+        async function postDatabaseReview(e, trainId) {
+            e.preventDefault(); if (!user) return;
+            const btn = e.target.querySelector('button');
+            try {
+                btn.disabled = true; btn.innerText = "POSTING...";
+                await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').add({
+                    trainId: trainId, name: document.getElementById(`name-${trainId}`).value,
+                    rating: parseInt(document.getElementById(`rating-${trainId}`).value),
+                    comment: document.getElementById(`comment-${trainId}`).value, timestamp: Date.now()
+                });
+                e.target.reset();
+            } catch (err) { alert("Error."); } finally { btn.disabled = false; btn.innerText = "POST REVIEW"; }
+        }
+
+        function routeTo(e, path) { if (e) e.preventDefault(); window.history.pushState({}, "", path); handleRouting(); }
+        function handleRouting() {
+            let path = window.location.pathname.split('/').pop() || 'home';
+            if (path.endsWith('.html')) path = path.replace('.html', '');
+            if (path === '' || path === 'index') path = 'home';
+            const viewId = path + '-view';
+            const views = document.querySelectorAll('.page-view');
+            let found = false;
+            views.forEach(v => { v.classList.remove('active'); if (v.id === viewId) { v.classList.add('active'); found = true; } });
+            if (!found) document.getElementById('home-view').classList.add('active');
+            window.scrollTo(0, 0);
+            if (path === 'home' && YT_KEY) fetchVideos(yt_duration);
+            if (path === 'community' && user) fetchUpdates();
+        }
+        window.onpopstate = handleRouting;
+
+        function renderTrainCards() {
+            const grid = document.getElementById('scorecards-grid');
+            if (!grid) return;
+            grid.innerHTML = trainsData.map(t => `
+                <div class="train-card bg-white dark:bg-gray-800 rounded-3xl md:rounded-[3rem] border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col shadow-2xl transition-all hover:scale-[1.01] text-gray-900 dark:text-white">
+                    <div class="p-6 md:p-10 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 text-gray-900 dark:text-white">
+                            <div class="md:col-span-3 text-gray-900 dark:text-white">
+                                <h3 class="text-2xl md:text-4xl font-black mb-1 italic uppercase font-heading">${t.name}</h3>
+                                <p class="text-rail-accent font-bold tracking-widest text-xs md:text-sm mb-4 md:mb-6 uppercase font-sans">${t.route}</p>
+                                
+                                <!-- Fares Section -->
+                                <div class="mb-6 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
+                                    <p class="text-[10px] font-black uppercase text-gray-400 mb-3 tracking-widest">Class Fares (Starting From)</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        ${t.fares ? t.fares.map(f => `
+                                            <div class="flex justify-between items-center text-xs font-bold border-b border-gray-100 dark:border-gray-800 pb-1">
+                                                <span class="text-gray-500">${f.class}</span>
+                                                <span class="text-rail-accent">${f.price}</span>
+                                            </div>
+                                        `).join('') : '<p class="text-[10px] italic">Check official site for rates.</p>'}
+                                    </div>
+                                    <p class="mt-3 text-[8px] text-gray-400 italic">*Source: pakrailways.gov.pk (Subject to availability)</p>
+                                </div>
+
+                                <div class="flex justify-between items-center text-base md:text-lg font-bold border-t border-gray-100 dark:border-gray-700 pt-4"><span>Journey Score</span><span class="stars font-black text-xl md:text-2xl text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${t.rating}</span></div>
+                            </div>
+                            <div class="md:col-span-2 relative aspect-video md:aspect-square bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden slideshow-container">
+                                ${t.slides.map((s, i) => `<div class="slide ${i === 0 ? '' : 'hidden'} text-gray-900 dark:text-white"><img src="images/${s}" class="w-full h-full object-cover cursor-zoom-in" onclick="openImageModal(this.src)"></div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-900/40 p-6 border-t border-gray-100 dark:border-gray-700 mt-auto text-gray-900 dark:text-white">
+                        <h4 class="text-lg md:text-xl font-black mb-6 flex items-center gap-3 text-gray-900 dark:text-white">Passenger Feedback</h4>
+                        <div id="reviews-list-${t.id}" class="space-y-4 mb-6 max-h-48 md:max-h-64 overflow-y-auto pr-2 custom-scrollbar text-sm font-medium"></div>
+                        <form onsubmit="postDatabaseReview(event, '${t.id}')" class="space-y-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-900 dark:text-white"><input type="text" id="name-${t.id}" placeholder="Name" required class="bg-white dark:bg-gray-800 border rounded-xl p-3 md:p-4 outline-none focus:ring-2 focus:ring-rail-accent font-bold"><select id="rating-${t.id}" class="bg-white dark:bg-gray-800 border rounded-xl p-3 outline-none font-black text-rail-accent text-gray-900 dark:text-white"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option></select></div>
+                            <textarea id="comment-${t.id}" placeholder="Feedback..." required class="w-full bg-white dark:bg-gray-800 border rounded-xl p-3 h-20 outline-none focus:ring-2 focus:ring-rail-accent resize-none text-gray-900 dark:text-white"></textarea>
+                            <button type="submit" class="w-full bg-rail-accent text-white font-black py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl hover:bg-rail-accent/90 transition transform hover:-translate-y-1">POST REVIEW</button>
+                        </form>
+                    </div>
+                </div>`).join('');
+        }
+
+        async function fetchVideos(d, tok = null, app = false) {
+            const container = document.getElementById('video-cards-container');
+            if (!container || !YT_KEY) return;
+            if (!app) container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-400 font-black animate-pulse uppercase italic text-gray-900 dark:text-white text-gray-900 dark:text-white">Syncing Cloud Journeys...</div>';
+            const fd = d.charAt(0).toUpperCase() + d.slice(1);
+            try {
+                const url = `https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&channelId=${YT_CHANNEL}&part=snippet,id&order=date&maxResults=6&type=video&videoDuration=${fd}${tok ? '&pageToken='+tok : ''}`;
+                const res = await fetch(url); const data = await res.json(); yt_token = data.nextPageToken;
+                if (!app) container.innerHTML = '';
+                if (data.items) {
+                    data.items.forEach(v => {
+                        container.innerHTML += `<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 cursor-pointer group transition transform hover:-translate-y-4 text-gray-900 dark:text-white text-gray-900 dark:text-white" onclick="openVideo('${v.id.videoId}')">
+                            <div class="aspect-video relative overflow-hidden text-gray-900 dark:text-white text-gray-900 dark:text-white"><img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" class="w-full h-full object-cover transition duration-1000 group-hover:scale-110"><div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><svg class="w-16 h-16 md:w-24 md:h-24 text-white drop-shadow-xl" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                            <div class="p-6 md:p-10 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><h3 class="text-lg md:text-xl font-black line-clamp-2 italic uppercase tracking-tighter text-gray-900 dark:text-white text-gray-900 dark:text-white">${v.snippet.title}</h3></div></div>`;
+                    });
+                }
+            } catch (err) { }
+        }
+
+        function openVideo(id) { document.getElementById('video-embed-container').innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`; document.getElementById('video-modal').classList.remove('hidden'); document.getElementById('video-modal').classList.add('flex'); document.body.style.overflow = 'hidden'; }
+        
+        function fetchUpdates() {
+            if (!user) return;
+            const container = document.getElementById('updates-container');
+            db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates')
+                .onSnapshot(snap => {
+                    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => b.timestamp - a.timestamp);
+                    if (!data.length) container.innerHTML = '<p class="col-span-full text-center text-gray-500 font-bold py-10">No broadcasts found.</p>';
+                    else container.innerHTML = data.map(u => {
+                        const reactions = u.reactions || { like: 0, heart: 0, fire: 0 };
+                        return `
+                        <div class="bg-white dark:bg-gray-800 p-6 md:p-12 rounded-3xl border shadow-2xl animate-fade-in transition hover:border-rail-accent text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                            <div class="flex items-center justify-between mb-6 md:mb-8 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                                <div class="flex items-center gap-4 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                                    <span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic text-gray-900 dark:text-white text-gray-900 dark:text-white">Official</span>
+                                    <span class="text-gray-400 text-xs font-bold font-sans text-gray-900 dark:text-white text-gray-900 dark:text-white">${new Date(u.timestamp).toDateString()}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-400 text-xs font-black text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fas fa-eye text-gray-900 dark:text-white text-gray-900 dark:text-white"></i> <span>${u.views || 0} Views</span></div>
+                            </div>
+                            ${u.imageUrl ? `<img src="${u.imageUrl}" class="w-full h-56 md:h-80 object-cover rounded-2xl mb-6 md:mb-8 shadow-xl cursor-zoom-in text-gray-900 dark:text-white text-gray-900 dark:text-white" onclick="openImageModal(this.src)">` : ''}
+                            <h3 class="text-2xl md:text-3xl font-black mb-4 italic uppercase text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(u.title)}</h3>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium leading-relaxed font-sans text-sm md:text-base line-clamp-4 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(u.content)}</p>
+                            <div class="mt-8 flex flex-wrap items-center gap-6 border-t border-gray-100 dark:border-gray-700 pt-6 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                                <button onclick="handleReaction('${u.id}', 'like')" class="reaction-btn flex items-center gap-2 text-sm font-black text-gray-500 hover:text-rail-accent transition"><span class="text-xl">👍</span> <span>${reactions.like}</span></button>
+                                <button onclick="handleReaction('${u.id}', 'heart')" class="reaction-btn flex items-center gap-2 text-sm font-black text-gray-500 hover:text-red-500 transition"><span class="text-xl">❤️</span> <span>${reactions.heart}</span></button>
+                                <button onclick="handleReaction('${u.id}', 'fire')" class="reaction-btn flex items-center gap-2 text-sm font-black text-gray-500 hover:text-orange-500 transition"><span class="text-xl">🔥</span> <span>${reactions.fire}</span></button>
+                                <div class="ml-auto"><button onclick='incrementViewsAndOpen("${u.id}", ${JSON.stringify(u)})' class="text-rail-accent font-black uppercase text-xs tracking-widest hover:underline text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">Read Full Broadcast</button></div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }, err => { console.warn("Snapshot denied."); });
+        }
+
+        async function handleReaction(postId, type) {
+            if (!user) return;
+            const docRef = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').doc(postId);
+            try {
+                await db.runTransaction(async (t) => {
+                    const doc = await t.get(docRef); if (!doc.exists) return;
+                    const data = doc.data(); const reactions = data.reactions || { like: 0, heart: 0, fire: 0 };
+                    reactions[type] = (reactions[type] || 0) + 1;
+                    t.update(docRef, { reactions: reactions });
+                });
+            } catch (err) { }
+        }
+
+        async function incrementViewsAndOpen(postId, post) {
+            if (!user) return;
+            const docRef = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').doc(postId);
+            try {
+                db.runTransaction(async (t) => {
+                    const doc = await t.get(docRef); if (!doc.exists) return;
+                    t.update(docRef, { views: (doc.data().views || 0) + 1 });
+                });
+            } catch (e) {}
+            post.views = (post.views || 0) + 1; openPostModal(post);
+        }
+
+        function processImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader(); reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image(); img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 1200; let w = img.width, h = img.height;
+                        if (w > MAX_WIDTH) { h *= MAX_WIDTH / w; w = MAX_WIDTH; }
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
+                    };
+                };
+                reader.onerror = er => reject(er);
+            });
+        }
+
+        async function postUpdate(e) {
+            e.preventDefault(); if (!user) return;
+            const btn = document.getElementById('update-btn'), btnText = document.getElementById('btn-text'), spinner = document.getElementById('upload-spinner'), fileInput = document.getElementById('update-image-file');
+            try {
+                btn.disabled = true; btnText.innerText = "UPLOADING..."; spinner.classList.remove('hidden');
+                let finalImageUrl = "";
+                if (fileInput.files && fileInput.files[0]) finalImageUrl = await processImage(fileInput.files[0]);
+                await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').add({
+                    title: document.getElementById('update-title').value, content: document.getElementById('update-content').value,
+                    imageUrl: finalImageUrl, timestamp: Date.now(), views: 0, reactions: { like: 0, heart: 0, fire: 0 }
+                });
+                alert("Published Successfully."); e.target.reset();
+            } catch (err) { alert("Upload failed."); } finally { btn.disabled = false; btnText.innerText = "PUBLISH BROADCAST"; spinner.classList.add('hidden'); }
+        }
+
+        function openPostModal(post) {
+            const body = document.getElementById('post-modal-body');
+            const reactions = post.reactions || { like: 0, heart: 0, fire: 0 };
+            body.innerHTML = `
+                ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-auto max-h-[70vh] object-contain rounded-3xl mb-8 shadow-xl">` : ''}
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                    <div class="flex items-center gap-4 mb-4 md:mb-0 text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                        <span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic text-gray-900 dark:text-white">Official Broadcast</span>
+                        <span class="text-gray-400 text-xs font-bold font-sans">${new Date(post.timestamp).toDateString()}</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-gray-400 text-xs font-black">
+                        <span class="flex items-center gap-1"><i class="fas fa-eye"></i> ${post.views || 0} Views</span>
+                        <span>👍 ${reactions.like}</span> <span>❤️ ${reactions.heart}</span> <span>🔥 ${reactions.fire}</span>
+                    </div>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black mb-8 italic uppercase tracking-tight text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(post.title)}</h2>
+                <div class="text-gray-600 dark:text-gray-300 font-medium leading-relaxed font-sans text-base md:text-lg whitespace-pre-wrap text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(post.content)}</div>`;
+            document.getElementById('post-modal').classList.remove('hidden'); document.getElementById('post-modal').classList.add('flex'); document.body.style.overflow = 'hidden';
+        }
+
+        function initTheme() {
+            const btn = document.getElementById('theme-toggle'), dark = document.getElementById('theme-toggle-dark-icon'), light = document.getElementById('theme-toggle-light-icon');
+            const setIcons = () => { if (document.documentElement.classList.contains('dark')) { light.classList.remove('hidden'); dark.classList.add('hidden'); } else { dark.classList.remove('hidden'); light.classList.add('hidden'); } };
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+            setIcons();
+            btn.addEventListener('click', () => { document.documentElement.classList.toggle('dark'); localStorage.setItem('color-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); setIcons(); });
+        }
+
+        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = 'auto'; if (id === 'video-modal') document.getElementById('video-embed-container').innerHTML = ''; }
+        function openImageModal(src) { document.getElementById('modal-image-content').src = src; document.getElementById('image-modal').classList.remove('hidden'); document.getElementById('image-modal').classList.add('flex'); document.body.style.overflow = 'hidden'; }
+        function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+        
+        function checkAdmin() { 
+            const p = prompt("Admin Key:"); 
+            if (p === "railspk786") { 
+                adminAuthorised = true; 
+                document.getElementById('admin-panel').classList.remove('hidden'); 
+                alert("Session Authorised.");
+                startReviewsListener(); 
+            } else alert("Denied."); 
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initFirebase(); renderTrainCards(); initTheme();
+            document.getElementById('video-filter').addEventListener('change', (e) => { yt_duration = e.target.value; fetchVideos(yt_duration); });
+            document.getElementById('load-more-btn').addEventListener('click', () => { if (yt_token) fetchVideos(yt_duration, yt_token, true); });
+            document.getElementById('update-form').addEventListener('submit', postUpdate);
+            document.getElementById('admin-trigger').addEventListener('click', checkAdmin);
+            setInterval(() => { const s = document.querySelectorAll('.hero-slide'); if (s.length > 1) { let cur = 0; s.forEach((slide, i) => { if (slide.classList.contains('active')) cur = i; }); s[cur].classList.remove('active'); s[(cur + 1) % s.length].classList.add('active'); } }, 6000);
+            setInterval(() => {
+                document.querySelectorAll('.slideshow-container').forEach(c => {
+                    const s = c.querySelectorAll('.slide'); if (s.length < 2) return;
+                    let cur = -1; s.forEach((slide, i) => { if (!slide.classList.contains('hidden')) cur = i; });
+                    s[cur].classList.add('hidden'); s[(cur + 1) % s.length].classList.remove('hidden');
+                });
+            }, 4500);
+        });
+    </script>
+
+    <!-- Modals -->
+    <div id="video-modal" class="hidden fixed inset-0 z-[100] bg-black/98 items-center justify-center p-4" onclick="if(event.target.id === 'video-modal') closeModal('video-modal')">
+        <div class="bg-black w-full max-w-6xl rounded-[2rem] overflow-hidden shadow-2xl relative border border-white/5 text-gray-900 dark:text-white">
+            <button onclick="closeModal('video-modal')" class="absolute top-4 right-4 text-white text-3xl z-10 hover:text-rail-accent transition">&times;</button>
+            <div id="video-embed-container" class="aspect-video"></div>
+        </div>
+    </div>
+    <div id="image-modal" class="hidden fixed inset-0 z-[100] bg-black/98 items-center justify-center p-4 transition-all" onclick="if(event.target.id === 'image-modal') closeImageModal()">
+        <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white text-5xl font-thin hover:text-rail-accent transition font-sans">&times;</button>
+        <img id="modal-image-content" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-2xl border border-white/10">
+    </div>
+    <div id="post-modal" class="hidden fixed inset-0 z-[100] bg-black/95 items-center justify-center p-4 overflow-y-auto" onclick="if(event.target.id === 'post-modal') closeModal('post-modal')">
+        <div class="bg-white dark:bg-rail-dark w-full max-w-4xl rounded-[2.5rem] shadow-2xl relative border border-gray-100 dark:border-white/5 my-8">
+            <button onclick="closeModal('post-modal')" class="fixed top-8 right-8 text-gray-400 hover:text-rail-accent text-5xl font-thin transition z-[110]">&times;</button>
+            <div id="post-modal-body" class="p-8 md:p-16 max-h-[85vh] overflow-y-auto custom-scrollbar text-gray-900 dark:text-white"></div>
+        </div>
+    </div>
+</body>
+</html>
