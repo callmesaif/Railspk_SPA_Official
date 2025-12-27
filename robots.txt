@@ -1,0 +1,4 @@
+# Sitemap location (Google ko naye, clean URLs bataane ke liye)
+User-agent: *
+Crawl-delay: 10
+Sitemap: https://therails.pk/sitemap.xml
