@@ -360,256 +360,410 @@
 
     <!-- Logic Script -->
     <script>
-        let db, auth, user, adminAuthorised = false;
-        let YT_KEY = "AIzaSyAax2bSR8u33U5DKCSt8ffEmEyGHbnquWU", YT_CHANNEL = "UC0jiPBcE-2QbiBLt2m3MHSQ";
-        let yt_token = null, yt_duration = 'long', allReviews = [];
+let db, auth, user, adminAuthorised = false;
+let YT_KEY = "AIzaSyAax2bSR8u33U5DKCSt8ffEmEyGHbnquWU", YT_CHANNEL = "UC0jiPBcE-2QbiBLt2m3MHSQ";
+let yt_token = null, yt_duration = 'long', allReviews = [];
 
-        const currentAppId = 'railspk-official-1de54'.replace(/[^a-zA-Z0-9_-]/g, '_'); 
-        const fbConfigUser = { apiKey: "AIzaSyCfoXeQk-6ubcJZz3ES7c6yE2IWSFp2z9A", authDomain: "railspk-official-1de54.firebaseapp.com", projectId: "railspk-official-1de54", storageBucket: "railspk-official-1de54.firebasestorage.app", messagingSenderId: "282037027182", appId: "1:282037027182:web:6b4f8bb420eb410374c17f" };
+const currentAppId = 'railspk-official-1de54'.replace(/[^a-zA-Z0-9_-]/g, '_'); 
+const fbConfigUser = { apiKey: "AIzaSyCfoXeQk-6ubcJZz3ES7c6yE2IWSFp2z9A", authDomain: "railspk-official-1de54.firebaseapp.com", projectId: "railspk-official-1de54", storageBucket: "railspk-official-1de54.firebasestorage.app", messagingSenderId: "282037027182", appId: "1:282037027182:web:6b4f8bb420eb410374c17f" };
 
-        const trainsData = [
-            { id: 'khybermail', name: 'Khyber Mail Express', route: 'Karachi ⟷ Peshawar', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 13,000"},{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 4,000"}], avgRating: 0, reviewCount: 0 },
-            { id: 'greenline', name: 'Green Line Express', route: 'Karachi ⟷ Islamabad', slides: ['greenline_1.webp','greenline_8.webp'], fares: [{class:"AC Parlor",price:"Rs. 13,500"},{class:"AC Business",price:"Rs. 11,500"},{class:"AC Standard",price:"Rs. 9,000"},{class:"Economy",price:"Rs. 4,500"}], avgRating: 0, reviewCount: 0 },
-            { id: 'tezgam', name: 'Tezgam Express', route: 'Karachi ⟷ Rawalpindi', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 12,000"},{class:"AC Business",price:"Rs. 9,000"},{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
-            { id: 'allamaiqbal', name: 'Allama Iqbal Express', route: 'Karachi ⟷ Sialkot', slides: ['allama_iqbal_1.jpeg','allama_iqbal_2.jpeg'], fares: [{class:"AC Standard",price:"Rs. 6,800"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
-            { id: 'hazara', name: 'Hazara Express', route: 'Karachi ⟷ Havelian', slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,600"}], avgRating: 0, reviewCount: 0 },
-            { id: 'awam', name: 'Awam Express', route: 'Karachi ⟷ Peshawar', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
-            { id: 'karachi', name: 'Karachi Express', route: 'Karachi ⟷ Lahore', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 11,500"},{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
-            { id: 'millat', name: 'Millat Express', route: 'Karachi ⟷ Faisalabad', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 9,000"},{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
-            { id: 'shalimar', name: 'Shalimar Express', route: 'Karachi ⟷ Lahore', slides: ['shalimar_1.jpg','shalimar_8.jpg'], fares: [{class:"AC Parlor",price:"Rs. 11,000"},{class:"AC Business",price:"Rs. 9,000"},{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
-            { id: 'pakbusiness', name: 'Pak Business Express', route: 'Karachi ⟷ Lahore', slides: ['business_1.webp','business_8.webp'], fares: [{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
-            { id: 'fareed', name: 'Fareed Express', route: 'Karachi ⟷ Lahore (PKP)', slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
-            { id: 'karakoram', name: 'Karakoram Express', route: 'Karachi ⟷ Lahore', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 4,000"}], avgRating: 0, reviewCount: 0 },
-            { id: 'pakistanexp', name: 'Pakistan Express', route: 'Karachi ⟷ Rawalpindi', slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,600"}], avgRating: 0, reviewCount: 0 },
-            { id: 'rehmanbaba', name: 'Rehman Baba Express', route: 'Karachi ⟷ Peshawar', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 10,000"},{class:"AC Standard",price:"Rs. 8,000"},{class:"Economy",price:"Rs. 4,200"}], avgRating: 0, reviewCount: 0 },
-            { id: 'sukkur', name: 'Sukkur Express', route: 'Karachi ⟷ Sukkur', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 7,000"},{class:"AC Business",price:"Rs. 5,000"},{class:"AC Standard",price:"Rs. 4,000"},{class:"Economy",price:"Rs. 2,200"}], avgRating: 0, reviewCount: 0 },
-            { id: 'mehran', name: 'Mehran Express', route: 'Karachi ⟷ Mirpur Khas', slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], avgRating: 0, reviewCount: 0 },
-            { id: 'shahlatif', name: 'Shah Latif Express', route: 'Karachi ⟷ Mirpur Khas', slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], avgRating: 0, reviewCount: 0 }
-        ];
+const trainsData = [
+    { id: 'khybermail', name: 'Khyber Mail Express', route: 'Karachi ⟷ Peshawar', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 13,000"},{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 4,000"}], avgRating: 0, reviewCount: 0 },
+    { id: 'greenline', name: 'Green Line Express', route: 'Karachi ⟷ Islamabad', slides: ['greenline_1.webp','greenline_8.webp'], fares: [{class:"AC Parlor",price:"Rs. 13,500"},{class:"AC Business",price:"Rs. 11,500"},{class:"AC Standard",price:"Rs. 9,000"},{class:"Economy",price:"Rs. 4,500"}], avgRating: 0, reviewCount: 0 },
+    { id: 'tezgam', name: 'Tezgam Express', route: 'Karachi ⟷ Rawalpindi', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 12,000"},{class:"AC Business",price:"Rs. 9,000"},{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
+    { id: 'allamaiqbal', name: 'Allama Iqbal Express', route: 'Karachi ⟷ Sialkot', slides: ['allama_iqbal_1.jpeg','allama_iqbal_2.jpeg'], fares: [{class:"AC Standard",price:"Rs. 6,800"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
+    { id: 'hazara', name: 'Hazara Express', route: 'Karachi ⟷ Havelian', slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,600"}], avgRating: 0, reviewCount: 0 },
+    { id: 'awam', name: 'Awam Express', route: 'Karachi ⟷ Peshawar', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
+    { id: 'karachi', name: 'Karachi Express', route: 'Karachi ⟷ Lahore', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 11,500"},{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
+    { id: 'millat', name: 'Millat Express', route: 'Karachi ⟷ Faisalabad', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 9,000"},{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
+    { id: 'shalimar', name: 'Shalimar Express', route: 'Karachi ⟷ Lahore', slides: ['shalimar_1.jpg','shalimar_8.jpg'], fares: [{class:"AC Parlor",price:"Rs. 11,000"},{class:"AC Business",price:"Rs. 9,000"},{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
+    { id: 'pakbusiness', name: 'Pak Business Express', route: 'Karachi ⟷ Lahore', slides: ['business_1.webp','business_8.webp'], fares: [{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], avgRating: 0, reviewCount: 0 },
+    { id: 'fareed', name: 'Fareed Express', route: 'Karachi ⟷ Lahore (PKP)', slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,500"}], avgRating: 0, reviewCount: 0 },
+    { id: 'karakoram', name: 'Karakoram Express', route: 'Karachi ⟷ Lahore', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 9,500"},{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 4,000"}], avgRating: 0, reviewCount: 0 },
+    { id: 'pakistanexp', name: 'Pakistan Express', route: 'Karachi ⟷ Rawalpindi', slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 7,000"},{class:"Economy",price:"Rs. 3,600"}], avgRating: 0, reviewCount: 0 },
+    { id: 'rehmanbaba', name: 'Rehman Baba Express', route: 'Karachi ⟷ Peshawar', slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 10,000"},{class:"AC Standard",price:"Rs. 8,000"},{class:"Economy",price:"Rs. 4,200"}], avgRating: 0, reviewCount: 0 },
+    { id: 'sukkur', name: 'Sukkur Express', route: 'Karachi ⟷ Sukkur', slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 7,000"},{class:"AC Business",price:"Rs. 5,000"},{class:"AC Standard",price:"Rs. 4,000"},{class:"Economy",price:"Rs. 2,200"}], avgRating: 0, reviewCount: 0 },
+    { id: 'mehran', name: 'Mehran Express', route: 'Karachi ⟷ Mirpur Khas', slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], avgRating: 0, reviewCount: 0 },
+    { id: 'shahlatif', name: 'Shah Latif Express', route: 'Karachi ⟷ Mirpur Khas', slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], avgRating: 0, reviewCount: 0 }
+];
 
-        const galleryData = [
-            { title: "Green Line Dawn", src: "images/train_background.jpg" },
-            { title: "Railway Track Symmetry", src: "images/train_background2.jpeg" },
-            { title: "Allama Iqbal Arrival", src: "images/allama_iqbal_1.jpeg" },
-            { title: "Departure Sunset", src: "images/allama_iqbal_2.jpeg" }
-        ];
+const galleryData = [
+    { title: "Green Line Dawn", src: "images/train_background.jpg" },
+    { title: "Railway Track Symmetry", src: "images/train_background2.jpeg" },
+    { title: "Allama Iqbal Arrival", src: "images/allama_iqbal_1.jpeg" },
+    { title: "Departure Sunset", src: "images/allama_iqbal_2.jpeg" }
+];
 
-        async function initFirebase() {
-            try {
-                let cfg = fbConfigUser;
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) cfg = (typeof __firebase_config === 'string') ? JSON.parse(__firebase_config) : __firebase_config;
-                if (!firebase.apps.length) firebase.initializeApp(cfg);
-                db = firebase.firestore(); auth = firebase.auth();
-                auth.onAuthStateChanged(async (u) => {
-                    user = u; if (user) { await fetchYoutubeConfig(); startReviewsListener(); startPollsListener(); fetchUpdates(); handleRouting(); }
-                });
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await auth.signInWithCustomToken(__initial_auth_token).catch(() => auth.signInAnonymously());
-                else await auth.signInAnonymously();
-            } catch (e) { }
-        }
+// --- CORE UTILS ---
 
-        async function fetchYoutubeConfig() {
-            try { if (!user) return; const doc = await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('config').doc('youtube').get(); if (doc.exists) { YT_KEY = doc.data().key; YT_CHANNEL = doc.data().channelId; } } catch (e) {}
-        }
+function routeTo(e, p){ 
+    if(e) e.preventDefault(); 
+    window.history.pushState({}, "", p); 
+    handleRouting(); 
+}
 
-        function renderGallery() {
-            const grid = document.getElementById('gallery-grid'); if (!grid) return;
-            grid.innerHTML = galleryData.map(img => `
-                <div class="group relative overflow-hidden rounded-[2.5rem] bg-gray-100 dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700">
-                    <!-- FIX 6: Added Alt Tag for gallery images -->
-                    <img src="${img.src}" alt="${img.title} - Pakistan Railways High-Res Wallpaper" class="w-full h-80 object-cover transition duration-700 group-hover:scale-110 cursor-zoom-in" onclick="openImageModal(this.src)">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition duration-500 text-gray-900 dark:text-white">
-                        <h4 class="text-white text-xl font-black italic uppercase mb-4">${img.title}</h4>
-                        <a href="${img.src}" download="${img.title}" class="bg-rail-accent text-white text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl">Download Wallpaper</a>
-                    </div>
-                </div>`).join('');
-        }
+function handleRouting(){ 
+    let p = window.location.pathname.split('/').pop() || 'home'; 
+    if(p.endsWith('.html')) p = p.replace('.html', ''); 
+    if(p === '' || p === 'index') p = 'home'; 
+    
+    document.querySelectorAll('.page-view').forEach(v => {
+        v.classList.remove('active'); 
+        if(v.id === p + '-view') v.classList.add('active');
+    }); 
+    
+    if(!document.querySelector('.page-view.active')) {
+        document.getElementById('home-view').classList.add('active');
+    }
 
-        function startPollsListener() {
-            db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').onSnapshot(snap => {
-                const polls = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                const container = document.getElementById('polls-container'); if (!container || !polls.length) return;
-                container.innerHTML = polls.map(p => {
-                    const total = p.options.reduce((a, b) => a + b.votes, 0);
-                    return `<div class="bg-white dark:bg-rail-dark p-8 md:p-12 rounded-[3.5rem] border-2 border-rail-accent shadow-2xl animate-fade-in text-gray-900 dark:text-white text-gray-900 dark:text-white">
-                        <div class="flex items-center gap-3 mb-6"><span class="bg-rail-accent text-white px-3 py-1 rounded-full text-[9px] font-black uppercase">Live Poll</span><h3 class="text-xl md:text-2xl font-black uppercase italic">${escapeHTML(p.question)}</h3></div>
-                        <div class="space-y-4">
-                            ${p.options.map((opt, i) => {
-                                const per = total > 0 ? Math.round((opt.votes / total) * 100) : 0;
-                                return `<div class="relative group cursor-pointer" onclick="castVote('${p.id}', ${i})">
-                                    <div class="flex justify-between items-center mb-1 px-2 font-bold text-xs"><span>${escapeHTML(opt.text)}</span><span>${per}%</span></div>
-                                    <div class="h-10 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                                        <div class="poll-bar h-full bg-rail-accent" style="width: ${per}%"></div>
-                                    </div>
-                                </div>`;
-                            }).join('')}
-                        </div>
-                    </div>`;
-                }).join('');
-            });
-        }
+    window.scrollTo(0, 0); 
+    if(p === 'home' && YT_KEY) fetchVideos(yt_duration); 
+    if(p === 'gallery') renderGallery();
+}
 
-        async function castVote(pollId, idx) {
-            const ref = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').doc(pollId);
-            await db.runTransaction(async t => {
-                const doc = await t.get(ref); if (!doc.exists) return;
-                const opts = doc.data().options; opts[idx].votes += 1;
-                t.update(ref, { options: opts });
-            });
-        }
+function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+}
 
-        function startReviewsListener() {
-            if (!user) return;
-            db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').onSnapshot(snap => {
-                allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                trainsData.forEach(t => { 
-                    const filtered = allReviews.filter(r => r.trainId === t.id);
-                    if (filtered.length > 0) {
-                        const sum = filtered.reduce((a, b) => a + b.rating, 0);
-                        t.avgRating = sum / filtered.length; t.reviewCount = filtered.length;
-                    } else { t.avgRating = 0; t.reviewCount = 0; }
-                });
-                renderTrainCards(); 
-            }, e => {});
-        }
+// --- INITIALIZATION ---
 
-        function renderTrainCards() {
-            const grid = document.getElementById('scorecards-grid'); if (!grid) return;
-            const sortedTrains = [...trainsData].sort((a, b) => b.avgRating - a.avgRating || b.reviewCount - a.reviewCount);
-            grid.innerHTML = sortedTrains.map(t => {
-                const fullStars = Math.round(t.avgRating);
-                const starDisplay = fullStars > 0 ? '★'.repeat(fullStars) : '☆☆☆☆☆';
-                const trainReviews = allReviews.filter(r => r.trainId === t.id).sort((a,b) => b.timestamp - a.timestamp);
-                const reviewsHtml = trainReviews.length > 0 
-                    ? trainReviews.map(r => `
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 mb-4 text-gray-900 dark:text-white">
-                            <div class="flex justify-between mb-2"><p class="text-rail-accent font-black text-[10px] uppercase tracking-widest">${escapeHTML(r.name)}</p><span class="stars text-[10px] font-black">${'★'.repeat(r.rating)}</span></div>
-                            <p class="text-gray-600 dark:text-gray-300 font-medium text-sm">"${escapeHTML(r.comment)}"</p>
-                            ${r.reply ? `<div class="mt-3 bg-rail-accent/10 p-3 rounded-xl border-l-4 border-rail-accent"><p class="text-[9px] font-black uppercase text-rail-accent mb-1">OFFICIAL REPLY</p><p class="text-xs italic">"${escapeHTML(r.reply)}"</p></div>` : ''}
-                            ${adminAuthorised && !r.reply ? `<button onclick="replyToReview('${r.id}')" class="mt-3 text-[10px] font-black uppercase text-rail-accent hover:underline">Reply</button>` : ''}
-                        </div>`).join('') : '<p class="italic text-gray-400 text-sm">No feedback yet.</p>';
-
-                return `
-                <div class="train-card bg-white dark:bg-rail-dark rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col text-gray-900 dark:text-white">
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-                            <div class="md:col-span-3 text-gray-900 dark:text-white">
-                                <h3 class="text-2xl font-black italic uppercase">${t.name}</h3>
-                                <p class="text-rail-accent font-bold text-xs uppercase mb-4">${t.route}</p>
-                                <div class="mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
-                                    <div class="grid grid-cols-2 gap-2 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${t.fares.map(f => `<div class="flex justify-between text-[11px] border-b border-gray-100 dark:border-gray-800 pb-1 font-bold"><span class="text-gray-500">${f.class}</span><span class="text-rail-accent">${f.price}</span></div>`).join('')}</div>
-                                </div>
-                                <div class="flex justify-between items-center text-sm font-bold pt-3">
-                                    <span>Public Score (${t.reviewCount})</span>
-                                    <span class="stars text-xl">${starDisplay}</span>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 relative aspect-video bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden slideshow-container">
-                                <!-- FIX 7: Added Alt Tag for train slideshows -->
-                                ${t.slides.map((s,i)=>`<div class="slide ${i===0?'':'hidden'} text-gray-900 dark:text-white"><img src="images/${s}" alt="${t.name} Journey Preview" class="w-full h-full object-cover" onclick="openImageModal(this.src)"></div>`).join('')}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-900/40 p-6 border-t border-gray-100 dark:border-gray-800 mt-auto">
-                        <h4 class="text-lg font-black mb-6 text-gray-900 dark:text-white">Passenger Feedback</h4>
-                        <div class="max-h-56 overflow-y-auto mb-6 pr-2 custom-scrollbar text-gray-900 dark:text-white">${reviewsHtml}</div>
-                        <form onsubmit="postDatabaseReview(event, '${t.id}')" class="space-y-2">
-                            <div class="grid grid-cols-2 gap-2 text-gray-900 dark:text-white text-gray-900 dark:text-white"><input type="text" id="name-${t.id}" placeholder="Name" required class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs"><select id="rating-${t.id}" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option></select></div>
-                            <textarea id="comment-${t.id}" placeholder="Feedback..." required class="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs h-16 text-gray-900 dark:text-white"></textarea>
-                            <button type="submit" class="w-full bg-rail-accent text-white py-3 rounded-xl font-black text-xs uppercase text-gray-900 dark:text-white">Post Review</button>
-                        </form>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        async function postDatabaseReview(e, trainId) {
-            e.preventDefault(); if (!user) return;
-            const btn = e.target.querySelector('button');
-            try {
-                btn.disabled = true; btn.innerText = "POSTING...";
-                await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').add({ trainId: trainId, name: document.getElementById(`name-${trainId}`).value, rating: parseInt(document.getElementById(`rating-${trainId}`).value), comment: document.getElementById(`comment-${trainId}`).value, timestamp: Date.now() });
-                e.target.reset();
-            } catch (err) { } finally { btn.disabled = false; btn.innerText = "POST REVIEW"; }
-        }
-
-        function routeTo(e, p){ if(e)e.preventDefault(); window.history.pushState({},"",p); handleRouting(); }
-        function handleRouting(){ 
-            let p=window.location.pathname.split('/').pop()||'home'; 
-            if(p.endsWith('.html'))p=p.replace('.html',''); if(p===''||p==='index')p='home'; 
-            document.querySelectorAll('.page-view').forEach(v=>{v.classList.remove('active'); if(v.id===p+'-view')v.classList.add('active');}); 
-            if(!document.querySelector('.page-view.active'))document.getElementById('home-view').classList.add('active'); 
-            window.scrollTo(0,0); if(p==='home'&&YT_KEY)fetchVideos(yt_duration); if(p==='gallery')renderGallery();
-        }
-        window.onpopstate = handleRouting;
-
-        async function fetchVideos(d, tok=null, app=false) {
-            const container = document.getElementById('video-cards-container'); if (!container || !YT_KEY) return;
-            const fd = d.charAt(0).toUpperCase() + d.slice(1);
-            try {
-                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&channelId=${YT_CHANNEL}&part=snippet,id&order=date&maxResults=6&type=video&videoDuration=${fd}${tok?'&pageToken='+tok:''}`);
-                const data = await res.json(); yt_token = data.nextPageToken; if (!app) container.innerHTML = '';
-                if (data.items) data.items.forEach(v => {
-                    container.innerHTML += `<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl cursor-pointer group transition transform hover:-translate-y-2" onclick="openVideo('${v.id.videoId}')">
-                        <div class="aspect-video relative overflow-hidden"><img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" alt="${v.snippet.title}" class="w-full h-full object-cover transition duration-1000 group-hover:scale-110"><div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-                        <div class="p-6 text-gray-900 dark:text-white text-gray-900 dark:text-white"><h3 class="text-sm font-black line-clamp-2 uppercase">${v.snippet.title}</h3></div></div>`;
-                });
-            } catch (e) {}
-        }
-
-        function fetchUpdates() {
-            if (!user) return;
-            const container = document.getElementById('updates-container');
-            db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').onSnapshot(snap => {
-                const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => b.timestamp - a.timestamp);
-                if (!data.length) container.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">No broadcasts.</p>';
-                else container.innerHTML = data.map(u => {
-                    const react = u.reactions || {like:0,heart:0,fire:0};
-                    return `<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl animate-fade-in transition hover:border-rail-accent text-gray-900 dark:text-white text-gray-900 dark:text-white">
-                        <div class="flex justify-between mb-6"><span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic">Official</span><div class="flex items-center gap-2 text-gray-400 text-xs font-black text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fas fa-eye text-gray-900 dark:text-white text-gray-900 dark:text-white"></i> <span>${u.views || 0} Views</span></div></div>
-                        ${u.imageUrl ? `<img src="${u.imageUrl}" alt="${u.title}" class="w-full h-48 md:h-56 object-cover rounded-2xl mb-6 shadow-xl cursor-zoom-in" onclick="openImageModal(this.src)">` : ''}
-                        <h3 class="text-xl font-black mb-4 uppercase">${escapeHTML(u.title)}</h3>
-                        <p class="text-gray-600 dark:text-gray-400 font-medium text-sm line-clamp-4">${escapeHTML(u.content)}</p>
-                        <div class="mt-6 flex justify-between border-t border-gray-100 dark:border-gray-800 pt-6">
-                            <div class="flex gap-4"><button onclick="handleReaction('${u.id}', 'like')">👍 ${react.like}</button><button onclick="handleReaction('${u.id}', 'heart')">❤️ ${react.heart}</button><button onclick="handleReaction('${u.id}', 'fire')">🔥 ${react.fire}</button></div>
-                            <button onclick='incrementViewsAndOpen("${u.id}", ${JSON.stringify(u)})' class="text-rail-accent font-black text-xs uppercase hover:underline text-gray-900 dark:text-white text-gray-900 dark:text-white">Read More</button>
-                        </div>
-                    </div>`;
-                }).join('');
-            }, e => {});
-        }
-
-        async function incrementViewsAndOpen(id, post) { if (!user) return; const ref = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').doc(id); db.runTransaction(async t => { const doc = await t.get(ref); if (!doc.exists) return; t.update(ref, { views: (doc.data().views || 0) + 1 }); }); post.views = (post.views||0)+1; openPostModal(post); }
-        function openPostModal(post) { 
-            const b = document.getElementById('post-modal-body');
-            b.innerHTML = `${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" class="w-full h-auto object-contain rounded-3xl mb-8 shadow-2xl">` : ''}
-                <div class="flex justify-between mb-8"><span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic text-gray-900 dark:text-white">Official Update</span><span class="text-gray-400 text-xs font-black">👁️ ${post.views||0} Views</span></div>
-                <h2 class="text-2xl font-black mb-8 uppercase text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(post.title)}</h2>
-                <div class="text-sm font-medium whitespace-pre-wrap text-gray-600 dark:text-gray-300 text-gray-900 dark:text-white">${escapeHTML(post.content)}</div>`;
-            document.getElementById('post-modal').classList.remove('hidden'); document.getElementById('post-modal').classList.add('flex'); document.body.style.overflow = 'hidden';
-        }
-
-        function escapeHTML(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = 'auto'; if (id==='video-modal') document.getElementById('video-embed-container').innerHTML = ''; }
-        function openImageModal(src) { document.getElementById('modal-image-content').src = src; document.getElementById('image-modal').classList.remove('hidden'); document.getElementById('image-modal').classList.add('flex'); document.body.style.overflow = 'hidden'; }
-        function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
-        function checkAdmin() { const p = prompt("Admin Key:"); if (p === "railspk786") { adminAuthorised = true; document.getElementById('admin-panel').classList.remove('hidden'); startReviewsListener(); alert("Authorized."); } }
-        function initTheme() {
-            const b = document.getElementById('theme-toggle'); if(!b) return;
-            const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            if (isDark) document.documentElement.classList.add('dark');
-            b.addEventListener('click', () => { const nowDark = document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', nowDark ? 'dark' : 'light'); });
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initFirebase(); renderTrainCards(); initTheme();
-            document.getElementById('video-filter').addEventListener('change', (e) => { yt_duration = e.target.value; fetchVideos(yt_duration); });
-            document.getElementById('load-more-btn').addEventListener('click', () => { if (yt_token) fetchVideos(yt_duration, yt_token, true); });
-            document.getElementById('update-form').addEventListener('submit', postUpdate);
-            document.getElementById('admin-trigger').addEventListener('click', checkAdmin);
-            setInterval(() => { const s = document.querySelectorAll('.hero-slide'); if (s.length > 1) { let cur = 0; s.forEach((slide, i) => { if (slide.classList.contains('active')) cur = i; }); s[cur].classList.remove('active'); s[(cur + 1) % s.length].classList.add('active'); } }, 6000);
-            setInterval(() => { document.querySelectorAll('.slideshow-container').forEach(c => { const s = c.querySelectorAll('.slide'); if (s.length < 2) return; let cur = -1; s.forEach((slide, i) => { if (!slide.classList.contains('hidden')) cur = i; }); s[cur].classList.add('hidden'); s[(cur + 1) % s.length].classList.remove('hidden'); }); }, 4500);
+async function initFirebase() {
+    try {
+        let cfg = fbConfigUser;
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) cfg = (typeof __firebase_config === 'string') ? JSON.parse(__firebase_config) : __firebase_config;
+        if (!firebase.apps.length) firebase.initializeApp(cfg);
+        db = firebase.firestore(); 
+        auth = firebase.auth();
+        
+        auth.onAuthStateChanged(async (u) => {
+            user = u; 
+            if (user) { 
+                await fetchYoutubeConfig(); 
+                startReviewsListener(); 
+                startPollsListener(); 
+                fetchUpdates(); 
+                handleRouting(); 
+            }
         });
+        
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await auth.signInWithCustomToken(__initial_auth_token).catch(() => auth.signInAnonymously());
+        else await auth.signInAnonymously();
+    } catch (e) { console.error("Firebase init failed", e); }
+}
+
+function initTheme() {
+    const b = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+    if(!b || !darkIcon || !lightIcon) return;
+
+    const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+    if (isDark) {
+        document.documentElement.classList.add('dark');
+        lightIcon.classList.remove('hidden');
+    } else {
+        document.documentElement.classList.remove('dark');
+        darkIcon.classList.remove('hidden');
+    }
+
+    b.addEventListener('click', () => {
+        const nowDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', nowDark ? 'dark' : 'light');
+        darkIcon.classList.toggle('hidden', nowDark);
+        lightIcon.classList.toggle('hidden', !nowDark);
+    });
+}
+
+// --- ADMIN FEATURES ---
+
+function checkAdmin() {
+    const p = prompt("Admin Key:");
+    if (p === "railspk786") {
+        adminAuthorised = true;
+        document.getElementById('admin-panel').classList.remove('hidden');
+        startReviewsListener(); 
+        routeTo(null, '/community');
+        alert("Authorized.");
+    } else {
+        alert("Invalid Key.");
+    }
+}
+
+async function postUpdate(e) {
+    e.preventDefault();
+    if (!adminAuthorised) return alert("Unauthorized");
+
+    const btn = document.getElementById('update-btn');
+    const title = document.getElementById('update-title').value;
+    const content = document.getElementById('update-content').value;
+    const imageFile = document.getElementById('update-image-file').files[0];
+    let imageUrl = "";
+
+    try {
+        btn.disabled = true;
+        document.getElementById('btn-text').innerText = "PUBLISHING...";
+
+        if (imageFile) {
+            imageUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(imageFile);
+            });
+        }
+
+        await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').add({
+            title, content, imageUrl, views: 0, reactions: { like: 0, heart: 0, fire: 0 }, timestamp: Date.now()
+        });
+
+        alert("Broadcast Published!");
+        document.getElementById('update-form').reset();
+    } catch (err) { alert("Upload failed."); } finally {
+        btn.disabled = false;
+        document.getElementById('btn-text').innerText = "PUBLISH BROADCAST";
+    }
+}
+
+// --- CONTENT RENDERING ---
+
+async function fetchYoutubeConfig() {
+    try { if (!user) return; const doc = await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('config').doc('youtube').get(); if (doc.exists) { YT_KEY = doc.data().key; YT_CHANNEL = doc.data().channelId; } } catch (e) {}
+}
+
+async function fetchVideos(d, tok=null, app=false) {
+    const container = document.getElementById('video-cards-container'); if (!container || !YT_KEY) return;
+    const fd = d.charAt(0).toUpperCase() + d.slice(1);
+    try {
+        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&channelId=${YT_CHANNEL}&part=snippet,id&order=date&maxResults=6&type=video&videoDuration=${fd}${tok?'&pageToken='+tok:''}`);
+        const data = await res.json(); yt_token = data.nextPageToken; 
+        if (!app) container.innerHTML = '';
+        if (data.items) data.items.forEach(v => {
+            container.innerHTML += `<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl cursor-pointer group transition transform hover:-translate-y-2" onclick="openVideo('${v.id.videoId}')">
+                <div class="aspect-video relative overflow-hidden"><img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" alt="${v.snippet.title}" class="w-full h-full object-cover transition duration-1000 group-hover:scale-110"><div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                <div class="p-6 text-gray-900 dark:text-white"><h3 class="text-sm font-black line-clamp-2 uppercase">${v.snippet.title}</h3></div></div>`;
+        });
+    } catch (e) {}
+}
+
+function openVideo(id) {
+    document.getElementById('video-embed-container').innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    document.getElementById('video-modal').classList.remove('hidden');
+    document.getElementById('video-modal').classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function renderGallery() {
+    const grid = document.getElementById('gallery-grid'); if (!grid) return;
+    grid.innerHTML = galleryData.map(img => `
+        <div class="group relative overflow-hidden rounded-[2.5rem] bg-gray-100 dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700">
+            <img src="${img.src}" alt="${img.title}" class="w-full h-80 object-cover transition duration-700 group-hover:scale-110 cursor-zoom-in" onclick="openImageModal(this.src)">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition duration-500 text-gray-900 dark:text-white">
+                <h4 class="text-white text-xl font-black italic uppercase mb-4">${img.title}</h4>
+                <a href="${img.src}" download="${img.title}" class="bg-rail-accent text-white text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl">Download Wallpaper</a>
+            </div>
+        </div>`).join('');
+}
+
+// --- LISTENERS ---
+
+function startReviewsListener() {
+    if (!user) return;
+    db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').onSnapshot(snap => {
+        allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        trainsData.forEach(t => { 
+            const filtered = allReviews.filter(r => r.trainId === t.id);
+            if (filtered.length > 0) {
+                const sum = filtered.reduce((a, b) => a + b.rating, 0);
+                t.avgRating = sum / filtered.length; t.reviewCount = filtered.length;
+            } else { t.avgRating = 0; t.reviewCount = 0; }
+        });
+        renderTrainCards(); 
+    });
+}
+
+function renderTrainCards() {
+    const grid = document.getElementById('scorecards-grid'); if (!grid) return;
+    const sortedTrains = [...trainsData].sort((a, b) => b.avgRating - a.avgRating || b.reviewCount - a.reviewCount);
+    grid.innerHTML = sortedTrains.map(t => {
+        const fullStars = Math.round(t.avgRating);
+        const starDisplay = fullStars > 0 ? '★'.repeat(fullStars) : '☆☆☆☆☆';
+        const trainReviews = allReviews.filter(r => r.trainId === t.id).sort((a,b) => b.timestamp - a.timestamp);
+        const reviewsHtml = trainReviews.length > 0 ? trainReviews.map(r => `
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 mb-4 text-gray-900 dark:text-white">
+                <div class="flex justify-between mb-2"><p class="text-rail-accent font-black text-[10px] uppercase tracking-widest">${escapeHTML(r.name)}</p><span class="stars text-[10px] font-black">${'★'.repeat(r.rating)}</span></div>
+                <p class="text-gray-600 dark:text-gray-300 font-medium text-sm">"${escapeHTML(r.comment)}"</p>
+            </div>`).join('') : '<p class="italic text-gray-400 text-sm">No feedback yet.</p>';
+
+        return `
+        <div class="train-card bg-white dark:bg-rail-dark rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                    <div class="md:col-span-3 text-gray-900 dark:text-white">
+                        <h3 class="text-2xl font-black italic uppercase">${t.name}</h3>
+                        <p class="text-rail-accent font-bold text-xs uppercase mb-4">${t.route}</p>
+                        <div class="mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+                            <div class="grid grid-cols-2 gap-2">${t.fares.map(f => `<div class="flex justify-between text-[11px] border-b border-gray-100 dark:border-gray-800 pb-1 font-bold"><span class="text-gray-500">${f.class}</span><span class="text-rail-accent">${f.price}</span></div>`).join('')}</div>
+                        </div>
+                        <div class="flex justify-between items-center text-sm font-bold pt-3"><span>Public Score (${t.reviewCount})</span><span class="stars text-xl">${starDisplay}</span></div>
+                    </div>
+                    <div class="md:col-span-2 relative aspect-video bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden slideshow-container">
+                        ${t.slides.map((s,i)=>`<div class="slide ${i===0?'':'hidden'}"><img src="images/${s}" class="w-full h-full object-cover" onclick="openImageModal(this.src)"></div>`).join('')}
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-900/40 p-6 border-t border-gray-100 dark:border-gray-800 mt-auto">
+                <h4 class="text-lg font-black mb-6 text-gray-900 dark:text-white">Passenger Feedback</h4>
+                <div class="max-h-56 overflow-y-auto mb-6 pr-2 custom-scrollbar text-gray-900 dark:text-white">${reviewsHtml}</div>
+                <form onsubmit="postDatabaseReview(event, '${t.id}')" class="space-y-2">
+                    <div class="grid grid-cols-2 gap-2"><input type="text" id="name-${t.id}" placeholder="Name" required class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs"><select id="rating-${t.id}" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option></select></div>
+                    <textarea id="comment-${t.id}" placeholder="Feedback..." required class="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs h-16 text-gray-900 dark:text-white"></textarea>
+                    <button type="submit" class="w-full bg-rail-accent text-white py-3 rounded-xl font-black text-xs uppercase">Post Review</button>
+                </form>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function postDatabaseReview(e, trainId) {
+    e.preventDefault(); if (!user) return;
+    const btn = e.target.querySelector('button');
+    try {
+        btn.disabled = true; btn.innerText = "POSTING...";
+        await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').add({ 
+            trainId, name: document.getElementById(`name-${trainId}`).value, rating: parseInt(document.getElementById(`rating-${trainId}`).value), comment: document.getElementById(`comment-${trainId}`).value, timestamp: Date.now() 
+        });
+        e.target.reset();
+    } catch (err) { } finally { btn.disabled = false; btn.innerText = "POST REVIEW"; }
+}
+
+function startPollsListener() {
+    db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').onSnapshot(snap => {
+        const polls = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const container = document.getElementById('polls-container'); if (!container || !polls.length) return;
+        container.innerHTML = polls.map(p => {
+            const total = p.options.reduce((a, b) => a + b.votes, 0);
+            return `<div class="bg-white dark:bg-rail-dark p-8 md:p-12 rounded-[3.5rem] border-2 border-rail-accent shadow-2xl animate-fade-in text-gray-900 dark:text-white">
+                <div class="flex items-center gap-3 mb-6"><span class="bg-rail-accent text-white px-3 py-1 rounded-full text-[9px] font-black uppercase">Live Poll</span><h3 class="text-xl md:text-2xl font-black uppercase italic">${escapeHTML(p.question)}</h3></div>
+                <div class="space-y-4">
+                    ${p.options.map((opt, i) => {
+                        const per = total > 0 ? Math.round((opt.votes / total) * 100) : 0;
+                        return `<div class="relative group cursor-pointer" onclick="castVote('${p.id}', ${i})">
+                            <div class="flex justify-between items-center mb-1 px-2 font-bold text-xs"><span>${escapeHTML(opt.text)}</span><span>${per}%</span></div>
+                            <div class="h-10 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                                <div class="poll-bar h-full bg-rail-accent" style="width: ${per}%"></div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }).join('');
+    });
+}
+
+async function castVote(pollId, idx) {
+    const ref = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').doc(pollId);
+    await db.runTransaction(async t => {
+        const doc = await t.get(ref); if (!doc.exists) return;
+        const opts = doc.data().options; opts[idx].votes += 1;
+        t.update(ref, { options: opts });
+    });
+}
+
+function fetchUpdates() {
+    if (!user) return;
+    const container = document.getElementById('updates-container');
+    db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').onSnapshot(snap => {
+        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => b.timestamp - a.timestamp);
+        if (!data.length) container.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">No broadcasts.</p>';
+        else container.innerHTML = data.map(u => {
+            const react = u.reactions || {like:0,heart:0,fire:0};
+            return `<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl animate-fade-in transition hover:border-rail-accent text-gray-900 dark:text-white">
+                <div class="flex justify-between mb-6"><span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic">Official</span><div class="flex items-center gap-2 text-gray-400 text-xs font-black"><i class="fas fa-eye"></i> <span>${u.views || 0} Views</span></div></div>
+                ${u.imageUrl ? `<img src="${u.imageUrl}" class="w-full h-48 md:h-56 object-cover rounded-2xl mb-6 shadow-xl cursor-zoom-in" onclick="openImageModal(this.src)">` : ''}
+                <h3 class="text-xl font-black mb-4 uppercase">${escapeHTML(u.title)}</h3>
+                <p class="text-gray-600 dark:text-gray-400 font-medium text-sm line-clamp-4">${escapeHTML(u.content)}</p>
+                <div class="mt-6 flex justify-between border-t border-gray-100 dark:border-gray-800 pt-6">
+                    <div class="flex gap-4"><button onclick="handleReaction('${u.id}', 'like')">👍 ${react.like}</button><button onclick="handleReaction('${u.id}', 'heart')">❤️ ${react.heart}</button><button onclick="handleReaction('${u.id}', 'fire')">🔥 ${react.fire}</button></div>
+                    <button onclick='incrementViewsAndOpen("${u.id}", ${JSON.stringify(u)})' class="text-rail-accent font-black text-xs uppercase hover:underline">Read More</button>
+                </div>
+            </div>`;
+        }).join('');
+    });
+}
+
+async function handleReaction(id, type) {
+    const ref = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').doc(id);
+    await db.runTransaction(async t => {
+        const doc = await t.get(ref); if (!doc.exists) return;
+        const reactions = doc.data().reactions || {like:0,heart:0,fire:0};
+        reactions[type] = (reactions[type] || 0) + 1;
+        t.update(ref, { reactions });
+    });
+}
+
+async function incrementViewsAndOpen(id, post) { 
+    if (!user) return; 
+    const ref = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('updates').doc(id); 
+    db.runTransaction(async t => { 
+        const doc = await t.get(ref); 
+        if (!doc.exists) return; 
+        t.update(ref, { views: (doc.data().views || 0) + 1 }); 
+    }); 
+    post.views = (post.views||0)+1; 
+    openPostModal(post); 
+}
+
+function openPostModal(post) { 
+    const b = document.getElementById('post-modal-body');
+    b.innerHTML = `${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-auto object-contain rounded-3xl mb-8 shadow-2xl">` : ''}
+        <div class="flex justify-between mb-8"><span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic">Official Update</span><span class="text-gray-400 text-xs font-black">👁️ ${post.views||0} Views</span></div>
+        <h2 class="text-2xl font-black mb-8 uppercase text-gray-900 dark:text-white">${escapeHTML(post.title)}</h2>
+        <div class="text-sm font-medium whitespace-pre-wrap text-gray-600 dark:text-gray-300">${escapeHTML(post.content)}</div>`;
+    document.getElementById('post-modal').classList.remove('hidden'); 
+    document.getElementById('post-modal').classList.add('flex'); 
+    document.body.style.overflow = 'hidden';
+}
+
+// --- HELPER UI FUNCTIONS ---
+
+function escapeHTML(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+function closeModal(id) { 
+    document.getElementById(id).classList.add('hidden'); 
+    document.body.style.overflow = 'auto'; 
+    if (id==='video-modal') document.getElementById('video-embed-container').innerHTML = ''; 
+}
+
+function openImageModal(src) { 
+    document.getElementById('modal-image-content').src = src; 
+    document.getElementById('image-modal').classList.remove('hidden'); 
+    document.getElementById('image-modal').classList.add('flex'); 
+    document.body.style.overflow = 'hidden'; 
+}
+
+function closeImageModal() { 
+    document.getElementById('image-modal').classList.add('hidden'); 
+    document.body.style.overflow = 'auto'; 
+}
+
+// --- EVENT BOOTSTRAP ---
+
+window.addEventListener('DOMContentLoaded', () => {
+    initFirebase(); 
+    initTheme();
+    
+    document.getElementById('video-filter').addEventListener('change', (e) => { yt_duration = e.target.value; fetchVideos(yt_duration); });
+    document.getElementById('load-more-btn').addEventListener('click', () => { if (yt_token) fetchVideos(yt_duration, yt_token, true); });
+    document.getElementById('update-form').addEventListener('submit', postUpdate);
+    document.getElementById('admin-trigger').addEventListener('click', checkAdmin);
+    
+    // Sliders
+    setInterval(() => { const s = document.querySelectorAll('.hero-slide'); if (s.length > 1) { let cur = 0; s.forEach((slide, i) => { if (slide.classList.contains('active')) cur = i; }); s[cur].classList.remove('active'); s[(cur + 1) % s.length].classList.add('active'); } }, 6000);
+    setInterval(() => { document.querySelectorAll('.slideshow-container').forEach(c => { const s = c.querySelectorAll('.slide'); if (s.length < 2) return; let cur = -1; s.forEach((slide, i) => { if (!slide.classList.contains('hidden')) cur = i; }); s[cur].classList.add('hidden'); s[(cur + 1) % s.length].classList.remove('hidden'); }); }, 4500);
+});
+
+window.onpopstate = handleRouting;
     </script>
 
     <!-- Shared Modals -->
