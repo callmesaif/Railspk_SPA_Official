@@ -19,7 +19,10 @@
     <link rel="preconnect" href="https://www.googleapis.com">
     <link rel="preconnect" href="https://www.gstatic.com">
 
-    <!-- Lazy Loaded Adsense & Analytics -->
+    <!-- Global AdSense script placeholder -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8566339481152239" crossorigin="anonymous"></script>
+
+    <!-- Lazy Loaded Analytics -->
     <script>
         window.addEventListener('load', () => {
             const gtScript = document.createElement('script');
@@ -30,12 +33,6 @@
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-QL2CKH2MBL');
-
-            const adsScript = document.createElement('script');
-            adsScript.async = true;
-            adsScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8566339481152239';
-            adsScript.crossOrigin = 'anonymous';
-            document.head.appendChild(adsScript);
         });
     </script>
 
@@ -72,7 +69,6 @@
         }
 
         .poll-bar { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
-        
         .social-link { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .social-link:hover { transform: translateY(-5px); }
         .fb-hover:hover { color: #1877F2 !important; }
@@ -84,6 +80,29 @@
         .line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
         #upload-spinner { border-top-color: #4f46e5; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .reaction-btn { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reaction-btn:hover { transform: scale(1.2); }
+        .reaction-btn:active { transform: scale(0.9); }
+
+        /* Ad Placement Styling */
+        .ad-container { 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            overflow: hidden;
+            margin: 2rem auto;
+            text-align: center;
+        }
+        .ad-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
     </style>
 
     <script>
@@ -96,20 +115,20 @@
 <body class="bg-white text-gray-900 dark:bg-rail-dark dark:text-gray-200 font-sans antialiased overflow-x-hidden transition-colors duration-300">
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-50 bg-white/80 dark:bg-rail-dark/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-white/5">
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-rail-dark/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-white/5 text-gray-900 dark:text-white">
         <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 md:h-20">
             <a href="/home" onclick="routeTo(event, '/home')" class="text-xl md:text-3xl font-extrabold text-gray-900 dark:text-white font-heading">
                 The <span class="text-rail-accent">RAILSPK</span>
             </a>
             <div class="flex items-center space-x-2 md:space-x-8">
-                <nav class="hidden lg:flex space-x-8 text-sm uppercase tracking-widest font-bold text-gray-900 dark:text-white">
+                <nav class="hidden lg:flex space-x-8 text-sm uppercase tracking-widest font-bold">
                     <a href="/home" onclick="routeTo(event, '/home')" class="nav-link hover:text-rail-accent transition">Home</a>
                     <a href="/gallery" onclick="routeTo(event, '/gallery')" class="nav-link hover:text-rail-accent transition">Gallery</a>
                     <a href="/reviews" onclick="routeTo(event, '/reviews')" class="nav-link hover:text-rail-accent transition">Reviews</a> 
                     <a href="/community" onclick="routeTo(event, '/community')" class="nav-link hover:text-rail-accent transition">Community</a>
                     <a href="/about" onclick="routeTo(event, '/about')" class="nav-link hover:text-rail-accent transition">About</a>
                 </nav>
-                <div class="flex items-center space-x-2 md:space-x-4 border-l border-gray-200 dark:border-gray-700 pl-3 md:pl-8 text-gray-900 dark:text-white">
+                <div class="flex items-center space-x-2 md:space-x-4 border-l border-gray-200 dark:border-gray-700 pl-3 md:pl-8 text-gray-900 dark:text-white text-gray-900 dark:text-white">
                     <button id="admin-trigger" class="hidden sm:inline-flex items-center px-4 md:px-5 py-2 bg-rail-accent/10 dark:bg-rail-accent/20 text-rail-accent rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-rail-accent hover:text-white transition-all shadow-sm">Admin</button>
                     
                     <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-200 hover:bg-rail-accent/10 focus:outline-none transition-all shadow-sm border border-gray-200 dark:border-gray-700">
@@ -123,30 +142,46 @@
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-rail-dark border-b border-gray-200 dark:border-gray-700 shadow-2xl p-6 space-y-4">
+        <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-rail-dark border-b border-gray-200 dark:border-gray-700 shadow-2xl p-6 space-y-4 absolute w-full z-[60]">
             <a href="/home" class="block font-black text-lg uppercase" onclick="routeTo(event, '/home'); toggleMenu();">Home</a>
             <a href="/gallery" class="block font-black text-lg uppercase" onclick="routeTo(event, '/gallery'); toggleMenu();">Gallery</a>
             <a href="/reviews" class="block font-black text-lg uppercase" onclick="routeTo(event, '/reviews'); toggleMenu();">Reviews</a>
             <a href="/community" class="block font-black text-lg uppercase" onclick="routeTo(event, '/community'); toggleMenu();">Community</a>
             <a href="/about" class="block font-black text-lg uppercase" onclick="routeTo(event, '/about'); toggleMenu();">About</a>
+            <button onclick="checkAdmin(); toggleMenu();" class="w-full py-3 bg-rail-accent text-white rounded-xl font-black uppercase tracking-widest shadow-lg">Admin Access</button>
         </div>
     </header>
 
     <main>
         <!-- 1. HOME VIEW -->
         <section id="home-view" class="page-view">
+            <!-- TOP AD (728x90) -->
+            <div class="ad-container max-w-screen-2xl">
+                <span class="ad-label">Advertisement</span>
+                <script>
+                  atOptions = {
+                    'key' : '10a9cef115b81397cdb16c2beb565239',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://crazylatchdisturbance.com/10a9cef115b81397cdb16c2beb565239/invoke.js"></script>
+            </div>
+
             <div class="relative h-[60vh] md:h-[80vh] w-full overflow-hidden bg-rail-dark text-white">
                 <div id="hero-slideshow" class="absolute inset-0">
                     <div class="hero-slide active bg-cover bg-center" style="background-image: url('images/train_background.jpg');">
                         <div class="absolute inset-0 bg-black/60"></div>
                     </div>
                     <div class="hero-slide bg-cover bg-center" style="background-image: url('images/train_background2.jpeg');">
-                        <div class="absolute inset-0 bg-black/60 text-gray-900 dark:text-white"></div>
+                        <div class="absolute inset-0 bg-black/60"></div>
                     </div>
                 </div>
                 <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
                     <h1 class="text-4xl sm:text-6xl md:text-9xl font-black mb-4 md:mb-6 font-heading tracking-tighter uppercase italic drop-shadow-2xl">The <span class="text-rail-accent">RAILSPK</span></h1>
-                    <p class="text-base md:text-3xl mb-8 md:mb-10 max-w-4xl font-light text-gray-200 text-shadow-lg text-gray-100">Official digital portal for Pakistan Railways vlogs, reviews, and updates.</p>
+                    <p class="text-base md:text-3xl mb-8 md:mb-10 max-w-4xl font-light text-gray-200 text-shadow-lg text-gray-100 text-gray-100">Official digital portal for Pakistan Railways vlogs, reviews, and updates.</p>
                     <div class="flex flex-col sm:flex-row gap-4 md:gap-6 w-full sm:w-auto text-gray-900 dark:text-white">
                         <a href="/reviews" onclick="routeTo(event, '/reviews')" class="bg-rail-accent hover:bg-rail-accent/80 text-white px-8 md:px-12 py-4 md:py-5 rounded-xl md:rounded-2xl font-black transition shadow-2xl hover:scale-105 transform text-center text-shadow-lg">View Reviews</a>
                         <a href="/community" onclick="routeTo(event, '/community')" class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 md:px-12 py-4 md:py-5 rounded-xl md:rounded-2xl font-black hover:bg-white/20 transition text-center text-shadow-lg">Join Community</a>
@@ -160,27 +195,35 @@
                         <h2 class="text-3xl md:text-5xl font-black mb-2 md:mb-4 uppercase italic">Latest <span class="text-rail-accent">Journeys</span></h2>
                         <p class="text-gray-500 dark:text-gray-400 font-medium font-sans text-sm md:text-base">Fresh content from our official YouTube channel.</p>
                     </div>
-                    <select id="video-filter" class="w-full md:w-auto bg-gray-100 dark:bg-gray-800 border-none rounded-xl md:rounded-2xl p-4 md:p-5 outline-none ring-1 ring-gray-200 dark:ring-gray-700 font-bold">
+                    <select id="video-filter" class="w-full md:w-auto bg-gray-100 dark:bg-gray-800 border-none rounded-xl md:rounded-2xl p-4 md:p-5 outline-none ring-1 ring-gray-200 dark:ring-gray-700 font-bold text-gray-900 dark:text-white">
                         <option value="long">Long Vlogs</option>
                         <option value="medium">Medium Content</option>
                         <option value="short">Short Clips</option>
                     </select>
                 </div>
                 <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
-                    <div class="col-span-full text-center py-20 text-gray-400 font-black animate-pulse uppercase italic">Synchronizing journeys...</div>
+                    <!-- Loaded by script -->
                 </div>
+
+                <!-- MIDDLE AD (1:1 Native) -->
+                <div class="ad-container max-w-4xl">
+                    <span class="ad-label">Sponsored Content</span>
+                    <script async="async" data-cfasync="false" src="https://crazylatchdisturbance.com/135d9080577862d37eb360cfd6b790f5/invoke.js"></script>
+                    <div id="container-135d9080577862d37eb360cfd6b790f5"></div>
+                </div>
+
                 <div class="mt-12 md:mt-16 text-center px-4">
-                    <button id="load-more-btn" class="w-full md:w-auto bg-rail-accent text-white px-10 md:px-14 py-4 md:py-5 rounded-xl md:rounded-2xl font-black shadow-xl hover:scale-105 transition transform uppercase tracking-widest">Load More Vlogs</button>
+                    <button id="load-more-btn" class="w-full md:w-auto bg-rail-accent text-white px-10 md:px-14 py-4 md:py-5 rounded-xl md:rounded-2xl font-black shadow-xl hover:scale-105 transition transform uppercase tracking-widest text-gray-900 dark:text-white">Load More Vlogs</button>
                 </div>
             </div>
         </section>
 
-        <!-- 2. GALLERY VIEW (Feature 1) -->
+        <!-- 2. GALLERY VIEW -->
         <section id="gallery-view" class="page-view">
             <div class="max-w-screen-2xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white">
                 <h2 class="text-3xl md:text-6xl font-black text-center mb-4 md:mb-6 font-heading tracking-tight underline decoration-rail-accent decoration-4 md:decoration-8 underline-offset-4 md:underline-offset-8 uppercase italic">Railway Gallery</h2>
                 <p class="text-center text-gray-500 dark:text-gray-400 mb-10 md:mb-20 text-sm md:text-xl font-medium tracking-widest uppercase font-sans">High-Resolution Train Wallpapers</p>
-                <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-900 dark:text-white">
+                <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Loaded by script -->
                 </div>
             </div>
@@ -188,47 +231,42 @@
 
         <!-- 3. REVIEWS VIEW -->
         <section id="reviews-view" class="page-view">
-            <div class="max-w-screen-2xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white text-gray-900 dark:text-white">
-                <h2 class="text-3xl md:text-6xl font-black text-center mb-4 md:mb-6 font-heading tracking-tight underline decoration-rail-accent decoration-4 md:decoration-8 underline-offset-4 md:underline-offset-8 uppercase italic">Train Scorecards</h2>
-                <p class="text-center text-gray-500 dark:text-gray-400 mb-10 md:mb-20 text-sm md:text-xl font-medium tracking-widest uppercase font-sans text-gray-900 dark:text-white">Live Public Ratings & Performance Metrics</p>
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white">
+                <h2 class="text-3xl md:text-6xl font-black text-center mb-4 md:mb-6 font-heading tracking-tight underline decoration-rail-accent decoration-4 md:decoration-8 underline-offset-4 md:underline-offset-8 uppercase italic text-gray-900 dark:text-white">Train Scorecards</h2>
+                <p class="text-center text-gray-500 dark:text-gray-400 mb-10 md:mb-20 text-sm md:text-xl font-medium tracking-widest uppercase font-sans">Live Public Ratings & Performance Metrics</p>
                 <div id="scorecards-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 text-gray-900 dark:text-white"></div>
             </div>
         </section>
 
-        <!-- 4. COMMUNITY VIEW (Feature 2 - Polls) -->
+        <!-- 4. COMMUNITY VIEW -->
         <section id="community-view" class="page-view">
-            <div class="max-w-screen-xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
-                <div class="flex justify-between items-center mb-10 md:mb-16 pb-6 md:pb-8 border-b border-gray-100 dark:border-gray-800">
-                    <h2 class="text-3xl md:text-6xl font-black font-heading tracking-tighter italic uppercase">Official <span class="text-rail-accent">Broadcasts</span></h2>
+            <div class="max-w-screen-xl mx-auto px-4 md:px-6 py-12 md:py-20 text-gray-900 dark:text-white">
+                <div class="flex justify-between items-center mb-10 md:mb-16 pb-6 md:pb-8 border-b border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                    <h2 class="text-3xl md:text-6xl font-black font-heading tracking-tighter italic uppercase text-gray-900 dark:text-white">Official <span class="text-rail-accent">Broadcasts</span></h2>
                     <span class="hidden sm:block text-xs font-black uppercase tracking-widest text-gray-400">Live Cloud Feed</span>
                 </div>
 
-                <!-- Live Polls Section -->
-                <div id="polls-container" class="mb-12 space-y-6">
-                    <!-- Loaded by script -->
-                </div>
+                <div id="polls-container" class="mb-12 space-y-6"></div>
 
                 <div id="admin-panel" class="hidden mb-12 md:mb-16 bg-rail-accent/5 border-2 md:border-4 border-dashed border-rail-accent p-6 md:p-12 rounded-3xl animate-fade-in text-gray-900 dark:text-white">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <!-- Post Broadcast -->
                         <div>
-                            <h3 class="text-xl md:text-3xl font-black mb-6 text-rail-accent uppercase italic font-heading">New Announcement</h3>
+                            <h3 class="text-xl md:text-3xl font-black mb-6 text-rail-accent uppercase italic font-heading text-gray-900 dark:text-white text-gray-900 dark:text-white">New Announcement</h3>
                             <form id="update-form" class="space-y-4">
-                                <input type="text" id="update-title" placeholder="Headline" required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm text-lg outline-none ring-1 ring-gray-200 dark:ring-gray-700">
-                                <input type="file" id="update-image-file" accept="image/*" class="w-full bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm text-sm">
-                                <textarea id="update-content" placeholder="Details..." required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl h-32 shadow-sm"></textarea>
-                                <button type="submit" id="update-btn" class="w-full bg-rail-accent text-white px-10 py-4 rounded-xl font-black shadow-2xl flex items-center justify-center gap-3">
+                                <input type="text" id="update-title" placeholder="Headline" required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl md:rounded-3xl shadow-sm text-lg outline-none ring-1 ring-gray-200 dark:ring-gray-700">
+                                <input type="file" id="update-image-file" accept="image/*" class="w-full bg-white dark:bg-gray-800 p-3 md:p-4 rounded-2xl shadow-sm text-sm">
+                                <textarea id="update-content" placeholder="Type details..." required class="w-full bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl h-32 md:h-44 shadow-sm"></textarea>
+                                <button type="submit" id="update-btn" class="w-full bg-rail-accent text-white px-10 md:px-14 py-4 md:py-5 rounded-xl md:rounded-2xl font-black shadow-2xl hover:scale-105 transition transform flex items-center justify-center gap-3">
                                     <span id="btn-text">PUBLISH BROADCAST</span>
                                 </button>
                             </form>
                         </div>
-                        <!-- Create Poll -->
                         <div>
-                            <h3 class="text-xl md:text-3xl font-black mb-6 text-rail-accent uppercase italic font-heading text-gray-900 dark:text-white">Create New Poll</h3>
+                            <h3 class="text-xl md:text-3xl font-black mb-6 text-rail-accent uppercase italic font-heading text-gray-900 dark:text-white text-gray-900 dark:text-white">Create New Poll</h3>
                             <form id="poll-form" class="space-y-4">
-                                <input type="text" id="poll-question" placeholder="Poll Question?" required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm text-lg outline-none ring-1 ring-gray-200 dark:ring-gray-700">
-                                <input type="text" id="poll-options" placeholder="Option 1, Option 2, Option 3 (Comma separated)" required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm text-lg outline-none ring-1 ring-gray-200 dark:ring-gray-700">
-                                <button type="submit" class="w-full bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-10 py-4 rounded-xl font-black shadow-2xl">CREATE POLL</button>
+                                <input type="text" id="poll-question" placeholder="Poll Question?" required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl md:rounded-3xl shadow-sm text-lg outline-none ring-1 ring-gray-200 dark:ring-gray-700">
+                                <input type="text" id="poll-options" placeholder="Option 1, Option 2, Option 3 (Comma separated)" required class="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl md:rounded-3xl shadow-sm text-lg outline-none ring-1 ring-gray-200 dark:ring-gray-700">
+                                <button type="submit" class="w-full bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-10 py-4 md:py-5 rounded-xl md:rounded-2xl font-black shadow-2xl text-gray-900 dark:text-white">CREATE POLL</button>
                             </form>
                         </div>
                     </div>
@@ -318,18 +356,25 @@
         </section>
     </main>
 
+    <!-- BOTTOM AD (4:1 Large Banner) -->
+    <div class="ad-container max-w-screen-2xl">
+        <span class="ad-label">Advertisement</span>
+        <script async="async" data-cfasync="false" src="https://crazylatchdisturbance.com/135d9080577862d37eb360cfd6b790f5/invoke.js"></script>
+        <div id="container-135d9080577862d37eb360cfd6b790f5"></div>
+    </div>
+
     <!-- Footer -->
     <footer class="py-12 md:py-24 text-center border-t border-gray-100 dark:border-gray-800 mt-12 text-gray-900 dark:text-white px-6">
-        <div class="flex justify-center space-x-6 md:space-x-10 mb-8 md:mb-12">
-            <a href="https://facebook.com/therailspk" target="_blank" class="social-link fb-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white"><i class="fab fa-facebook"></i></a>
-            <a href="https://youtube.com/@RAILSPK" target="_blank" class="social-link yt-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white"><i class="fab fa-youtube"></i></a>
-            <a href="https://instagram.com/therailspk" target="_blank" class="social-link ig-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white"><i class="fab fa-instagram"></i></a>
-            <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHwv3O" target="_blank" class="social-link wa-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white"><i class="fab fa-whatsapp"></i></a>
+        <div class="flex justify-center space-x-6 md:space-x-10 mb-8 md:mb-12 text-gray-900 dark:text-white">
+            <a href="https://facebook.com/therailspk" target="_blank" class="social-link fb-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-facebook"></i></a>
+            <a href="https://youtube.com/@therailspk" target="_blank" class="social-link yt-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-youtube"></i></a>
+            <a href="https://instagram.com/therailspk" target="_blank" class="social-link ig-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-instagram"></i></a>
+            <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHwv3O" target="_blank" class="social-link wa-hover text-3xl md:text-4xl text-gray-400 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fab fa-whatsapp"></i></a>
         </div>
         <p class="text-gray-400 text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-black mb-4 italic font-sans text-gray-900 dark:text-white">© 2025 The RAILSPK | Digital Legacy Project</p>
         <div class="flex justify-center space-x-6 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            <a href="/privacy" onclick="routeTo(event, '/privacy')" class="hover:text-rail-accent transition text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">Privacy Policy</a>
-            <a href="/terms" onclick="routeTo(event, '/terms')" class="hover:text-rail-accent transition text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">Terms of Service</a>
+            <a href="/privacy" onclick="routeTo(event, '/privacy')" class="hover:text-rail-accent transition text-gray-900 dark:text-white">Privacy Policy</a>
+            <a href="/terms" onclick="routeTo(event, '/terms')" class="hover:text-rail-accent transition text-gray-900 dark:text-white">Terms of Service</a>
         </div>
     </footer>
 
@@ -363,12 +408,11 @@
             { id: 'shahlatif', name: 'Shah Latif Express', route: 'Karachi ⟷ Mirpur Khas', slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], avgRating: 0, reviewCount: 0 }
         ];
 
-        // Gallery Data (Placeholder - can be moved to Firestore)
         const galleryData = [
             { title: "Green Line Dawn", src: "images/train_background.jpg" },
             { title: "Railway Track Symmetry", src: "images/train_background2.jpeg" },
-            { id: 'ai1', title: "Allama Iqbal Arrival", src: "images/allama_iqbal_1.jpeg" },
-            { id: 'ai2', title: "Departure Sunset", src: "images/allama_iqbal_2.jpeg" }
+            { title: "Allama Iqbal Arrival", src: "images/allama_iqbal_1.jpeg" },
+            { title: "Departure Sunset", src: "images/allama_iqbal_2.jpeg" }
         ];
 
         async function initFirebase() {
@@ -389,37 +433,32 @@
             try { if (!user) return; const doc = await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('config').doc('youtube').get(); if (doc.exists) { YT_KEY = doc.data().key; YT_CHANNEL = doc.data().channelId; } } catch (e) {}
         }
 
-        // --- Gallery Feature 1 ---
         function renderGallery() {
             const grid = document.getElementById('gallery-grid'); if (!grid) return;
             grid.innerHTML = galleryData.map(img => `
-                <div class="group relative overflow-hidden rounded-[2.5rem] bg-gray-100 dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700">
+                <div class="group relative overflow-hidden rounded-[2.5rem] bg-gray-100 dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white">
                     <img src="${img.src}" class="w-full h-80 object-cover transition duration-700 group-hover:scale-110 cursor-zoom-in" onclick="openImageModal(this.src)">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition duration-500 text-gray-900 dark:text-white">
                         <h4 class="text-white text-xl font-black italic uppercase mb-4">${img.title}</h4>
                         <a href="${img.src}" download="${img.title}" class="bg-rail-accent text-white text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl">Download Wallpaper</a>
                     </div>
                 </div>`).join('');
         }
 
-        // --- Polls Feature 2 ---
         function startPollsListener() {
             db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').onSnapshot(snap => {
                 const polls = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 const container = document.getElementById('polls-container'); if (!container) return;
-                
-                if (!polls.length) { container.innerHTML = ''; return; }
-                
+                if (!polls.length) return;
                 container.innerHTML = polls.map(p => {
                     const total = p.options.reduce((a, b) => a + b.votes, 0);
                     return `
-                    <div class="bg-white dark:bg-rail-dark p-8 md:p-12 rounded-[3.5rem] border-2 border-rail-accent shadow-2xl animate-fade-in text-gray-900 dark:text-white">
+                    <div class="bg-white dark:bg-rail-dark p-8 md:p-12 rounded-[3.5rem] border-2 border-rail-accent shadow-2xl animate-fade-in text-gray-900 dark:text-white text-gray-900 dark:text-white">
                         <div class="flex items-center gap-3 mb-6"><span class="bg-rail-accent text-white px-3 py-1 rounded-full text-[9px] font-black uppercase">Live Poll</span><h3 class="text-xl md:text-2xl font-black uppercase italic">${escapeHTML(p.question)}</h3></div>
                         <div class="space-y-4">
                             ${p.options.map((opt, i) => {
                                 const per = total > 0 ? Math.round((opt.votes / total) * 100) : 0;
-                                return `
-                                <div class="relative group cursor-pointer" onclick="castVote('${p.id}', ${i})">
+                                return `<div class="relative group cursor-pointer" onclick="castVote('${p.id}', ${i})">
                                     <div class="flex justify-between items-center mb-1 px-2 font-bold text-xs"><span>${escapeHTML(opt.text)}</span><span>${per}%</span></div>
                                     <div class="h-10 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
                                         <div class="poll-bar h-full bg-rail-accent" style="width: ${per}%"></div>
@@ -427,31 +466,20 @@
                                 </div>`;
                             }).join('')}
                         </div>
-                        <p class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">${total} Votes Registered</p>
                     </div>`;
                 }).join('');
             });
         }
 
-        async function castVote(pollId, optionIndex) {
+        async function castVote(pollId, idx) {
             const ref = db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').doc(pollId);
             await db.runTransaction(async t => {
                 const doc = await t.get(ref); if (!doc.exists) return;
-                const opts = doc.data().options;
-                opts[optionIndex].votes += 1;
+                const opts = doc.data().options; opts[idx].votes += 1;
                 t.update(ref, { options: opts });
             });
         }
 
-        async function createPoll(e) {
-            e.preventDefault(); if (!user) return;
-            const q = document.getElementById('poll-question').value;
-            const opts = document.getElementById('poll-options').value.split(',').map(s => ({ text: s.trim(), votes: 0 }));
-            await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').add({ question: q, options: opts, timestamp: Date.now() });
-            e.target.reset(); alert("Poll Live.");
-        }
-
-        // --- Reviews & Trains Engine ---
         function startReviewsListener() {
             if (!user) return;
             db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('reviews').onSnapshot(snap => {
@@ -460,8 +488,7 @@
                     const filtered = allReviews.filter(r => r.trainId === t.id);
                     if (filtered.length > 0) {
                         const sum = filtered.reduce((a, b) => a + b.rating, 0);
-                        t.avgRating = sum / filtered.length;
-                        t.reviewCount = filtered.length;
+                        t.avgRating = sum / filtered.length; t.reviewCount = filtered.length;
                     } else { t.avgRating = 0; t.reviewCount = 0; }
                 });
                 renderTrainCards(); 
@@ -480,20 +507,20 @@
                         <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border mb-4 animate-fadeIn text-gray-900 dark:text-white">
                             <div class="flex justify-between mb-2"><p class="text-rail-accent font-black text-[10px] uppercase tracking-widest">${escapeHTML(r.name)}</p><span class="stars text-[10px] font-black">${'★'.repeat(r.rating)}</span></div>
                             <p class="text-gray-600 dark:text-gray-300 font-medium leading-tight text-sm">"${escapeHTML(r.comment)}"</p>
-                            ${r.reply ? `<div class="mt-3 bg-rail-accent/10 p-3 rounded-xl border-l-4 border-rail-accent"><p class="text-[9px] font-black uppercase text-rail-accent mb-1">OFFICIAL REPLY</p><p class="text-xs italic text-gray-600 dark:text-gray-300">"${escapeHTML(r.reply)}"</p></div>` : ''}
+                            ${r.reply ? `<div class="mt-3 bg-rail-accent/10 p-3 rounded-xl border-l-4 border-rail-accent text-gray-900 dark:text-white"><p class="text-[9px] font-black uppercase text-rail-accent mb-1">OFFICIAL REPLY</p><p class="text-xs italic text-gray-600 dark:text-gray-300">"${escapeHTML(r.reply)}"</p></div>` : ''}
                             ${adminAuthorised && !r.reply ? `<button onclick="replyToReview('${r.id}')" class="mt-3 text-[10px] font-black uppercase text-rail-accent hover:underline">Reply</button>` : ''}
                         </div>`).join('') : '<p class="italic text-gray-400 text-sm">No feedback yet.</p>';
 
                 return `
-                <div class="train-card bg-white dark:bg-rail-dark rounded-3xl border shadow-2xl overflow-hidden flex flex-col text-gray-900 dark:text-white text-gray-900 dark:text-white">
-                    <div class="p-6 text-gray-900 dark:text-white">
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 text-gray-900 dark:text-white">
-                            <div class="md:col-span-3 text-gray-900 dark:text-white">
-                                <h3 class="text-2xl font-black italic uppercase">${t.name}</h3>
+                <div class="train-card bg-white dark:bg-rail-dark rounded-3xl border shadow-2xl overflow-hidden flex flex-col text-gray-900 dark:text-white">
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                            <div class="md:col-span-3">
+                                <h3 class="text-2xl font-black italic uppercase text-gray-900 dark:text-white">${t.name}</h3>
                                 <p class="text-rail-accent font-bold text-xs uppercase mb-4">${t.route}</p>
-                                <div class="mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+                                <div class="mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white">
                                     <p class="text-[9px] font-black uppercase text-gray-400 mb-2">Class Fares</p>
-                                    <div class="grid grid-cols-2 gap-2">${t.fares.map(f => `<div class="flex justify-between text-[11px] border-b border-gray-100 dark:border-gray-800 pb-1 font-bold"><span class="text-gray-500">${f.class}</span><span class="text-rail-accent">${f.price}</span></div>`).join('')}</div>
+                                    <div class="grid grid-cols-2 gap-2">${t.fares.map(f => `<div class="flex justify-between text-[11px] border-b border-gray-100 dark:border-gray-800 pb-1 font-bold text-gray-900 dark:text-white text-gray-900 dark:text-white"><span class="text-gray-500">${f.class}</span><span class="text-rail-accent">${f.price}</span></div>`).join('')}</div>
                                 </div>
                                 <div class="flex justify-between items-center text-sm font-bold border-t border-gray-100 dark:border-gray-800 pt-3">
                                     <span>Public Score (${t.reviewCount})</span>
@@ -506,10 +533,11 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-900/40 p-6 border-t border-gray-100 dark:border-gray-800 mt-auto">
+                        <h4 class="text-lg font-black mb-6 flex items-center gap-3 text-gray-900 dark:text-white">Passenger Feedback</h4>
                         <div id="reviews-list-${t.id}" class="max-h-56 overflow-y-auto mb-6 pr-2 custom-scrollbar text-gray-900 dark:text-white">${reviewsHtml}</div>
                         <form onsubmit="postDatabaseReview(event, '${t.id}')" class="space-y-2">
-                            <div class="grid grid-cols-2 gap-2 text-gray-900 dark:text-white text-gray-900 dark:text-white"><input type="text" id="name-${t.id}" placeholder="Name" required class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs"><select id="rating-${t.id}" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option></select></div>
-                            <textarea id="comment-${t.id}" placeholder="Feedback..." required class="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs h-16 text-gray-900 dark:text-white text-gray-900 dark:text-white"></textarea>
+                            <div class="grid grid-cols-2 gap-2 text-gray-900 dark:text-white"><input type="text" id="name-${t.id}" placeholder="Name" required class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs text-gray-900 dark:text-white"><select id="rating-${t.id}" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs text-gray-900 dark:text-white"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option></select></div>
+                            <textarea id="comment-${t.id}" placeholder="Feedback..." required class="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl text-xs h-16 text-gray-900 dark:text-white"></textarea>
                             <button type="submit" class="w-full bg-rail-accent text-white py-3 rounded-xl font-black text-xs uppercase text-gray-900 dark:text-white">Post Review</button>
                         </form>
                     </div>
@@ -531,7 +559,6 @@
             } catch (err) { } finally { btn.disabled = false; btn.innerText = "POST REVIEW"; }
         }
 
-        // --- Core SPA Logic ---
         function routeTo(e, p){ if(e)e.preventDefault(); window.history.pushState({},"",p); handleRouting(); }
         function handleRouting(){ 
             let p=window.location.pathname.split('/').pop()||'home'; 
@@ -552,7 +579,7 @@
                 const data = await res.json(); yt_token = data.nextPageToken;
                 if (!app) container.innerHTML = '';
                 if (data.items) data.items.forEach(v => {
-                    container.innerHTML += `<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl cursor-pointer group transition transform hover:-translate-y-2 text-gray-900 dark:text-white text-gray-900 dark:text-white" onclick="openVideo('${v.id.videoId}')">
+                    container.innerHTML += `<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl cursor-pointer group transition transform hover:-translate-y-2 text-gray-900 dark:text-white" onclick="openVideo('${v.id.videoId}')">
                         <div class="aspect-video relative overflow-hidden"><img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" class="w-full h-full object-cover transition duration-1000 group-hover:scale-110"><div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
                         <div class="p-6 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><h3 class="text-sm font-black line-clamp-2 uppercase">${v.snippet.title}</h3></div></div>`;
                 });
@@ -568,15 +595,15 @@
                 else container.innerHTML = data.map(u => {
                     const react = u.reactions || {like:0,heart:0,fire:0};
                     return `
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border shadow-2xl animate-fade-in transition hover:border-rail-accent text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border shadow-2xl animate-fade-in transition hover:border-rail-accent text-gray-900 dark:text-white">
                         <div class="flex justify-between mb-6">
                             <span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic">Official</span>
-                            <div class="flex items-center gap-2 text-gray-400 text-xs font-black text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fas fa-eye text-gray-900 dark:text-white"></i> <span>${u.views || 0} Views</span></div>
+                            <div class="flex items-center gap-2 text-gray-400 text-xs font-black text-gray-900 dark:text-white text-gray-900 dark:text-white"><i class="fas fa-eye text-gray-900 dark:text-white text-gray-900 dark:text-white"></i> <span>${u.views || 0} Views</span></div>
                         </div>
                         ${u.imageUrl ? `<img src="${u.imageUrl}" class="w-full h-48 md:h-56 object-cover rounded-2xl mb-6 shadow-xl cursor-zoom-in" onclick="openImageModal(this.src)">` : ''}
-                        <h3 class="text-xl font-black mb-4 uppercase text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(u.title)}</h3>
-                        <p class="text-gray-600 dark:text-gray-400 font-medium text-sm line-clamp-4 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(u.content)}</p>
-                        <div class="mt-6 flex justify-between border-t pt-6 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">
+                        <h3 class="text-xl font-black mb-4 uppercase text-gray-900 dark:text-white">${escapeHTML(u.title)}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 font-medium text-sm line-clamp-4 text-gray-900 dark:text-white">${escapeHTML(u.content)}</p>
+                        <div class="mt-6 flex justify-between border-t border-gray-100 dark:border-gray-800 pt-6">
                             <div class="flex gap-4"><button onclick="handleReaction('${u.id}', 'like')">👍 ${react.like}</button><button onclick="handleReaction('${u.id}', 'heart')">❤️ ${react.heart}</button><button onclick="handleReaction('${u.id}', 'fire')">🔥 ${react.fire}</button></div>
                             <button onclick='incrementViewsAndOpen("${u.id}", ${JSON.stringify(u)})' class="text-rail-accent font-black text-xs uppercase hover:underline">Read More</button>
                         </div>
@@ -591,10 +618,10 @@
         function openPostModal(post) { 
             const b = document.getElementById('post-modal-body');
             b.innerHTML = `
-                ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-auto object-contain rounded-3xl mb-8 shadow-2xl text-gray-900 dark:text-white">` : ''}
-                <div class="flex justify-between mb-8 text-gray-900 dark:text-white"><span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic text-gray-900 dark:text-white">Official Update</span><span class="text-gray-400 text-xs font-black">👁️ ${post.views||0} Views</span></div>
-                <h2 class="text-2xl font-black mb-8 uppercase text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(post.title)}</h2>
-                <div class="text-sm font-medium whitespace-pre-wrap text-gray-600 dark:text-gray-300 text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white">${escapeHTML(post.content)}</div>`;
+                ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-auto object-contain rounded-3xl mb-8 shadow-2xl">` : ''}
+                <div class="flex justify-between mb-8 text-gray-900 dark:text-white"><span class="bg-rail-accent text-white text-[10px] font-black px-4 py-2 rounded-full uppercase italic">Official Update</span><span class="text-gray-400 text-xs font-black text-gray-900 dark:text-white">👁️ ${post.views||0} Views</span></div>
+                <h2 class="text-2xl font-black mb-8 uppercase text-gray-900 dark:text-white">${escapeHTML(post.title)}</h2>
+                <div class="text-sm font-medium whitespace-pre-wrap text-gray-600 dark:text-gray-300 text-gray-900 dark:text-white">${escapeHTML(post.content)}</div>`;
             document.getElementById('post-modal').classList.remove('hidden'); document.getElementById('post-modal').classList.add('flex'); document.body.style.overflow = 'hidden';
         }
 
@@ -611,8 +638,15 @@
             } catch (err) { } finally { btn.disabled = false; document.getElementById('btn-text').innerText = "PUBLISH BROADCAST"; document.getElementById('upload-spinner').classList.add('hidden'); }
         }
 
+        async function createPoll(e) {
+            e.preventDefault(); if (!user) return;
+            const q = document.getElementById('poll-question').value;
+            const opts = document.getElementById('poll-options').value.split(',').map(s => ({ text: s.trim(), votes: 0 }));
+            await db.collection('artifacts').doc(currentAppId).collection('public').doc('data').collection('polls').add({ question: q, options: opts, timestamp: Date.now() });
+            e.target.reset(); alert("Poll Live.");
+        }
+
         function processImage(f) { return new Promise((res)=>{ const r = new FileReader(); r.readAsDataURL(f); r.onload=(e)=>{ const i = new Image(); i.src=e.target.result; i.onload=()=>{ const c = document.createElement('canvas'); const MAX = 1200; let w=i.width, h=i.height; if(w>MAX){h*=MAX/w;w=MAX;} c.width=w; c.height=h; const ctx=c.getContext('2d'); ctx.drawImage(i,0,0,w,h); res(c.toDataURL('image/jpeg',0.8)); }; }; }); }
-        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = 'auto'; if (id==='video-modal') document.getElementById('video-embed-container').innerHTML = ''; }
         function openImageModal(src) { document.getElementById('modal-image-content').src = src; document.getElementById('image-modal').classList.remove('hidden'); document.getElementById('image-modal').classList.add('flex'); document.body.style.overflow = 'hidden'; }
         function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
@@ -633,7 +667,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            initFirebase(); initTheme();
+            initFirebase(); renderTrainCards(); initTheme();
             document.getElementById('video-filter').addEventListener('change', (e) => { yt_duration = e.target.value; fetchVideos(yt_duration); });
             document.getElementById('load-more-btn').addEventListener('click', () => { if (yt_token) fetchVideos(yt_duration, yt_token, true); });
             document.getElementById('update-form').addEventListener('submit', postUpdate);
@@ -658,7 +692,7 @@
     <div id="post-modal" class="hidden fixed inset-0 z-[100] bg-black/95 items-center justify-center p-4 overflow-y-auto text-gray-900 dark:text-white" onclick="if(event.target.id === 'post-modal') closeModal('post-modal')">
         <div class="bg-white dark:bg-rail-dark w-full max-w-4xl rounded-[2.5rem] shadow-2xl relative border border-gray-100 dark:border-white/5 my-8">
             <button onclick="closeModal('post-modal')" class="fixed top-8 right-8 text-gray-400 hover:text-rail-accent text-5xl font-thin transition z-[110]">&times;</button>
-            <div id="post-modal-body" class="p-8 md:p-16 max-h-[85vh] overflow-y-auto custom-scrollbar text-gray-900 dark:text-white text-gray-900 dark:text-white"></div>
+            <div id="post-modal-body" class="p-8 md:p-16 max-h-[85vh] overflow-y-auto custom-scrollbar text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white text-gray-900 dark:text-white"></div>
         </div>
     </div>
 </body>
