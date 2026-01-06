@@ -19,6 +19,47 @@
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+	
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="The RAILSPK - Digital Pakistan Railways Portal">
+    <meta property="og:description" content="Cinematic vlogs, train scorecards, and a community for railway enthusiasts.">
+    <meta property="og:image" content="images/train_background2.webp">
+    <meta property="og:url" content="https://therails.pk/">
+
+    <!-- --- SCHEMA MARKUP (JSON-LD) --- -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "The RAILSPK",
+      "url": "https://therails.pk",
+      "logo": "https://therails.pk/images/favicon.ico",
+      "sameAs": [
+        "https://facebook.com/therailspk",
+        "https://youtube.com/@therailspk",
+        "https://instagram.com/therailspk"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "url": "https://therails.pk/community"
+      }
+    }
+    </script>
+	
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "The RAILSPK",
+      "url": "https://therails.pk",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://therails.pk/reviews?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 
     <style>
         ::-webkit-scrollbar { width: 6px; }
@@ -85,6 +126,8 @@
                     <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hover:text-rail-accent transition-colors">Gallery</a>
                     <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hover:text-rail-accent transition-colors">Reviews</a> 
                     <a href="/community" onclick="routeTo(event, '/community')" class="hover:text-rail-accent transition-colors">Community</a>
+					<a href="/about" onclick="routeTo(event, '/about')" class="hover:text-rail-accent transition-colors">About</a>
+
                 </nav>
 
                 <div class="flex items-center space-x-2 border-l border-gray-100 dark:border-gray-800 pl-4">
@@ -107,6 +150,7 @@
             <a href="/gallery" class="block font-black uppercase text-sm" onclick="routeTo(event, '/gallery'); toggleMenu();">Gallery</a>
             <a href="/reviews" class="block font-black uppercase text-sm" onclick="routeTo(event, '/reviews'); toggleMenu();">Reviews</a>
             <a href="/community" class="block font-black uppercase text-sm" onclick="routeTo(event, '/community'); toggleMenu();">Community</a>
+			<a href="/about" class="block font-black uppercase text-sm" onclick="routeTo(event, '/about'); toggleMenu();">About</a>
         </div>
     </header>
 
