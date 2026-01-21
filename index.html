@@ -17,16 +17,6 @@
     <!-- Monetag Ads Script -->
     <script src="https://quge5.com/88/tag.min.js" data-zone="199516" async data-cfasync="false"></script>
 
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QL2CKH2MBL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-QL2CKH2MBL');
-</script>
-
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -114,7 +104,12 @@
                     <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hover:text-rail-accent">Reviews</a> 
                     <a href="/community" onclick="routeTo(event, '/community')" class="hover:text-rail-accent">Community</a>
                     <a href="/about" onclick="routeTo(event, '/about')" class="hover:text-rail-accent">About</a>
-                </nav>  
+                </nav>
+                <div class="flex items-center space-x-3">
+                <div class="hidden sm:flex view-badge text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                    Today: <span id="daily-views-header">...</span>
+                </div>  
                 <div class="flex items-center space-x-2 border-l border-gray-100 dark:border-gray-800 pl-4">
                     <button id="admin-trigger" class="px-4 py-2 bg-rail-accent/10 text-rail-accent rounded-full text-[10px] font-black uppercase hover:bg-rail-accent hover:text-white transition">Admin</button>
                     <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 hover:text-rail-accent border border-gray-100 dark:border-gray-700 transition">
@@ -135,20 +130,38 @@
     </header>
 
     <main id="main-content">
-        <!-- --- HOME VIEW --- -->
+        <!-- Home View -->
         <section id="home-view" class="page-view active">
             <div id="hero-section">
-                <div class="hero-background"></div>
+                <div class="hero-background" role="img" aria-label="Pakistan Railways View"></div>
                 <div class="hero-overlay"></div>
-                <div class="relative z-10 max-w-screen-xl mx-auto px-6 text-center text-white">
-                    <h1 class="text-6xl md:text-[10rem] font-black mb-6 tracking-tighter uppercase italic leading-none text-white">THE <span class="text-rail-accent">RAILSPK</span></h1>
-                    <p class="text-lg md:text-3xl mb-12 text-gray-300 italic max-w-4xl mx-auto leading-relaxed">"Documenting the Digital Legacy of Pakistan Railways."</p>
-                    <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                        <a href="/reviews" onclick="routeTo(event, '/reviews')" class="bg-rail-accent text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl transition hover:scale-105">Check Reviews</a>
-                        <a href="/community" onclick="routeTo(event, '/community')" class="bg-white/5 backdrop-blur-xl border border-white/10 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition">Visit Community</a>
-                    </div>
+                <div class="relative z-10 max-w-screen-xl mx-auto px-6 text-center">
+                    <h1 class="text-6xl md:text-[11rem] font-black mb-6 tracking-tighter uppercase italic leading-none text-white drop-shadow-2xl">THE <span class="text-rail-accent">RAILSPK</span></h1>
+                    <p class="text-lg md:text-3xl mb-12 text-gray-200 italic max-w-4xl mx-auto leading-relaxed font-light">"Documenting the Digital Legacy of Pakistan Railways."</p>
                 </div>
             </div>
+
+            <!-- QUICK ACCESS HUB (New Section) -->
+            <div class="max-w-screen-2xl mx-auto px-6 py-20">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hub-card bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700/50 transition-all hover:translate-y-[-10px] group">
+                        <i class="fas fa-star-half-alt hub-icon text-4xl mb-6 transition-all"></i>
+                        <h3 class="text-2xl font-black uppercase italic mb-2">Train Reviews</h3>
+                        <p class="text-gray-400 text-sm">Detailed performance scores and premium analytics for express trains.</p>
+                    </a>
+                    <a href="/community" onclick="routeTo(event, '/community')" class="hub-card bg-rail-accent/5 p-10 rounded-[3rem] border border-rail-accent/20 transition-all hover:translate-y-[-10px] group">
+                        <i class="fas fa-cloud hub-icon text-4xl mb-6 text-rail-accent transition-all"></i>
+                        <h3 class="text-2xl font-black uppercase italic mb-2 text-rail-accent">Railway Cloud</h3>
+                        <p class="text-rail-accent/60 text-sm">Real-time updates, community polls, and citizen observations.</p>
+                    </a>
+                    <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hub-card bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700/50 transition-all hover:translate-y-[-10px] group">
+                        <i class="fas fa-images hub-icon text-4xl mb-6 transition-all"></i>
+                        <h3 class="text-2xl font-black uppercase italic mb-2">Gallery</h3>
+                        <p class="text-gray-400 text-sm">High-resolution cinematic shots of the Pakistan Railways fleet.</p>
+                    </a>
+                </div>
+            </div>
+
             <div class="max-w-screen-2xl mx-auto px-4 py-16">
                 <div class="flex justify-between items-end mb-12">
                     <h2 class="text-3xl md:text-5xl font-black uppercase italic">Latest <span class="text-rail-accent">Vlogs</span></h2>
@@ -193,10 +206,16 @@
             </div>
         </section>
 
-        <!-- --- COMMUNITY VIEW --- -->
+        <!-- Community View -->
         <section id="community-view" class="page-view">
-            <div class="max-w-screen-xl mx-auto px-6 py-24">
-                <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-20 text-center tracking-tighter">Railway <span class="text-rail-accent">Cloud</span></h2>
+            <div class="max-w-screen-xl mx-auto px-6 py-16">
+                <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-12 text-center tracking-tighter">Railway <span class="text-rail-accent">Cloud</span></h2>
+                <div id="polls-container" class="mb-16 space-y-10"></div>
+                <div id="updates-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <p id="updates-status" class="col-span-full text-center py-20 text-gray-400 font-black uppercase tracking-[0.4em] animate-pulse italic">Synchronizing Neural Network...</p>
+                </div>
+            </div>
+        </section>
                 
         <!-- Live Interactions -->
             <div id="polls-container" class="mb-24 space-y-12"></div>
@@ -226,13 +245,6 @@
                         </div>
                     </div>
                 </div>
-
-        <!-- Main Updates Feed (Read More + Comments inside) -->
-                <div id="updates-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <p id="updates-status" class="col-span-full text-center py-20 text-gray-400 font-black uppercase tracking-[0.4em] animate-pulse italic">Syncing with Cloud Server...</p>
-                </div>
-            </div>
-        </section>
 
         <!-- --- ABOUT VIEW --- -->
         <section id="about-view" class="page-view">
