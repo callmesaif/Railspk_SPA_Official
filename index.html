@@ -13,10 +13,16 @@
     <link rel="canonical" href="https://therails.pk/" />
     <link rel="icon" href="images/favicon.ico?v=3" type="image/x-icon">
 
+    <!-- Google Analytics (G-QL2CKH2MBL) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QL2CKH2MBL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QL2CKH2MBL', { 'send_page_view': false });
+    </script>
 
-    <!-- Monetag Ads Script -->
-    <script src="https://quge5.com/88/tag.min.js" data-zone="199516" async data-cfasync="false"></script>
-
+    <!-- Schema Markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -49,211 +55,224 @@
       }
     }
     </script>
+
+
     
-    <!-- Fonts & Icons -->
+    <!-- Style & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase Compatibility Scripts -->
+    <!-- Firebase Compatibility -->
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
     
-    <!-- Styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        .dark ::-webkit-scrollbar-track { background: #1e293b; }
-        .dark ::-webkit-scrollbar-thumb { background: #6366f1; }
         ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
-        html { scroll-behavior: smooth; }
         
         .page-view { display: none; }
         .page-view.active { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        #hero-section { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
-        .hero-background { position: absolute; inset: 0; background-size: cover; background-position: center; background-image: url('images/train_background.webp'); transform: scale(1.1); filter: brightness(0.6); }
-        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), #111827); }
+        #hero-section { position: relative; min-height: 100vh; display: flex; flex-direction: column; background: #000; overflow: hidden; }
+        .hero-background { position: absolute; inset: 0; background-size: cover; background-position: center; background-image: url('images/train_background.webp'); filter: brightness(0.4); transform: scale(1.05); }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, #111827 98%); }
         
+        .hub-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hub-card:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.08); border-color: #4f46e5; }
+        
+        .view-badge { background: linear-gradient(45deg, #4f46e5, #818cf8); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        
+        /* Fixed Mobile Menu Sidebar */
+        #mobile-menu { position: fixed; top: 0; right: 0; height: 100vh; width: 100%; z-index: 100; transition: transform 0.3s ease-in-out; transform: translateX(100%); display: flex; flex-direction: column; }
+        #mobile-menu.active { transform: translateX(0); }
+
         .stars { color: #f59e0b !important; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
-        .slider-btn { background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); transition: all 0.3s ease; }
-        .slider-btn:hover { background: #4f46e5; transform: scale(1.1); }
-        .img-loading { background: #1e293b; position: relative; overflow: hidden; }
     </style>
 
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { 'rail-dark': '#111827', 'rail-accent': '#4f46e5' } } } }
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { 'rail-dark': '#111827', 'rail-accent': '#4f46e5' }, borderRadius: { '5xl': '3rem' } } } }
     </script>
 </head>
-<body class="bg-white text-gray-900 dark:bg-rail-dark dark:text-gray-200 transition-colors duration-300 antialiased overflow-x-hidden">
+<body class="bg-white text-gray-900 dark:bg-rail-dark dark:text-gray-200 transition-colors duration-500 antialiased overflow-x-hidden">
 
-    <!-- Sticky Header (Navigation unchanged as requested) -->
-    <header class="sticky top-0 z-50 bg-white/90 dark:bg-rail-dark/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5">
-        <div class="max-w-screen-2xl mx-auto px-4 flex justify-between items-center h-16 md:h-20">
-            <a href="/home" onclick="routeTo(event, '/home')" class="text-2xl md:text-3xl font-black tracking-tighter">
-                The <span class="text-rail-accent">RAILSPK</span>
-            </a>
+    <!-- Responsive Header -->
+    <header class="sticky top-0 z-[60] bg-white/80 dark:bg-rail-dark/90 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 h-auto py-4 md:h-24 flex items-center">
+        <div class="max-w-screen-2xl mx-auto px-6 w-full flex justify-between items-center">
+            <a href="/home" onclick="routeTo(event, '/home')" class="text-xl md:text-3xl font-black italic text-rail-accent uppercase tracking-tighter shrink-0">The RAILSPK</a>
             
-            <div class="flex items-center space-x-4">
-                <nav class="hidden lg:flex space-x-8 text-[10px] font-black uppercase tracking-[0.2em]">
-                    <a href="/home" onclick="routeTo(event, '/home')" class="hover:text-rail-accent">Home</a>
-                    <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hover:text-rail-accent">Gallery</a>
-                    <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hover:text-rail-accent">Reviews</a> 
-                    <a href="/community" onclick="routeTo(event, '/community')" class="hover:text-rail-accent">Community</a>
-                    <a href="/about" onclick="routeTo(event, '/about')" class="hover:text-rail-accent">About</a>
-                </nav>
-                <div class="flex items-center space-x-3">
-                <div class="hidden sm:flex view-badge text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest items-center gap-2">
+            <nav class="hidden lg:flex space-x-10 text-[11px] font-black uppercase tracking-widest">
+                <a href="/home" onclick="routeTo(event, '/home')" class="hover:text-rail-accent transition">Home</a>
+                <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hover:text-rail-accent transition">Gallery</a>
+                <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hover:text-rail-accent transition">Reviews</a> 
+                <a href="/community" onclick="routeTo(event, '/community')" class="hover:text-rail-accent transition">Community</a>
+                <a href="/about" onclick="routeTo(event, '/about')" class="hover:text-rail-accent transition">About</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <div class="flex view-badge text-white px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest items-center gap-2">
                     <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
                     Today: <span id="daily-views-header">...</span>
-                </div>  
-                <div class="flex items-center space-x-2 border-l border-gray-100 dark:border-gray-800 pl-4">
-                    <button id="admin-trigger" class="px-4 py-2 bg-rail-accent/10 text-rail-accent rounded-full text-[10px] font-black uppercase hover:bg-rail-accent hover:text-white transition">Admin</button>
-                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 hover:text-rail-accent border border-gray-100 dark:border-gray-700 transition">
-                        <i id="theme-toggle-dark-icon" class="fas fa-moon hidden"></i>
-                        <i id="theme-toggle-light-icon" class="fas fa-sun hidden"></i>
-                    </button>
-                    <button class="lg:hidden p-2" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
                 </div>
+                <button id="admin-trigger" class="hidden sm:block px-4 py-2 bg-rail-accent/10 text-rail-accent rounded-full text-[10px] font-black uppercase">Admin</button>
+                <button id="theme-toggle" class="p-2.5 md:p-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-300">
+                    <i id="theme-toggle-dark-icon" class="fas fa-moon"></i>
+                    <i id="theme-toggle-light-icon" class="fas fa-sun hidden"></i>
+                </button>
+                <button class="lg:hidden p-2 text-gray-600 dark:text-gray-300" onclick="toggleMenu()"><i class="fas fa-bars text-2xl"></i></button>
             </div>
-        </div>
-        <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-rail-dark p-6 space-y-4 absolute w-full shadow-2xl z-50">
-            <a href="/home" class="block font-black uppercase text-sm" onclick="routeTo(event, '/home'); toggleMenu();">Home</a>
-            <a href="/gallery" class="block font-black uppercase text-sm" onclick="routeTo(event, '/gallery'); toggleMenu();">Gallery</a>
-            <a href="/reviews" class="block font-black uppercase text-sm" onclick="routeTo(event, '/reviews'); toggleMenu();">Reviews</a>
-            <a href="/community" class="block font-black uppercase text-sm" onclick="routeTo(event, '/community'); toggleMenu();">Community</a>
-            <a href="/about" class="block font-black uppercase text-sm" onclick="routeTo(event, '/about'); toggleMenu();">About</a>
         </div>
     </header>
 
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="bg-white dark:bg-rail-dark p-10 shadow-2xl">
+        <div class="flex justify-between items-center mb-10">
+            <span class="font-black italic text-rail-accent text-2xl uppercase tracking-tighter">RAILSPK Hub</span>
+            <button onclick="toggleMenu()" class="text-3xl">&times;</button>
+        </div>
+        <div class="flex flex-col space-y-8">
+            <a href="/home" class="text-3xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/home'); toggleMenu();">Home</a>
+            <a href="/gallery" class="text-3xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/gallery'); toggleMenu();">Gallery</a>
+            <a href="/reviews" class="text-3xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/reviews'); toggleMenu();">Reviews</a>
+            <a href="/community" class="text-3xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/community'); toggleMenu();">Community</a>
+            <a href="/about" class="text-3xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/about'); toggleMenu();">About</a>
+        </div>
+        <div class="mt-auto pt-10 border-t border-gray-100 dark:border-gray-800">
+             <button onclick="promptAdmin()" class="w-full py-4 bg-rail-accent text-white rounded-2xl font-black uppercase tracking-widest shadow-lg">Admin Login</button>
+        </div>
+    </div>
+
     <main id="main-content">
-        <!-- Home View -->
+        <!-- --- HOME VIEW --- -->
         <section id="home-view" class="page-view active">
             <div id="hero-section">
-                <div class="hero-background" role="img" aria-label="Pakistan Railways View"></div>
+                <div class="hero-background"></div>
                 <div class="hero-overlay"></div>
-                <div class="relative z-10 max-w-screen-xl mx-auto px-6 text-center">
-                    <h1 class="text-6xl md:text-[11rem] font-black mb-6 tracking-tighter uppercase italic leading-none text-white drop-shadow-2xl">THE <span class="text-rail-accent">RAILSPK</span></h1>
-                    <p class="text-lg md:text-3xl mb-12 text-gray-200 italic max-w-4xl mx-auto leading-relaxed font-light">"Documenting the Digital Legacy of Pakistan Railways."</p>
+                
+                <div class="relative z-10 flex flex-col items-center justify-center flex-grow text-center px-6 pt-10">
+                    <h1 class="text-6xl md:text-[9rem] lg:text-[11rem] font-black leading-none text-white uppercase italic drop-shadow-2xl">THE <span class="text-rail-accent">RAILSPK</span></h1>
+                    <p class="text-lg md:text-3xl mt-6 text-gray-300 italic font-light max-w-4xl px-4">"Documenting the Digital Legacy of Pakistan Railways."</p>
+                    
+                    <div class="mt-12 lg:mt-20 w-full max-w-screen-xl">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 px-4">
+                            <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hub-card p-8 lg:p-10 rounded-[2.5rem] group text-left">
+                                <i class="fas fa-star-half-alt text-3xl mb-4 text-rail-accent transition-all group-hover:scale-125"></i>
+                                <h3 class="text-2xl font-black uppercase italic mb-2 text-white">Train Reviews</h3>
+                                <p class="text-gray-400 text-sm">Explore premium scores and performance analytics.</p>
+                            </a>
+                            <a href="/community" onclick="routeTo(event, '/community')" class="hub-card p-8 lg:p-10 rounded-[2.5rem] group text-left border-rail-accent/30 bg-rail-accent/5">
+                                <i class="fas fa-cloud text-3xl mb-4 text-rail-accent transition-all group-hover:scale-125"></i>
+                                <h3 class="text-2xl font-black uppercase italic mb-2 text-white">Railway Cloud</h3>
+                                <p class="text-rail-accent/60 text-sm">Join the real-time hub for live community updates.</p>
+                            </a>
+                            <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hub-card p-8 lg:p-10 rounded-[2.5rem] group text-left">
+                                <i class="fas fa-images text-3xl mb-4 text-rail-accent transition-all group-hover:scale-125"></i>
+                                <h3 class="text-2xl font-black uppercase italic mb-2 text-white">Cinematic Gallery</h3>
+                                <p class="text-gray-400 text-sm">High-resolution captures of the majestic fleet.</p>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- QUICK ACCESS HUB (New Section) -->
-            <div class="max-w-screen-2xl mx-auto px-6 py-20">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hub-card bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700/50 transition-all hover:translate-y-[-10px] group">
-                        <i class="fas fa-star-half-alt hub-icon text-4xl mb-6 transition-all"></i>
-                        <h3 class="text-2xl font-black uppercase italic mb-2">Train Reviews</h3>
-                        <p class="text-gray-400 text-sm">Detailed performance scores and premium analytics for express trains.</p>
-                    </a>
-                    <a href="/community" onclick="routeTo(event, '/community')" class="hub-card bg-rail-accent/5 p-10 rounded-[3rem] border border-rail-accent/20 transition-all hover:translate-y-[-10px] group">
-                        <i class="fas fa-cloud hub-icon text-4xl mb-6 text-rail-accent transition-all"></i>
-                        <h3 class="text-2xl font-black uppercase italic mb-2 text-rail-accent">Railway Cloud</h3>
-                        <p class="text-rail-accent/60 text-sm">Real-time updates, community polls, and citizen observations.</p>
-                    </a>
-                    <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hub-card bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700/50 transition-all hover:translate-y-[-10px] group">
-                        <i class="fas fa-images hub-icon text-4xl mb-6 transition-all"></i>
-                        <h3 class="text-2xl font-black uppercase italic mb-2">Gallery</h3>
-                        <p class="text-gray-400 text-sm">High-resolution cinematic shots of the Pakistan Railways fleet.</p>
-                    </a>
-                </div>
-            </div>
-
-            <div class="max-w-screen-2xl mx-auto px-4 py-16">
-                <div class="flex justify-between items-end mb-12">
-                    <h2 class="text-3xl md:text-5xl font-black uppercase italic">Latest <span class="text-rail-accent">Vlogs</span></h2>
-                    <select id="video-filter" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl font-black uppercase text-xs outline-none">
-                        <option value="long">Long Episodes</option>
-                        <option value="medium">Medium Content</option>
-                        <option value="short">Short Clips</option>
+            <!-- Vlogs Content -->
+            <div class="max-w-screen-2xl mx-auto px-6 py-24 text-center">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-16 px-4">
+                    <div class="text-left">
+                        <h2 class="text-4xl md:text-6xl font-black uppercase italic leading-tight text-gray-900 dark:text-white tracking-tighter">Latest <span class="text-rail-accent">Vlogs</span></h2>
+                        <p class="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em] mt-2 italic">Official Cinematic Archives</p>
+                    </div>
+                    <select id="video-filter" class="bg-gray-50 dark:bg-gray-800 p-5 px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest outline-none border border-gray-100 dark:border-gray-800 focus:ring-2 ring-rail-accent transition-all shadow-xl">
+                        <option value="mostPopular">Most Popular Vlogs</option>
+                        <option value="trainSpotting">Train Spotting</option>
+                        <option value="shortClips">Short Clips</option>
                     </select>
                 </div>
-
-                <!-- YouTube Videos yahan display honge -->
-                <div id="video-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                     <p class="col-span-full text-center py-20 text-gray-400 font-black uppercase tracking-[0.3em] animate-pulse italic">Fetching YouTube Content...</p>
+                <div id="video-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <p class="col-span-full text-center py-20 text-gray-400 font-black italic animate-pulse tracking-widest">SIGNAL INITIALIZING...</p>
                 </div>
-                <div class="mt-16 text-center">
-                    <button id="load-more-btn" class="bg-rail-accent text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl transition hover:scale-105">Load More Content</button>
+                <div class="mt-20">
+                    <button id="load-more-btn" onclick="fetchVideos(document.getElementById('video-filter').value, true)" class="bg-rail-accent text-white px-12 py-5 rounded-3xl font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all">Load More Heritage</button>
                 </div>
             </div>
         </section>
 
         <!-- --- REVIEWS VIEW --- -->
         <section id="reviews-view" class="page-view">
-            <div class="max-w-screen-2xl mx-auto px-4 py-20 text-center">
-                <h2 class="text-4xl font-black uppercase italic mb-12 text-gray-900 dark:text-white">Train <span class="text-rail-accent">Scorecards</span></h2>
+            <div class="max-w-screen-2xl mx-auto px-6 py-20 text-center">
+                <h2 class="text-5xl md:text-7xl font-black uppercase italic mb-12 tracking-tight">Train <span class="text-rail-accent">Scorecards</span></h2>
                 <div class="mb-12 flex justify-center">
-                    <select onchange="renderTrainCards(this.value)" class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-xs font-bold outline-none ring-1 ring-rail-accent/20">
-                        <option value="all">All Pakistan Stations</option>
+                    <select onchange="renderTrainCards(this.value)" class="bg-gray-100 dark:bg-gray-800 p-4 px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest outline-none ring-2 ring-rail-accent/10 focus:ring-rail-accent shadow-xl transition">
+                        <option value="all">All Pakistan Terminals</option>
                         <option value="Karachi">Karachi Cantonment</option>
-                        <option value="Lahore">Lahore Jn.</option>
-                        <option value="Rawalpindi">Rawalpindi</option>
+                        <option value="Lahore">Lahore Junction</option>
+                        <option value="Rawalpindi">Rawalpindi Station</option>
                     </select>
                 </div>
-                <div id="scorecards-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left"></div>
+                <div id="scorecards-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-left"></div>
             </div>
         </section>
 
-        <!-- --- GALLERY VIEW --- -->
-        <section id="gallery-view" class="page-view">
-            <div class="max-w-screen-2xl mx-auto px-4 py-20 text-center">
-                <h2 class="text-4xl md:text-7xl font-black uppercase italic mb-16 text-gray-900 dark:text-white">Railway <span class="text-rail-accent">Gallery</span></h2>
-                <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left"></div>
-            </div>
-        </section>
-
-        <!-- Community View -->
+        <!-- --- COMMUNITY VIEW --- -->
         <section id="community-view" class="page-view">
-            <div class="max-w-screen-xl mx-auto px-6 py-16">
-                <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-12 text-center tracking-tighter">Railway <span class="text-rail-accent">Cloud</span></h2>
-                <div id="polls-container" class="mb-16 space-y-10"></div>
-                <div id="updates-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                    <p id="updates-status" class="col-span-full text-center py-20 text-gray-400 font-black uppercase tracking-[0.4em] animate-pulse italic">Synchronizing Neural Network...</p>
-                </div>
-            </div>
-        </section>
+             <div class="max-w-screen-xl mx-auto px-6 py-16">
+                <h2 class="text-5xl md:text-8xl font-black uppercase italic text-center mb-16 tracking-tighter">Railway <span class="text-rail-accent">Cloud</span></h2>
+                <div id="polls-container" class="mb-16 space-y-12"></div>
                 
-        <!-- Live Interactions -->
-            <div id="polls-container" class="mb-24 space-y-12"></div>
-                
-        <!-- Admin Interaction Logic (Visible only when authorized) -->
-                <div id="admin-panel" class="hidden mb-24 bg-rail-accent/5 border-2 border-dashed border-rail-accent/30 p-12 rounded-[3.5rem] shadow-inner">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                        <div class="space-y-8">
-                            <h3 class="text-3xl font-black text-rail-accent uppercase italic">Post Broadcast</h3>
-                            <form id="update-form" class="space-y-5">
-                                <input type="text" id="update-title" placeholder="Headline" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl outline-none border border-gray-100 dark:border-gray-700 focus:ring-2 ring-rail-accent transition">
-                                <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700">
-                                    <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Attached Media</label>
-                                    <input type="file" id="update-image-file" multiple accept="image/*" class="w-full text-xs cursor-pointer">
-                                </div>
-                                <textarea id="update-content" placeholder="Content... Use #hashtags" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl h-48 outline-none border border-gray-100 dark:border-gray-700 focus:ring-2 ring-rail-accent transition"></textarea>
-                                <button type="submit" id="update-btn" class="w-full bg-rail-accent text-white py-5 rounded-3xl font-black uppercase tracking-[0.2em] shadow-lg hover:bg-indigo-700 transition">Publish to Cloud</button>
+                <!-- Admin Interaction Area -->
+                <div id="admin-panel" class="hidden mb-16 bg-rail-accent/5 border-2 border-dashed border-rail-accent/30 p-10 rounded-[3.5rem] shadow-inner">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 text-left text-xs">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-black text-rail-accent uppercase italic">Broadcast Post</h3>
+                            <form id="update-form" class="space-y-4">
+                                <input type="text" id="update-title" placeholder="Headline" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl outline-none border border-gray-100 dark:border-gray-700">
+                                <input type="file" id="update-image-file" multiple class="w-full p-4 bg-white dark:bg-gray-800 rounded-2xl">
+                                <textarea id="update-content" placeholder="Content... Use #hashtags" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl h-32 outline-none border border-gray-100 dark:border-gray-700"></textarea>
+                                <button type="submit" id="update-btn" class="w-full bg-rail-accent text-white py-5 rounded-3xl font-black uppercase tracking-widest shadow-lg">Publish to Cloud</button>
                             </form>
                         </div>
-                        <div class="space-y-8">
-                            <h3 class="text-3xl font-black text-rail-accent uppercase italic">New Interaction</h3>
-                            <form id="poll-form" class="space-y-5">
-                                <input type="text" id="poll-question" placeholder="Poll Question?" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700 outline-none focus:ring-2 ring-rail-accent">
-                                <input type="text" id="poll-options" placeholder="Option 1, Option 2 (Comma Separated)" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700 outline-none focus:ring-2 ring-rail-accent">
-                                <button type="submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-5 rounded-3xl font-black uppercase tracking-[0.2em] transition hover:opacity-90">Deploy Live Poll</button>
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-black text-rail-accent uppercase italic">New Interaction</h3>
+                            <form id="poll-form" class="space-y-4">
+                                <input type="text" id="poll-question" placeholder="Poll Question?" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700">
+                                <input type="text" id="poll-options" placeholder="Option 1, Option 2 (Comma Separated)" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700">
+                                <button type="submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-5 rounded-3xl font-black uppercase tracking-widest">Deploy Poll</button>
                             </form>
                         </div>
                     </div>
                 </div>
 
+                <div id="updates-container" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <p id="updates-status" class="col-span-full text-center py-24 text-gray-400 font-black uppercase animate-pulse italic">Synchronizing with Cloud...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- GALLERY VIEW --- -->
+        <section id="gallery-view" class="page-view">
+            <div class="max-w-screen-2xl mx-auto px-6 py-20 text-center">
+                <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-16 tracking-tight">Railway <span class="text-rail-accent">Gallery</span></h2>
+                <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left"></div>
+            </div>
+        </section>
+
         <!-- --- ABOUT VIEW --- -->
         <section id="about-view" class="page-view">
-            <div class="max-w-screen-xl mx-auto px-6 py-24 md:py-36 text-center">
+            <div class="max-w-screen-xl mx-auto px-6 py-24 text-center">
                 <h2 class="text-6xl md:text-9xl font-black tracking-tighter uppercase italic mb-12 text-gray-900 dark:text-white">THE MISSION</h2>
-                <p class="text-xl md:text-4xl text-gray-500 dark:text-gray-400 leading-relaxed max-w-5xl mx-auto font-light mb-24">
-                    Documenting the heritage and modern evolution of Pakistan Railways through cinematic storytelling and data-driven insights.
+                <p class="text-xl md:text-4xl text-gray-500 dark:text-gray-400 leading-relaxed max-w-5xl mx-auto font-light mb-24 italic">
+                    "Documenting the heritage and modern evolution of Pakistan Railways through cinematic storytelling and data-driven insights."
                 </p>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-800">
+                        <span id="stat-views" class="text-4xl md:text-6xl font-black text-rail-accent block italic mb-2">0</span>
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Views Today</span>
+                    </div>
                     <div class="bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-800">
                         <span class="text-4xl md:text-6xl font-black text-rail-accent block italic mb-2">35K+</span>
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Subscribers</span>
@@ -266,15 +285,12 @@
                         <span class="text-4xl md:text-6xl font-black text-rail-accent block italic mb-2">150+</span>
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Vlogs</span>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-800">
-                        <span class="text-4xl md:text-6xl font-black text-rail-accent block italic mb-2">17</span>
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Express Trains</span>
-                    </div>
                 </div>
             </div>
         </section>
+    </main>
 
-        <!-- --- TERMS OF SERVICE VIEW --- -->
+    <!-- --- TERMS OF SERVICE VIEW --- -->
         <section id="terms-view" class="page-view">
             <div class="max-w-4xl mx-auto px-6 py-20 text-gray-700 dark:text-gray-300">
                 <h2 class="text-4xl font-black uppercase italic mb-10 text-rail-accent">Terms of Service</h2>
@@ -317,10 +333,10 @@
 
     <footer class="py-20 border-t border-gray-100 dark:border-gray-800 text-center px-6">
         <div class="flex justify-center space-x-10 mb-12">
-            <a href="https://facebook.com/therailspkproductions" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#1877F2] transition-colors"><i class="fab fa-facebook"></i></a>
-            <a href="https://youtube.com/@therailspk" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#FF0000] transition-colors"><i class="fab fa-youtube"></i></a>
-            <a href="https://instagram.com/realinventivecadet" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#E4405F] transition-colors"><i class="fab fa-instagram"></i></a>
-            <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHwv3O" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#25D366] transition-colors"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://facebook.com/therailspkproductions" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#1877F2] transition-all hover:scale-125"><i class="fab fa-facebook"></i></a>
+            <a href="https://youtube.com/@therailspk" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#FF0000] transition-all hover:scale-125"><i class="fab fa-youtube"></i></a>
+            <a href="https://instagram.com/realinventivecadet" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#E4405F] transition-all hover:scale-125"><i class="fab fa-instagram"></i></a>
+            <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHwv3O" rel="nofollow" target="_blank" class="text-3xl text-gray-400 hover:text-[#25D366] transition-all hover:scale-125"><i class="fab fa-whatsapp"></i></a>
         </div>
         <p class="text-gray-400 text-[10px] tracking-[0.5em] font-black uppercase italic mb-6">© 2026 The RAILSPK | Digital Legacy Project</p>
         <div class="flex justify-center space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-500">
@@ -329,37 +345,481 @@
         </div>
     </footer>
 
-    <!-- Modals -->
-    <div id="image-modal" class="hidden fixed inset-0 z-[100] bg-black/95 items-center justify-center p-4">
-        <button onclick="closeModal('image-modal')" class="absolute top-6 right-6 text-white text-5xl font-thin">&times;</button>
-        <div id="slider-controls" class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 md:px-10 z-[110] pointer-events-none opacity-0">
-            <button onclick="prevSlide(event)" class="slider-btn pointer-events-auto w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full text-white text-2xl"><i class="fas fa-chevron-left"></i></button>
-            <button onclick="nextSlide(event)" class="slider-btn pointer-events-auto w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full text-white text-2xl"><i class="fas fa-chevron-right"></i></button>
+    <!-- Modals System -->
+    <div id="image-modal" class="hidden fixed inset-0 z-[100] bg-black/95 items-center justify-center p-4 backdrop-blur-xl">
+        <button onclick="closeModal('image-modal')" class="absolute top-8 right-8 text-white text-5xl font-thin hover:rotate-90 transition duration-300">&times;</button>
+        <div id="slider-controls" class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-6 md:px-12 z-[110] pointer-events-none opacity-0">
+            <button onclick="prevSlide(event)" class="pointer-events-auto w-16 h-16 flex items-center justify-center rounded-full bg-white/10 text-white text-2xl backdrop-blur-md border border-white/10"><i class="fas fa-chevron-left"></i></button>
+            <button onclick="nextSlide(event)" class="pointer-events-auto w-16 h-16 flex items-center justify-center rounded-full bg-white/10 text-white text-2xl backdrop-blur-md border border-white/10"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="relative flex flex-col items-center">
-            <img id="modal-image-content" src="" class="max-w-full max-h-[85vh] object-contain rounded-3xl transition-opacity duration-300">
+            <img id="modal-image-content" src="" class="max-w-full max-h-[85vh] object-contain rounded-3xl shadow-2xl transition-opacity duration-300">
             <div id="slider-counter" class="mt-6 bg-rail-accent text-white px-6 py-2 rounded-full font-black text-xs uppercase tracking-widest"></div>
         </div>
     </div>
 
-    <!-- Explore Mode Modal (Premium Review Popup) -->
     <div id="explore-modal" class="hidden fixed inset-0 z-[150] bg-rail-dark/95 flex items-center justify-center p-4 backdrop-blur-3xl overflow-y-auto">
         <div class="bg-white dark:bg-gray-800 w-full max-w-4xl rounded-[3.5rem] shadow-2xl overflow-hidden relative border border-white/10 my-auto">
             <button onclick="closeModal('explore-modal')" class="absolute top-6 right-8 text-gray-400 hover:text-rail-accent text-4xl font-light transition">&times;</button>
-            <div id="explore-modal-content" class="p-8 md:p-14">
-            </div>
+            <div id="explore-modal-content" class="p-8 md:p-14"></div>
         </div>
     </div>
 
-    <div id="video-modal" class="hidden fixed inset-0 z-[100] bg-black/95 items-center justify-center p-4">
-        <div class="bg-black w-full max-w-5xl aspect-video rounded-3xl overflow-hidden relative">
-            <button onclick="closeModal('video-modal')" class="absolute top-4 right-4 text-white text-3xl z-10">&times;</button>
+    <div id="video-modal" class="hidden fixed inset-0 z-[100] bg-black/95 items-center justify-center p-4 backdrop-blur-xl">
+        <div class="bg-black w-full max-w-5xl aspect-video rounded-3xl overflow-hidden relative shadow-2xl">
+            <button onclick="closeModal('video-modal')" class="absolute top-4 right-4 text-white text-3xl z-20 hover:scale-125 transition">&times;</button>
             <div id="video-embed-container" class="w-full h-full"></div>
         </div>
     </div>
 
-    <!-- Data dynamically injected by JS -->
-    <script src="logic.js"></script>
+    <script>
+/**
+ * RAILSPK UNIFIED MASTER SYSTEM v5.7
+ * FIXED: stopPropagation Undefined Error & Slider Modal Reference Bugs
+ * FIXED: Initial Load UI Mess (Most Popular Vlogs as Default)
+ * UPDATED: YouTube Duration Logic (Shorts vs 20min+ Vlogs)
+ * ADDED: openExploreModal with Verified Information Labels
+ */
+
+// --- 1. GLOBAL HELPERS & STATE ---
+let db, auth, user, adminAuthorised = false;
+let YT_KEY = null, YT_CHANNEL = null; 
+let yt_token = null, allReviews = [];
+let expandedPosts = {}; 
+let currentSliderImages = [], currentSliderIndex = 0, sliderTimer = null;
+
+function formatTimestamp(ts) {
+    if(!ts) return "Abhi";
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function escapeHTML(s) { if(!s) return ""; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function parseHashtags(text) { 
+    if(!text) return ""; 
+    return escapeHTML(text).replace(/#(\w+)/g, '<span class="text-rail-accent font-bold cursor-pointer hover:underline">#$1</span>'); 
+}
+
+// --- 2. CONFIGURATION ---
+const appId = "railspk-official-1de54"; 
+const firebaseConfig = { 
+    apiKey: "AIzaSyCfoXeQk-6ubcJZz3ES7c6yE2IWSFp2z9A", 
+    authDomain: "railspk-official-1de54.firebaseapp.com", 
+    projectId: "railspk-official-1de54", 
+    storageBucket: "railspk-official-1de54.firebasestorage.app", 
+    messagingSenderId: "282037027182", 
+    appId: "1:282037027182:web:6b4f8bb420eb410374c17f" 
+};
+
+// --- 3. PREMIUM DATA ---
+const trainsData = [
+    { id: 'greenline', name: 'Green Line Express', route: 'Karachi ⟷ Islamabad', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Lahore', 'Rawalpindi', 'Islamabad'], slides: ['greenline_7.webp','greenline_2.webp','greenline_1.webp'], fares: [{class:"AC Parlor",price:"Rs. 13,500"},{class:"Economy",price:"Rs. 4,500"}], stats: { punctuality: '95%', cleanliness: 5, food: 4, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { parlor: '01', business: '06', standard: '06', economy: '05' } },
+    { id: 'khybermail', name: 'Khyber Mail Express', route: 'Karachi ⟷ Peshawar', cities: ['Karachi', 'Multan', 'Lahore', 'Peshawar'], slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 13,000"},{class:"Economy",price:"Rs. 4,000"}], stats: { punctuality: '82%', cleanliness: 3, food: 3, behavior: 4 }, amenities: ['charging', 'bedding', 'dining', 'ac'], composition: { business: '03', standard: '02', economy: '08' } },
+    { id: 'karakoram', name: 'Karakoram Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Lahore'], slides: ['karakoram_express_train_rake.webp','millat_express_vs_karakoram_express.webp'], fares: [{class:"AC Business",price:"Rs. 9,500"},{class:"Economy",price:"Rs. 4,000"}], stats: { punctuality: '90%', cleanliness: 4, food: 4, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { business: '09', economy: '04' } },
+    { id: 'shalimar', name: 'Shalimar Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Faisalabad', 'Lahore'], slides: ['shalimar_1.webp','shalimar_2.webp','shalimar_3.webp','shalimar_4.webp','shalimar_5.webp','shalimar_6.webp','shalimar_7.webp','shalimar_8.webp'], fares: [{class:"AC Parlor",price:"Rs. 11,000"},{class:"Economy",price:"Rs. 3,500"}], stats: { punctuality: '95%', cleanliness: 5, food: 5, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { parlor: '02', business: '02', economy: '13' } },
+    { id: 'allamaiqbal', name: 'Allama Iqbal Express', route: 'Karachi ⟷ Sialkot', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore', 'Sialkot'], slides: ['allama_1.webp'], fares: [{class:"AC Standard",price:"Rs. 6,800"},{class:"Economy",price:"Rs. 3,500"}], stats: { punctuality: '75%', cleanliness: 3, food: 3, behavior: 4 }, amenities: ['charging', 'dining', 'ac'], composition: { business: '04', economy: '10' } },
+    { id: 'pakbusiness', name: 'Pak Business Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore'], slides: ['business_1.webp','business_2.webp','business_3.webp','business_4.webp','business_5.webp','business_6.webp','business_7.webp'], fares: [{class:"AC Standard",price:"Rs. 7,500"},{class:"Economy",price:"Rs. 3,800"}], stats: { punctuality: '92%', cleanliness: 5, food: 5, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { business: '08', economy: '06' } },
+    { id: 'mehran', name: 'Mehran Express', route: 'Karachi ⟷ Mirpur Khas', cities: ['Karachi', 'Hyderabad', 'Mirpur Khas'], slides: ['mehran_4.webp','mehran_2.webp','mehran_3.webp','mehran_1.webp'], fares: [{class:"Economy",price:"Rs. 800"}], stats: { punctuality: '70%', cleanliness: 2, food: 2, behavior: 3 }, amenities: ['dining'], composition: { economy: '10' } }
+];
+
+const galleryData = [
+    { title: "Green Line Dawn", src: "images/train_background.webp" },
+    { title: "Track Symmetry", src: "images/train_background2.webp" },
+    { title: "Locomotive ZCU-30", src: "images/zcu30_locomotive.webp" },
+    { title: "Karachi Sunset", src: "images/sunset_karachi_cantt_station_view.webp" },
+    { title: "GEU-40 Fleet", src: "images/geu40_locomotive.webp" },
+    { title: "Railcar Heritage", src: "images/railcar_new_train.webp" }
+];
+
+// --- 4. NAVIGATION & SPA (FIXED INITIAL LOAD) ---
+function routeTo(e, p){ if(e) e.preventDefault(); window.history.pushState({}, "", p); handleRouting(); }
+
+function handleRouting(){ 
+    let p = window.location.pathname.split('/').pop() || 'home'; 
+    if(p.endsWith('.html')) p = p.replace('.html', ''); 
+    if(p === '' || p === 'index') p = 'home'; 
     
+    document.querySelectorAll('.page-view').forEach(v => v.classList.toggle('active', v.id === p + '-view'));
+    window.scrollTo(0, 0); 
+    
+    if (window.gtag) gtag('event', 'page_view', { page_path: p, page_title: p.charAt(0).toUpperCase() + p.slice(1) });
+    
+    if (p === 'home') { 
+        trackDailyView(); 
+        // Ensure YT_KEY is loaded before fetching
+        if(YT_KEY) fetchVideos('mostPopular'); 
+    }
+    if (p === 'gallery') renderGallery();
+    if (p === 'reviews') renderTrainCards();
+}
+
+// --- 5. FIREBASE INITIALIZATION ---
+async function initFirebase() {
+    try {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore(); auth = firebase.auth();
+        await auth.signInAnonymously();
+        auth.onAuthStateChanged(async u => {
+            user = u; if (u) {
+                const config = await db.collection('artifacts').doc('youtube').get();
+                if (config.exists) { 
+                    const data = config.data();
+                    YT_KEY = Object.keys(data)[0]; YT_CHANNEL = data[YT_KEY]; 
+                }
+                handleRouting(); fetchUpdates(); startPollsListener(); startReviewsListener();
+            }
+        });
+    } catch (e) { console.error("Firebase Error", e); }
+}
+
+// --- 6. YOUTUBE SYSTEM (v5.6 DURATION FIXED) ---
+async function fetchVideos(category = 'mostPopular', isLoadMore = false) {
+    const container = document.getElementById('video-cards-container'); 
+    if (!container || !YT_KEY) return;
+
+    let apiParams = `&key=${YT_KEY}&channelId=${YT_CHANNEL}&part=snippet,id&maxResults=6&type=video`;
+    let pageToken = isLoadMore && yt_token ? `&pageToken=${yt_token}` : '';
+    
+    /**
+     * DURATION LOGIC:
+     * - 'long': > 20 minutes (Aapke Vlogs ke liye)
+     * - 'short': < 4 minutes (Aapke Shorts/Short Clips ke liye)
+     * - 'medium': 4 - 20 minutes
+     */
+
+    if (category === 'mostPopular') {
+        // Most Viewed Vlogs: Ismein hum 'long' filter lagayenge taake Shorts filter out ho jayein
+        apiParams += `&order=viewCount&videoDuration=long`; 
+    } else if (category === 'trainSpotting') {
+        // High Quality Landscape Vlogs
+        apiParams += `&videoDuration=long&q=train+spotting`; 
+    } else if (category === 'shortClips') {
+        // Short Clips: Ismein 'short' filter lagega (< 4 min videos)
+        apiParams += `&videoDuration=short&order=date`;
+    }
+
+    try {
+        const url = `https://www.googleapis.com/youtube/v3/search?${apiParams}${pageToken}`;
+        const res = await fetch(url); 
+        const data = await res.json();
+
+        if (!isLoadMore) container.innerHTML = '';
+        yt_token = data.nextPageToken || null;
+        
+        document.getElementById('load-more-btn')?.classList.toggle('hidden', !yt_token);
+
+        if (data.items) {
+            data.items.forEach(v => {
+                container.innerHTML += `
+                <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl group cursor-pointer transition-all hover:translate-y-[-5px]" onclick="openVideo('${v.id.videoId}')">
+                    <div class="aspect-video relative overflow-hidden bg-gray-200 dark:bg-gray-700">
+                        <img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" class="w-full h-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500"><i class="fas fa-play text-white text-4xl"></i></div>
+                    </div>
+                    <div class="p-6 md:p-8 text-left"><h3 class="text-xs md:text-sm font-black uppercase line-clamp-2 text-gray-900 dark:text-white leading-snug">${v.snippet.title}</h3></div>
+                </div>`;
+            });
+        }
+    } catch (e) { 
+        console.error("YT API Error", e); 
+        container.innerHTML = `<p class="col-span-full text-center py-10 text-red-500 font-black italic">SIGNAL INTERRUPTED. CHECK CONNECTION.</p>`;
+    }
+}
+
+// --- 7. TRAFFIC ANALYTICS ---
+async function trackDailyView() {
+    if (!user || sessionStorage.getItem('railspk_v_today')) return;
+    const today = new Date().toISOString().split('T')[0];
+    const ref = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('analytics').doc(today);
+    try {
+        await db.runTransaction(async t => {
+            const doc = await t.get(ref);
+            if (!doc.exists) t.set(ref, { views: 1 });
+            else t.update(ref, { views: (doc.data().views || 0) + 1 });
+        });
+        sessionStorage.setItem('railspk_v_today', 'true');
+    } catch (e) {}
+    ref.onSnapshot(doc => { if (doc.exists) { const c = doc.data().views || 0; document.getElementById('daily-views-header').innerText = c.toLocaleString(); document.getElementById('stat-views').innerText = c.toLocaleString(); }});
+}
+
+// --- 8. UI RENDERING UPDATES ---
+function renderTrainCards(filter = 'all') {
+    const grid = document.getElementById('scorecards-grid'); if (!grid) return;
+    let data = trainsData; if (filter !== 'all') data = trainsData.filter(t => t.cities.includes(filter));
+    
+    grid.innerHTML = data.map(t => {
+        const filtered = (allReviews || []).filter(r => r.trainId === t.id).sort((a,b)=>b.timestamp - a.timestamp);
+        const avg = filtered.length ? filtered.reduce((a, b) => a + b.rating, 0) / filtered.length : 0;
+        const slides = t.slides.map(s => 'images/' + s);
+        const escapedSlides = JSON.stringify(slides).replace(/"/g, '&quot;');
+
+        return `
+        <div class="bg-white dark:bg-gray-800 rounded-[3rem] border border-gray-100 dark:border-gray-800 shadow-xl overflow-hidden group transition-all duration-500">
+            <div class="p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center text-left">
+                <div class="w-full md:w-[45%] space-y-5">
+                    <div><h3 class="text-2xl font-black uppercase italic text-gray-900 dark:text-white leading-tight">${t.name}</h3><p class="text-rail-accent font-black text-[9px] uppercase tracking-[0.2em] mt-1">${t.route}</p></div>
+                    <div class="bg-gray-50 dark:bg-rail-dark p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 space-y-2">
+                        <div class="flex justify-between items-center"><span class="text-xs font-bold uppercase tracking-widest">Community Hub</span><span class="stars text-lg">${'★'.repeat(Math.round(avg)) || '☆☆☆☆☆'}</span></div>
+                        <hr class="border-gray-200 dark:border-gray-600 my-2">
+                        ${t.fares.map(f=>`<div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 pb-2 last:border-0"><span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">${f.class}</span><span class="text-rail-accent font-black text-xs italic">${f.price}</span></div>`).join('')}
+                    </div>
+                    <button onclick="openExploreModal('${t.id}')" class="w-full bg-rail-dark dark:bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg italic">Explore More</button>
+                </div>
+                <div class="w-full md:w-[55%] h-64 rounded-3xl overflow-hidden relative bg-gray-100 dark:bg-gray-700 cursor-pointer" onclick="openSliderModal(${escapedSlides}, 0)">
+                    <img src="images/${t.slides[0]}" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
+                    <div class="absolute bottom-6 right-6 bg-black/60 text-white text-[9px] px-6 py-2 rounded-full font-black backdrop-blur-md italic">${t.slides.length} Viewpoints</div>
+                </div>
+            </div>
+            <div class="px-10 pb-10 pt-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-rail-dark/20">
+                <form onsubmit="handleReviewSubmit(event, '${t.id}')" class="flex gap-3 mb-6">
+                    <select class="bg-white dark:bg-rail-dark p-3 rounded-xl text-[10px] font-black outline-none border border-gray-100 dark:border-gray-700 w-24">
+                        <option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option>
+                    </select>
+                    <input type="text" placeholder="Share experience..." required class="flex-1 bg-white dark:bg-rail-dark p-3 rounded-xl text-xs outline-none border border-gray-100 dark:border-gray-700">
+                    <button type="submit" class="bg-rail-accent text-white px-6 rounded-xl font-black text-[10px] uppercase">Post</button>
+                </form>
+                <div class="space-y-3 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                    ${filtered.map(r => `<div class="bg-white dark:bg-rail-dark p-3 rounded-2xl border border-gray-50 dark:border-gray-800 shadow-sm"><p class="text-[10px] text-gray-500 dark:text-gray-300 italic mb-1 leading-relaxed">"${escapeHTML(r.comment)}"</p><div class="flex justify-between items-center"><span class="text-[8px] font-black uppercase text-rail-accent">Observer</span><span class="stars text-[8px]">${'★'.repeat(r.rating)}</span></div></div>`).join('') || '<p class="text-[9px] text-gray-400 italic text-center py-4 uppercase tracking-widest">No reviews yet</p>'}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function fetchUpdates() {
+    if (!user) return;
+    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').onSnapshot(snap => {
+        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b)=>b.timestamp-a.timestamp);
+        const container = document.getElementById('updates-container'); if (!container) return;
+        document.getElementById('updates-status')?.classList.add('hidden');
+        container.innerHTML = data.map(u => {
+            const isExpanded = expandedPosts[u.id] || false;
+            const threshold = 180;
+            const needsT = (u.content || "").length > threshold;
+            const displayC = (needsT && !isExpanded) ? u.content.substring(0, threshold) + "..." : u.content;
+            return `<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[3rem] border border-gray-100 dark:border-gray-800 shadow-xl text-left flex flex-col h-full min-h-[480px]">
+                <div class="flex justify-between mb-4 text-[9px] font-black uppercase text-gray-400"><span>Verified Broadcast</span><span>${formatTimestamp(u.timestamp)}</span></div>
+                <div class="mb-6 h-56 bg-gray-50 dark:bg-rail-dark rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-100 dark:border-gray-700 overflow-hidden cursor-pointer" onclick="openSliderModal(${JSON.stringify(u.imageUrls || []).replace(/"/g, '&quot;')}, 0)">
+                    ${u.imageUrls && u.imageUrls.length > 0 ? `<img src="${u.imageUrls[0]}" class="w-full h-full object-cover">` : `<i class="fas fa-bullhorn text-4xl opacity-20"></i>`}
+                </div>
+                <h3 class="text-xl font-black uppercase italic mb-3 text-gray-900 dark:text-white leading-tight">${u.title}</h3>
+                <div class="text-gray-500 dark:text-gray-400 text-sm mb-6 flex-grow leading-relaxed italic">${parseHashtags(displayC)} 
+                ${needsT ? `<button onclick="togglePost('${u.id}')" class="text-rail-accent font-black uppercase text-[10px] ml-1 hover:underline">${isExpanded ? "Show Less" : "READ MORE..."}</button>` : ""}</div>
+                <div class="mt-auto pt-5 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <div class="flex space-x-6 text-xs font-black"><button onclick="handleReaction('${u.id}', 'like')">👍 ${u.reactions?.like || 0}</button><button onclick="handleReaction('${u.id}', 'heart')">❤️ ${u.reactions?.heart || 0}</button></div>
+                </div>
+            </div>`;
+        }).join('');
+    });
+}
+
+function renderGallery() {
+    const grid = document.getElementById('gallery-grid'); if (!grid) return;
+    grid.innerHTML = galleryData.map(img => `<div class="group relative overflow-hidden rounded-[2.5rem] bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl" onclick="openSliderModal(['${img.src}'], 0)"><img src="${img.src}" loading="lazy" class="w-full h-80 object-cover transition duration-700 group-hover:scale-110 cursor-zoom-in"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-8"><h4 class="text-white text-xl font-black italic uppercase tracking-tighter">${img.title}</h4></div></div>`).join('');
+}
+
+// --- 9. ADMIN ACTIONS ---
+async function postUpdate(e) {
+    e.preventDefault(); 
+    if (!adminAuthorised || !user) return;
+    const btn = document.getElementById('update-btn');
+    const title = document.getElementById('update-title').value;
+    const content = document.getElementById('update-content').value;
+    const files = document.getElementById('update-image-file').files;
+    let imageUrls = [];
+    try {
+        if(btn) { btn.disabled = true; btn.innerText = "Synchronizing..."; }
+        for (let file of files) {
+            const url = await new Promise(r => { const reader = new FileReader(); reader.onloadend = () => r(reader.result); reader.readAsDataURL(file); });
+            imageUrls.push(url);
+        }
+        await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').add({ title, content, imageUrls, views: 0, reactions: { like: 0, heart: 0 }, timestamp: Date.now() });
+        document.getElementById('update-form').reset(); alert("Broadcast Successfully Published!");
+    } catch (err) { alert("Deployment Failed."); } finally { if(btn) { btn.disabled = false; btn.innerText = "Publish Update"; } }
+}
+
+async function postPoll(e) {
+    e.preventDefault();
+    if (!adminAuthorised || !user) return;
+    const q = document.getElementById('poll-question').value;
+    const oIn = document.getElementById('poll-options').value;
+    const oArr = oIn.split(',').map(opt => ({ text: opt.trim(), votes: 0 })).filter(o => o.text !== "");
+    if(oArr.length < 2) return alert("Please provide at least 2 options!");
+    try {
+        await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('polls').add({ question: q, options: oArr, timestamp: Date.now() });
+        document.getElementById('poll-form').reset(); alert("Interaction Hub Updated!");
+    } catch (err) { alert("Poll Deployment Failed."); }
+}
+
+// --- 10. INTERACTION HANDLERS ---
+async function handleReviewSubmit(e, trainId) {
+    e.preventDefault();
+    const rating = parseInt(e.target.querySelector('select').value);
+    const comment = e.target.querySelector('input').value;
+    if(!comment || !user) return;
+    try {
+        await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('reviews').add({ trainId, rating, comment, timestamp: Date.now() });
+        e.target.reset();
+    } catch(err) { console.error("Review fail"); }
+}
+
+async function handleReaction(id, type) {
+    if (!user) return;
+    const ref = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').doc(id);
+    await db.runTransaction(async t => {
+        const doc = await t.get(ref); if (!doc.exists) return;
+        const reactions = doc.data().reactions || {like:0,heart:0};
+        reactions[type] = (reactions[type] || 0) + 1;
+        t.update(ref, { reactions });
+    });
+}
+
+function startPollsListener() { 
+    if(!user) return; 
+    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('polls').onSnapshot(snap => { 
+        const c = document.getElementById('polls-container'); if (!c) return; 
+        const polls = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
+        c.innerHTML = polls.map(p => { 
+            const total = (p.options || []).reduce((a, b) => a + (b.votes || 0), 0); 
+            return `<div class="bg-white dark:bg-rail-dark p-10 rounded-[3rem] border-2 border-rail-accent shadow-2xl text-left"><h3 class="text-2xl font-black italic uppercase mb-8 text-gray-900 dark:text-white tracking-tighter">${escapeHTML(p.question)}</h3><div class="space-y-6">${p.options.map((o, i) => { const per = total > 0 ? Math.round((o.votes / total) * 100) : 0; return `<div class="cursor-pointer group" onclick="castVote('${p.id}', ${i})"><div class="flex justify-between font-black text-[11px] uppercase mb-2 text-gray-500 dark:text-gray-400"><span>${escapeHTML(o.text)}</span><span class="text-rail-accent">${per}%</span></div><div class="h-10 bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700"><div class="h-full bg-rail-accent transition-all duration-1000 ease-out" style="width: ${per}%"></div></div></div>`; }).join('')}</div></div>`; 
+        }).join(''); 
+    }); 
+}
+
+function startReviewsListener() { 
+    if(!user) return; 
+    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('reviews').onSnapshot(snap => { 
+        allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
+        if(window.location.pathname.includes('reviews')) renderTrainCards(); 
+    }); 
+}
+
+async function castVote(id, idx) {
+    const ref = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('polls').doc(id);
+    await db.runTransaction(async t => {
+        const doc = await t.get(ref); if (!doc.exists) return;
+        const opts = doc.data().options; opts[idx].votes = (opts[idx].votes || 0) + 1;
+        t.update(ref, { options: opts });
+    });
+}
+
+// --- 11. MODAL UPDATES ---
+function openExploreModal(trainId) {
+    const train = trainsData.find(t => t.id === trainId);
+    if (!train) return;
+    const content = document.getElementById('explore-modal-content');
+    content.innerHTML = `
+        <div class="space-y-8">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-4xl font-black uppercase italic text-gray-900 dark:text-white">${train.name}</h2>
+                    <p class="text-rail-accent font-bold tracking-widest text-xs uppercase mt-2">${train.route}</p>
+                </div>
+                <div class="bg-rail-accent/10 text-rail-accent px-6 py-2 rounded-full font-black text-[10px] uppercase">Verified Information</div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                ${Object.entries(train.stats).map(([k,v]) => `<div class="bg-gray-50 dark:bg-rail-dark p-6 rounded-3xl border border-gray-100 dark:border-gray-700"><span class="block text-[8px] font-black uppercase text-gray-400 mb-1">${k}</span><span class="text-xl font-black italic text-rail-accent">${typeof v === 'number' ? '★'.repeat(v) : v}</span></div>`).join('')}
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-[0.3em] mb-4 text-gray-400">Amenities & Services</h4>
+                <div class="flex flex-wrap gap-3">
+                    ${train.amenities.map(a => `<span class="px-5 py-2.5 bg-gray-50 dark:bg-rail-dark border border-gray-100 dark:border-gray-700 rounded-full text-[10px] font-black uppercase tracking-widest"><i class="fas fa-check text-rail-accent mr-2"></i> ${a}</span>`).join('')}
+                </div>
+            </div>
+        </div>`;
+    document.getElementById('explore-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) { 
+    document.getElementById(id).classList.add('hidden'); 
+    document.body.style.overflow = 'auto'; 
+    if(id === 'video-modal') document.getElementById('video-embed-container').innerHTML = ''; 
+    if(id === 'image-modal' && sliderTimer) { clearInterval(sliderTimer); sliderTimer = null; }
+}
+
+function togglePost(postId) { expandedPosts[postId] = !expandedPosts[postId]; fetchUpdates(); }
+
+function openSliderModal(images, index) { 
+    if(!images || images.length === 0) return; 
+    currentSliderImages = Array.isArray(images) ? images : [images]; 
+    currentSliderIndex = index; 
+    updateSliderDisplay(); 
+    document.getElementById('image-modal').classList.remove('hidden'); 
+    document.getElementById('image-modal').classList.add('flex'); 
+    document.body.style.overflow = 'hidden'; 
+    const ctrl = document.getElementById('slider-controls'); 
+    if(ctrl) { 
+        if(currentSliderImages.length > 1) { 
+            ctrl.classList.remove('hidden', 'opacity-0'); 
+            ctrl.classList.add('opacity-100'); 
+            if(sliderTimer) clearInterval(sliderTimer);
+            sliderTimer = setInterval(() => nextSlide(), 4000); 
+        } else {
+            ctrl.classList.add('hidden', 'opacity-0');
+        }
+    } 
+}
+
+function updateSliderDisplay() { 
+    const img = document.getElementById('modal-image-content'); 
+    if(!img) return; 
+    img.style.opacity = '0'; 
+    setTimeout(() => { 
+        img.src = currentSliderImages[currentSliderIndex]; 
+        img.style.opacity = '1'; 
+        const counter = document.getElementById('slider-counter');
+        if(counter) counter.innerText = `${currentSliderIndex + 1} / ${currentSliderImages.length}`; 
+    }, 150); 
+}
+
+function prevSlide(e) { 
+    if(e) e.stopPropagation(); 
+    currentSliderIndex = (currentSliderIndex - 1 + currentSliderImages.length) % currentSliderImages.length; 
+    updateSliderDisplay(); 
+}
+
+function nextSlide(e) { 
+    if(e) e.stopPropagation(); 
+    currentSliderIndex = (currentSliderIndex + 1) % currentSliderImages.length; 
+    updateSliderDisplay(); 
+}
+
+// --- 12. INITIALIZATION ---
+window.addEventListener('DOMContentLoaded', () => { 
+    initFirebase(); 
+    const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', isDark);
+    document.getElementById('theme-toggle-dark-icon')?.classList.toggle('hidden', isDark);
+    document.getElementById('theme-toggle-light-icon')?.classList.toggle('hidden', !isDark);
+    
+    document.getElementById('theme-toggle').onclick = () => { 
+        const now = document.documentElement.classList.toggle('dark'); 
+        localStorage.setItem('theme', now ? 'dark' : 'light'); 
+        document.getElementById('theme-toggle-dark-icon')?.classList.toggle('hidden', now);
+        document.getElementById('theme-toggle-light-icon')?.classList.toggle('hidden', !now);
+    };
+
+    const updateForm = document.getElementById('update-form');
+    if(updateForm) updateForm.addEventListener('submit', postUpdate);
+    
+    const pollForm = document.getElementById('poll-form');
+    if(pollForm) pollForm.addEventListener('submit', postPoll);
+
+    document.getElementById('admin-trigger').onclick = () => { 
+        if(prompt("Admin Access Key:") === "railspk786") { 
+            adminAuthorised = true; 
+            document.getElementById('admin-panel').classList.remove('hidden'); 
+            routeTo(null, '/community'); 
+        } 
+    };
+
+    const vFilter = document.getElementById('video-filter');
+    if(vFilter) vFilter.onchange = (e) => { yt_token = null; fetchVideos(e.target.value); };
+});
+
+window.onpopstate = handleRouting;
+    </script>
 </body>
 </html>
