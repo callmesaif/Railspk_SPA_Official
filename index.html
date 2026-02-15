@@ -93,6 +93,18 @@
         .stars { color: #f59e0b !important; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+
+        /* Close Button Animation */
+        #mobile-menu button[onclick="toggleMenu()"] {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);}
+
+        #mobile-menu.active button[onclick="toggleMenu()"] {
+        transform: rotate(90deg) scale(1.2);
+        color: #4f46e5; /* Rail Accent color */}
+
+        /* Sidebar Smoothness */
+        #mobile-menu {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);}
     </style>
 
     <script>
@@ -786,7 +798,41 @@ function nextSlide(e) {
     updateSliderDisplay(); 
 }
 
-// --- 12. INITIALIZATION ---
+// --- 12. UI MODALS & UTILS ---
+
+function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const body = document.body;
+    
+    if (menu) {
+        const isActive = menu.classList.toggle('active');
+        
+        // Background scroll lock logic
+        if (isActive) {
+            body.style.overflow = 'hidden';
+            // Optional: Close menu on escape key
+            window.addEventListener('keydown', handleEscapeKey);
+        } else {
+            body.style.overflow = 'auto';
+            window.removeEventListener('keydown', handleEscapeKey);
+        }
+    }
+}
+
+// Global helper to close modal/menu with Escape key
+function handleEscapeKey(e) {
+    if (e.key === 'Escape') {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu.classList.contains('active')) toggleMenu();
+        
+        // Also close modals if open
+        closeModal('image-modal');
+        closeModal('video-modal');
+        closeModal('explore-modal');
+    }
+}
+
+// --- 13. INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => { 
     initFirebase(); 
     const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
