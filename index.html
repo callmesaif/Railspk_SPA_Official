@@ -10,7 +10,12 @@
     <meta name="keywords" content="Pakistan Railways, Train Reviews, Railway Vlogs, Railspk, Train Fares, Railway Community, Train Vlogs, Train Travel, Pakistan Railways, Shalimar Express Reviews, Green line Reviews, Karakoram Express Reviews, Pak Business Express Reviews">
     <meta name="author" content="RAILSPK Team">
 
-    <link rel="canonical" href="https://therails.pk/" />
+    <link id="dynamic-canonical" rel="canonical" href="https://therails.pk/">
+
+    <meta property="og:title" content="The RAILSPK - Pakistan Railways Hub">
+    <meta property="og:url" content="https://therails.pk/">
+    <meta property="og:description" content="Documenting the Digital Legacy of Pakistan Railways.">
+
     <link rel="icon" href="images/favicon.ico?v=3" type="image/x-icon">
 
     <!-- Google Analytics (G-QL2CKH2MBL) -->
@@ -56,8 +61,6 @@
     }
     </script>
 
-
-    
     <!-- Style & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -212,11 +215,9 @@
                         <p class="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em] mt-2 italic">Official Cinematic Archives</p>
                     </div>
                 </div>
-                <div id="video-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    <p class="col-span-full text-center py-20 text-gray-400 font-black italic animate-pulse tracking-widest">SIGNAL INITIALIZING...</p>
-                </div>
+                <div id="video-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
                 <div class="mt-20">
-                    <button id="load-more-btn" onclick="fetchVideos(document.getElementById('video-filter').value, true)" class="bg-rail-accent text-white px-12 py-5 rounded-3xl font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all">Load More Heritage</button>
+                    <button id="load-more-btn" onclick="fetchVideos(true)" class="bg-rail-accent hover:bg-rail-accent/80 text-white font-black uppercase tracking-widest py-4 px-12 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl">Load More Heritage</button>
                 </div>
             </div>
         </section>
@@ -443,18 +444,30 @@ async function initFirebase() {
     try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         db = firebase.firestore(); auth = firebase.auth();
+        
         await auth.signInAnonymously();
+        
         auth.onAuthStateChanged(async u => {
-            user = u; if (u) {
+            user = u; 
+            if (u) {
+                console.log("Neural Link Established.");
+                // Fetching YouTube Config from Artifacts
                 const config = await db.collection('artifacts').doc('youtube').get();
                 if (config.exists) { 
                     const data = config.data();
-                    YT_KEY = Object.keys(data)[0]; YT_CHANNEL = data[YT_KEY]; 
+                    YT_KEY = Object.keys(data)[0]; 
+                    YT_CHANNEL = data[YT_KEY]; 
+                    console.log("Vlog Signal: Synchronized.");
+                    
+                    // Sab kuch load hone ke baad routing aur videos start karein
+                    handleRouting(); 
+                    fetchUpdates(); 
+                    startPollsListener();
+                } else {
+                    console.error("Vlog Signal: Config Missing in Firestore!");
+                    const statusLabel = document.getElementById('vlog-status-label');
+                    if(statusLabel) statusLabel.innerText = "CONFIG ERROR - CONTACT ADMIN";
                 }
-                handleRouting(); 
-                fetchUpdates(); 
-                startPollsListener(); 
-                startReviewsListener(); // FIXED: Function now defined below
             }
         });
     } catch (e) { console.error("Firebase Error", e); }
@@ -482,21 +495,27 @@ const galleryData = [
 
 
 // --- 3. NAVIGATION & SPA ROUTING ---
-function routeTo(e, p){ if(e) e.preventDefault(); window.history.pushState({}, "", p); handleRouting(); }
-
+function routeTo(e, p){ 
+    if(e) e.preventDefault(); 
+    window.history.pushState({}, "", p); 
+    handleRouting(); 
+}
 function handleRouting(){ 
     let p = window.location.pathname.split('/').pop() || 'home'; 
-    if(p.endsWith('.html')) p = p.replace('.html', ''); if(p === '' || p === 'index') p = 'home'; 
+    if(p.endsWith('.html')) p = p.replace('.html', ''); 
+    if(p === '' || p === 'index') p = 'home'; 
+
+    // Update Canonical Tag for Search Console fix
+    const canonical = document.getElementById('dynamic-canonical');
+    if(canonical) canonical.setAttribute('href', `https://therails.pk/${p === 'home' ? '' : p}`);
+
+    // UI View Management
     document.querySelectorAll('.page-view').forEach(v => v.classList.toggle('active', v.id === p + '-view'));
     window.scrollTo(0, 0); 
-    if (window.gtag) gtag('event', 'page_view', { page_path: p, page_title: p.charAt(0).toUpperCase() + p.slice(1) });
-    
-    if (p === 'home') { 
-        trackDailyView(); 
-        if(YT_KEY) fetchVideos('mostPopular'); 
-    }
+
+    if (p === 'home') { trackDailyView(); if(YT_KEY) fetchVideos(); }
     if (p === 'gallery') renderGallery();
-    if (p === 'reviews') renderTrainCards();
+    if (p === 'reviews') renderTrainCards(); // Scorecards logic
 }
 
 // --- 4. ANALYTICS & TRAFFIC TRACKING ---
@@ -520,30 +539,72 @@ async function trackDailyView() {
 }
 
 // --- 5. YOUTUBE API SYSTEM ---
-async function fetchVideos(category = 'mostRecent', isLoadMore = false) {
-    const container = document.getElementById('video-cards-container'); if (!container || !YT_KEY) return;
-    let apiParams = `&key=${YT_KEY}&channelId=${YT_CHANNEL}&part=snippet,id&maxResults=6&type=video&videoDuration=long`;
-    if (category === 'mostRecent') apiParams += `&order=date`;
-    else if (category === 'mostPopular') apiParams += `&order=viewCount`;
+async function fetchVideos(isLoadMore = false) {
+    const container = document.getElementById('video-cards-container'); 
+    if (!YT_KEY || !YT_CHANNEL || !container) return;
 
     try {
-        const url = `https://www.googleapis.com/youtube/v3/search?${apiParams}`;
-        const res = await fetch(url); const data = await res.json();
-        if (data.items) renderVideoCards(data.items, isLoadMore); // FIXED: Function call now matches definition
-    } catch (e) { console.error("YT Error", e); }
+        const loadBtn = document.getElementById('load-more-btn');
+        let pageTokenParam = isLoadMore && yt_token ? `&pageToken=${yt_token}` : '';
+        
+        const url = `https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&channelId=${YT_CHANNEL}&part=snippet,id&maxResults=6&type=video&videoDuration=long&order=date${pageTokenParam}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.items && data.items.length > 0) {
+            // SMART CLEAN: Agar pehli baar load ho raha hai, toh container ka sara purana text (Signal Initializing) ura do
+            if (!isLoadMore) {
+                container.innerHTML = ''; 
+                // Agar koi extra status label container ke bahar hai, usay bhi hide karne ki koshish karein
+                const statusLabels = document.querySelectorAll('.animate-pulse, [class*="status"]');
+                statusLabels.forEach(el => {
+                    if(el.textContent.includes('SIGNAL')) el.style.display = 'none';
+                });
+            }
+            
+            const itemsWithBadges = data.items.map((v, index) => ({
+                ...v,
+                badge: (!isLoadMore && index < 2) ? 'NEW UPLOAD' : 'HERITAGE',
+                color: (!isLoadMore && index < 2) ? 'bg-green-600' : 'bg-rail-accent'
+            }));
+
+            renderVideoCards(itemsWithBadges, isLoadMore);
+            yt_token = data.nextPageToken || null;
+        } else {
+            if(!isLoadMore) container.innerHTML = '<p class="text-center opacity-50 uppercase font-black text-xs tracking-widest py-20">End of Archives</p>';
+        }
+
+        if(loadBtn) loadBtn.classList.toggle('hidden', !yt_token);
+
+    } catch (e) { 
+        console.error("Vlog System Error:", e);
+    }
 }
 
 function renderVideoCards(items, isLoadMore) {
     const container = document.getElementById('video-cards-container');
-    if (!isLoadMore) container.innerHTML = '';
+    // Double check: load more nahi hai toh container bilkul saaf hona chahiye
+    if (!isLoadMore) container.innerHTML = ''; 
+    
     items.forEach(v => {
+        const title = escapeHTML(v.snippet.title);
+        const publishDate = new Date(v.snippet.publishedAt).toLocaleDateString('en-PK', { day: '2-digit', month: 'short' });
+        
         container.innerHTML += `
-        <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl group cursor-pointer transition-all hover:translate-y-[-5px]" onclick="openVideo('${v.id.videoId}')">
-            <div class="aspect-video relative overflow-hidden bg-gray-200 dark:bg-gray-700">
-                <img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" class="w-full h-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500"><i class="fas fa-play text-white text-4xl"></i></div>
+        <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden shadow-xl group cursor-pointer transition-all hover:translate-y-[-5px] relative animate-fade-in" onclick="openVideo('${v.id.videoId}')">
+            <div class="absolute top-4 left-4 z-10 ${v.color} text-white text-[8px] font-black px-3 py-1 rounded-full tracking-widest uppercase shadow-lg">
+                ${v.badge} • ${publishDate}
             </div>
-            <div class="p-6 md:p-8 text-left"><h3 class="text-xs md:text-sm font-black uppercase line-clamp-2 text-gray-900 dark:text-white leading-snug">${v.snippet.title}</h3></div>
+            <div class="aspect-video relative overflow-hidden bg-gray-200 dark:bg-gray-700">
+                <img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" 
+                     onerror="this.src='https://img.youtube.com/vi/${v.id.videoId}/hqdefault.jpg'" 
+                     class="w-full h-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500"><i class="fas fa-play text-white text-3xl"></i></div>
+            </div>
+            <div class="p-6 text-left">
+                <h3 class="text-[11px] md:text-xs font-black uppercase line-clamp-2 text-gray-900 dark:text-white leading-tight">${title}</h3>
+            </div>
         </div>`;
     });
 }
@@ -626,7 +687,7 @@ function fetchUpdates() {
             return `
             <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-xl text-left flex flex-col h-full">
                 <div class="flex justify-between mb-4 text-[9px] font-black uppercase text-gray-400">
-                    <span>Neural Broadcast</span>
+                    <span>Official Broadcast</span>
                     <div class="flex gap-4">
                         ${adminAuthorised ? `
                             <button onclick="openEditModal('${u.id}')" class="text-rail-accent hover:underline uppercase">Edit</button>
@@ -683,10 +744,21 @@ function fetchUpdates() {
 
 function startReviewsListener() { 
     if(!user) return; 
-    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('reviews').onSnapshot(snap => { 
+    
+    // Live listener to fetch Observer comments
+    db.collection('artifacts').doc(appId)
+      .collection('public').doc('data')
+      .collection('reviews')
+      .onSnapshot(snap => { 
+        // Global array ko update karein
         allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
-        // Agar user reviews page par hai toh reload karega
-        if(window.location.pathname.split('/').pop() === 'reviews') renderTrainCards(); 
+        console.log("Observer Signal: Synchronized (" + allReviews.length + " reviews)");
+        
+        // FORCED RE-RENDER: Scorecards ko refresh karein taake comments dikhein
+        const p = window.location.pathname.split('/').pop() || 'home';
+        if (p === 'reviews' || document.getElementById('reviews-view').classList.contains('active')) {
+            renderTrainCards(); 
+        }
     }); 
 }
 
@@ -810,13 +882,37 @@ async function castVote(id, idx) {
 
 async function handleReviewSubmit(e, trainId) {
     e.preventDefault();
-    const rating = parseInt(e.target.querySelector('select').value);
-    const comment = e.target.querySelector('input').value;
-    if(!comment || !user) return;
+    if(!user) return alert("Initializing Neural Link...");
+
+    const form = e.target;
+    const rating = parseInt(form.querySelector('select').value);
+    const comment = form.querySelector('input').value.trim();
+    const btn = form.querySelector('button');
+
+    if(!comment) return;
+
     try {
-        await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('reviews').add({ trainId, rating, comment, timestamp: Date.now() });
-        e.target.reset();
-    } catch(err) { console.error("Review fail"); }
+        btn.disabled = true;
+        btn.innerText = "...";
+
+        // Save review to Firestore path
+        await db.collection('artifacts').doc(appId)
+                .collection('public').doc('data')
+                .collection('reviews').add({
+                    trainId: trainId, 
+                    rating: rating,
+                    comment: comment,
+                    timestamp: Date.now()
+                });
+
+        form.reset();
+        // Listener khud hi renderTrainCards() trigger kar dega
+    } catch(err) {
+        console.error("Submission failed:", err);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Post";
+    }
 }
 
 // --- 10. UI MODALS & UTILS ---
@@ -830,7 +926,7 @@ function injectSupportButton() {
     const btn = document.createElement('div');
     btn.className = "fixed bottom-8 right-8 z-[100] group"; // Desktop par right par rakha hai
     btn.innerHTML = `
-        <a href="https://buymeacoffee.com/therailspk" target="_blank" 
+        <a href="https://patreon.com/therailspkproductions" target="_blank" 
            class="flex items-center gap-3 bg-[#FFDD00] text-black px-5 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-2xl hover:scale-110 transition-all">
             <i class="fas fa-coffee text-lg"></i>
             <span class="hidden group-hover:block transition-all">Support Railspk's Digital Legecy Project</span>
@@ -910,7 +1006,6 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('update-form')?.addEventListener('submit', postUpdate);
     document.getElementById('poll-form')?.addEventListener('submit', postPoll);
     document.getElementById('admin-trigger').onclick = () => { if(prompt("Admin Key:") === "railspk786") { adminAuthorised = true; document.getElementById('admin-panel').classList.remove('hidden'); routeTo(null, '/community'); fetchUpdates(); } };
-    document.getElementById('video-filter').onchange = (e) => { yt_token = null; fetchVideos(e.target.value); };
 });
 
 window.onpopstate = handleRouting;
