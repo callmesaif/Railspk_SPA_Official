@@ -115,11 +115,13 @@
         /* Flexbox text-overflow fix */
         .review-input {flex-grow: 1; min-width: 0;}
         .post-btn {flex-shrink: 0; padding: 0.75rem 1.5rem;}
-
         .reply-container {display: flex; width: 100%; gap: 0.5rem; align-items: stretch;}
-
         input[type="text"] {min-width: 0; flex: 1;}
         button {white-space: nowrap;}
+
+        .toast-notification {
+        position: fixed; top: 20px; right: 20px; background: #000; color: #fff; padding: 15px 25px; border-radius: 15px; border-left: 5px solid #FFDD00; /* RAILSPK Accent Color */ box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999; transform: translateX(200%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+        .toast-notification.active {transform: translateX(0);}
     </style>
 
     <script>
@@ -405,8 +407,7 @@ let yt_token = null, allReviews = [];
 let expandedPosts = {}; 
 let currentSliderImages = [], currentSliderIndex = 0, sliderTimer = null;
 let editingPostId = null;
-
-let postComments = []; // Community comments ke liye
+let postComments = [];
 
 function startCommentsListener() {
     if(!user) return;
@@ -631,6 +632,35 @@ function renderTrainCards(filter = 'all') {
     }).join('');
 }
 
+// Session start time track karne ke liye
+const sessionStartTime = Date.now();
+
+function showNotification(title, message) {
+    // Purane toast remove karein
+    const oldToast = document.querySelector('.toast-notification');
+    if(oldToast) oldToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerHTML = `
+        <div class="flex flex-col text-left">
+            <span class="text-[10px] font-black uppercase tracking-widest text-rail-accent mb-1">${title}</span>
+            <p class="text-xs italic">"${message}"</p>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animation trigger
+    setTimeout(() => toast.classList.add('active'), 100);
+    
+    // 5 second baad gayab
+    setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 500);
+    }, 5000);
+}
+
 function renderGallery() {
     const grid = document.getElementById('gallery-grid'); if (!grid) return;
     grid.innerHTML = galleryData.map(img => `<div class="group relative overflow-hidden rounded-[2.5rem] bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl" onclick="openSliderModal(['${img.src}'], 0)"><img src="${img.src}" loading="lazy" class="w-full h-80 object-cover transition duration-700 group-hover:scale-110 cursor-zoom-in"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-8"><h4 class="text-white text-xl font-black italic uppercase tracking-tighter">${img.title}</h4></div></div>`).join('');
@@ -655,8 +685,7 @@ function fetchUpdates() {
     if (!user) return;
     db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').onSnapshot(snap => {
         const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b)=>b.timestamp-a.timestamp);
-        const container = document.getElementById('updates-container');
-        if (!container) return;
+        const container = document.getElementById('updates-container'); if (!container) return;
 
         container.innerHTML = data.map(u => {
             const isExpanded = expandedPosts[u.id] || false;
@@ -664,12 +693,16 @@ function fetchUpdates() {
             const displayC = (u.content.length > threshold && !isExpanded) ? u.content.substring(0, threshold) : u.content;
             const thisPostComments = postComments.filter(c => c.postId === u.id).sort((a,b) => a.timestamp - b.timestamp);
 
+            // - FIXED LAYOUT
             return `
             <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-xl text-left flex flex-col mb-8 h-full">
                 <div class="flex justify-between mb-4 text-[9px] font-black uppercase text-gray-400">
                     <span>Official Broadcast</span>
                     <div class="flex gap-3">
-                        ${adminAuthorised ? `<button onclick="deletePost('${u.id}')" class="text-red-500 hover:underline">Delete</button>` : ''}
+                        ${adminAuthorised ? `
+                            <button onclick="openEditModal('${u.id}')" class="text-rail-accent hover:underline uppercase">Edit</button>
+                            <button onclick="deletePost('${u.id}')" class="text-red-500 hover:underline uppercase">Delete</button>
+                        ` : ''}
                         <span>${formatTimestamp(u.timestamp)}</span>
                     </div>
                 </div>
@@ -679,9 +712,9 @@ function fetchUpdates() {
                 </div>
 
                 <h3 class="text-xl font-black uppercase italic mb-3 text-gray-900 dark:text-white leading-tight">${u.title}</h3>
-                <div class="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed italic">
+                <div class="text-gray-500 dark:text-gray-400 text-sm mb-6 flex-grow leading-relaxed italic">
                     ${parsePostContent(displayC)} 
-                    ${u.content.length > threshold ? `<button onclick="togglePost('${u.id}')" class="text-rail-accent font-black uppercase text-[10px] ml-1">${isExpanded ? 'SHOW LESS' : 'READ MORE...'}</button>` : ""}
+                    ${u.content.length > threshold ? `<button onclick="togglePost('${u.id}')" class="text-rail-accent font-black uppercase text-[10px] ml-1 hover:underline">${isExpanded ? 'Show Less' : 'READ MORE...'}</button>` : ""}
                 </div>
 
                 <div class="flex items-center gap-6 mb-5 pt-4 border-t border-gray-50 dark:border-gray-700/50">
@@ -699,7 +732,7 @@ function fetchUpdates() {
                                 <div class="flex justify-between items-start mb-1"><span class="text-[9px] font-black text-rail-accent uppercase">Observer</span><span class="text-[7px] text-gray-400">${formatTimestamp(c.timestamp)}</span></div>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 italic">"${escapeHTML(c.text)}"</p>
                                 ${c.adminReply ? `<div class="mt-2 pl-3 border-l-2 border-rail-accent"><p class="text-[8px] font-black text-rail-accent uppercase">RAILSPK Reply:</p><p class="text-[11px] text-gray-500 italic">${escapeHTML(c.adminReply)}</p></div>` : adminAuthorised ? `
-                                    <div class="mt-2 flex gap-2"><input type="text" id="reply-to-${c.id}" placeholder="Reply..." class="flex-1 bg-white dark:bg-rail-dark p-2 rounded-lg text-[10px] border outline-none"><button onclick="submitAdminReply('${c.id}', 'communityComments', 'reply-to-${c.id}')" class="bg-rail-dark text-white px-3 rounded-lg text-[8px] font-bold">SEND</button></div>` : ''}
+                                    <div class="mt-2 flex gap-2"><input type="text" id="reply-to-${c.id}" placeholder="Reply..." class="flex-1 bg-white dark:bg-rail-dark p-2 rounded-lg text-[10px] border outline-none"><button onclick="submitAdminReply('${c.id}', 'communityComments', 'reply-to-${c.id}')" class="bg-rail-dark text-white px-3 rounded-lg text-[8px] font-bold uppercase">SEND</button></div>` : ''}
                             </div>`).join('') || '<p class="text-[9px] text-gray-400 italic text-center py-2 uppercase">No opinions yet.</p>'}
                     </div>
                     <form onsubmit="handlePostCommentSubmit(event, '${u.id}')" class="flex gap-2">
@@ -772,13 +805,8 @@ async function openEditModal(postId) {
         document.getElementById('update-title').value = data.title;
         document.getElementById('update-content').value = data.content;
         document.getElementById('update-btn').innerText = "Update Broadcast";
-        document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('admin-panel')?.scrollIntoView({ behavior: 'smooth' });
     }
-}
-
-async function deletePost(postId) {
-    if (!adminAuthorised || !confirm("Delete broadcast?")) return;
-    await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').doc(postId).delete();
 }
 
 async function postUpdate(e) {
@@ -799,10 +827,20 @@ async function postUpdate(e) {
             updateData.imageUrls = imageUrls;
         }
         const ref = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates');
-        if (editingPostId) { await ref.doc(editingPostId).update(updateData); editingPostId = null; } 
-        else { updateData.reactions = { like: 0, heart: 0 }; await ref.add(updateData); }
-        document.getElementById('update-form').reset(); btn.innerText = "Publish to Cloud";
+        if (editingPostId) {
+            await ref.doc(editingPostId).update(updateData);
+            alert("Broadcast Updated!"); editingPostId = null; btn.innerText = "Publish to Cloud";
+        } else {
+            updateData.reactions = { like: 0, heart: 0 };
+            await ref.add(updateData); alert("Broadcast Published!");
+        }
+        document.getElementById('update-form').reset();
     } catch (err) { alert("Failed."); } finally { btn.disabled = false; }
+}
+
+async function deletePost(postId) {
+    if (!adminAuthorised || !confirm("Delete broadcast?")) return;
+    await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').doc(postId).delete();
 }
 
 async function postPoll(e) {
@@ -916,31 +954,57 @@ window.addEventListener('DOMContentLoaded', () => {
 window.onpopstate = handleRouting;
 
 function startGlobalListeners() {
-    if(!user) return;
+    if (!user) return;
 
-    // 1. Community Posts Comments Listener
+    // 1. Community Comments Listener (Merged Sync & Alert)
+    // Firestore path for community comments: artifacts -> appId -> public -> data -> communityComments
     db.collection('artifacts').doc(appId).collection('public').doc('data').collection('communityComments')
-      .onSnapshot(snap => { 
-          postComments = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
-          console.log("Community Sync: " + postComments.length + " items.");
-          fetchUpdates(); 
-      });
-    
+        .onSnapshot(snap => {
+            // New Opinion Alert logic
+            snap.docChanges().forEach(change => {
+                if (change.type === "added") {
+                    const data = change.doc.data();
+                    // Sirf un comments par alert aaye jo session start hone ke baad add hue hon
+                    if (data.timestamp > sessionStartTime) {
+                        showNotification("New Opinion", data.text.substring(0, 30) + "...");
+                    }
+                }
+            });
+
+            // Global array update aur UI refresh
+            postComments = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            console.log("Community Sync: " + postComments.length + " items.");
+            fetchUpdates(); 
+        });
+
     // 2. Train Scorecards (Reviews) Listener
+    // Firestore path for reviews: artifacts -> appId -> public -> data -> reviews
     db.collection('artifacts').doc(appId).collection('public').doc('data').collection('reviews')
-      .onSnapshot(snap => { 
-          allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
-          
-          // Debugging: Ye log bataaye ga ke data aa raha hai ya nahi
-          console.log("REVIEWS SYNCED: " + allReviews.length + " reviews found in Cloud.");
-          
-          // Agar reviews page par hain, to foran render karo
-          const p = window.location.pathname.split('/').pop() || 'home';
-          if (p === 'reviews') {
-              renderTrainCards(); 
-          }
-      }, err => console.error("Firestore Review Error:", err));
-}
+        .onSnapshot(snap => {
+            allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            console.log("REVIEWS SYNCED: " + allReviews.length + " reviews found in Cloud.");
+
+            const p = window.location.pathname.split('/').pop() || 'home';
+            if (p === 'reviews') {
+                renderTrainCards(); // Scorecards render karne ke liye
+            }
+        }, err => console.error("Firestore Review Error:", err));
+
+    // 3. New Broadcast Alert (Updates Listener)
+    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates')
+        .onSnapshot(snap => {
+            snap.docChanges().forEach(change => {
+                if (change.type === "added") {
+                    const data = change.doc.data();
+                    if (data.timestamp > sessionStartTime) {
+                        showNotification("New Broadcast", data.title);
+                    }
+                }
+            });
+            // Updates/Broadcasts feed ko refresh karein
+            fetchUpdates(); 
+        });
+}        
 </script>
 
 </body>
