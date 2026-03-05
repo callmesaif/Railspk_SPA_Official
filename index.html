@@ -17,6 +17,7 @@
     <meta property="og:description" content="Documenting the Digital Legacy of Pakistan Railways.">
 
     <link rel="icon" href="images/favicon.ico?v=3" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
 
     <!-- Google Analytics (G-QL2CKH2MBL) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QL2CKH2MBL"></script>
@@ -69,6 +70,7 @@
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-messaging-compat.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
@@ -142,16 +144,14 @@
                 <a href="/community" onclick="routeTo(event, '/community')" class="hover:text-rail-accent transition">Community</a>
                 <a href="/about" onclick="routeTo(event, '/about')" class="hover:text-rail-accent transition">About</a>
             </nav>
-
-            <div class="flex items-center space-x-3">
-                <div class="flex view-badge text-white px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                    Today: <span id="daily-views-header">...</span>
-                </div>
+            <div class="flex items-center space-x-4">
                 <button id="admin-trigger" class="hidden sm:block px-4 py-2 bg-rail-accent/10 text-rail-accent rounded-full text-[10px] font-black uppercase">Admin</button>
                 <button id="theme-toggle" class="p-2.5 md:p-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-300">
                     <i id="theme-toggle-dark-icon" class="fas fa-moon"></i>
                     <i id="theme-toggle-light-icon" class="fas fa-sun hidden"></i>
+                </button>
+                <button onclick="enableNotifications()" class="p-2.5 bg-rail-accent/20 text-rail-accent rounded-xl hover:bg-rail-accent hover:text-white transition-all">
+                    <i class="fas fa-bell"></i>
                 </button>
                 <button class="lg:hidden p-2 text-gray-600 dark:text-gray-300" onclick="toggleMenu()"><i class="fas fa-bars text-2xl"></i></button>
             </div>
@@ -179,35 +179,47 @@
     <main id="main-content">
         <!-- --- HOME VIEW --- -->
         <section id="home-view" class="page-view active">
-            <div id="hero-section">
-                <div class="hero-background"></div>
-                <div class="hero-overlay"></div>
-                
-                <div class="relative z-10 flex flex-col items-center justify-center flex-grow text-center px-6 pt-10">
-                    <h1 class="text-6xl md:text-[9rem] lg:text-[11rem] font-black leading-none text-white uppercase italic drop-shadow-2xl">THE <span class="text-rail-accent">RAILSPK</span></h1>
-                    <p class="text-lg md:text-3xl mt-6 text-gray-300 italic font-light max-w-4xl px-4">"Documenting the Digital Legacy of Pakistan Railways."</p>
-                    
-                    <div class="mt-12 lg:mt-20 w-full max-w-screen-xl">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 px-4">
-                            <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hub-card p-8 lg:p-10 rounded-[2.5rem] group text-left">
-                                <i class="fas fa-star-half-alt text-3xl mb-4 text-rail-accent transition-all group-hover:scale-125"></i>
-                                <h3 class="text-2xl font-black uppercase italic mb-2 text-white">Train Reviews</h3>
-                                <p class="text-gray-400 text-sm">Explore premium scores and performance analytics.</p>
-                            </a>
-                            <a href="/community" onclick="routeTo(event, '/community')" class="hub-card p-8 lg:p-10 rounded-[2.5rem] group text-left border-rail-accent/30 bg-rail-accent/5">
-                                <i class="fas fa-cloud text-3xl mb-4 text-rail-accent transition-all group-hover:scale-125"></i>
-                                <h3 class="text-2xl font-black uppercase italic mb-2 text-white">Railway Cloud</h3>
-                                <p class="text-rail-accent/60 text-sm">Join the real-time hub for live community updates.</p>
-                            </a>
-                            <a href="/gallery" onclick="routeTo(event, '/gallery')" class="hub-card p-8 lg:p-10 rounded-[2.5rem] group text-left">
-                                <i class="fas fa-images text-3xl mb-4 text-rail-accent transition-all group-hover:scale-125"></i>
-                                <h3 class="text-2xl font-black uppercase italic mb-2 text-white">Cinematic Gallery</h3>
-                                <p class="text-gray-400 text-sm">High-resolution captures of the majestic fleet.</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="hero-section" class="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden">
+                <div class="hero-background absolute inset-0 scale-110 motion-safe:animate-[pulse_10s_infinite]"></div>
+                <div class="hero-overlay absolute inset-0 bg-gradient-to-b from-black/60 via-rail-dark/40 to-rail-dark"></div>
+    
+        <h1 class="text-5xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] text-white uppercase italic drop-shadow-2xl tracking-tighter">
+            THE <span class="text-rail-accent inline-block hover:scale-105 transition-transform duration-500">RAILSPK</span>
+        </h1>
+        
+        <p class="text-base md:text-2xl mt-8 text-gray-300 italic font-light max-w-3xl mx-auto leading-relaxed backdrop-blur-sm bg-black/10 p-4 rounded-2xl">
+            "Documenting the Digital Legacy of Pakistan Railways through cinematic storytelling."
+        </p>
+
+        <div class="mt-20 w-full max-w-screen-xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 px-4">
+        <a href="/reviews" onclick="routeTo(event, '/reviews')" class="group relative p-10 rounded-[3rem] bg-white/5 border border-white/10 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-rail-accent/50 hover:-translate-y-2">
+            <div class="absolute inset-0 bg-gradient-to-br from-rail-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <i class="fas fa-star-half-alt text-4xl mb-6 text-rail-accent group-hover:rotate-12 transition-transform"></i>
+            <h3 class="text-2xl font-black uppercase italic mb-3 text-white">Scorecards</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Performance analytics & premium ratings for the fleet.</p>
+        </a>
+
+        <a href="/community" onclick="routeTo(event, '/community')" class="group relative p-10 rounded-[3rem] bg-rail-accent/10 border-2 border-rail-accent/30 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-rail-accent hover:-translate-y-2 scale-105 z-10">
+            <i class="fas fa-cloud text-4xl mb-6 text-rail-accent animate-pulse"></i>
+            <h3 class="text-2xl font-black uppercase italic mb-3 text-white">Railway Cloud</h3>
+            <p class="text-rail-accent/80 text-sm leading-relaxed">Join the live hub for real-time community updates.</p>
+        </a>
+
+        <a href="/gallery" onclick="routeTo(event, '/gallery')" class="group relative p-10 rounded-[3rem] bg-white/5 border border-white/10 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-rail-accent/50 hover:-translate-y-2">
+            <div class="absolute inset-0 bg-gradient-to-br from-rail-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <i class="fas fa-images text-4xl mb-6 text-rail-accent group-hover:scale-110 transition-transform"></i>
+            <h3 class="text-2xl font-black uppercase italic mb-3 text-white">Gallery</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">High-resolution cinematic captures of Pakistan Railways.</p>
+        </a>
+    </div>
+</div>
+    </div>
+    
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
+        <i class="fas fa-chevron-down text-white text-xl"></i>
+    </div>
+</div>
 
             <!-- Vlogs Content -->
             <div class="max-w-screen-2xl mx-auto px-6 py-24 text-center">
@@ -217,7 +229,7 @@
                         <p class="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em] mt-2 italic">Official Cinematic Archives</p>
                     </div>
                 </div>
-                <div id="video-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
                 <div class="mt-20">
                     <button id="load-more-btn" onclick="fetchVideos(true)" class="bg-rail-accent hover:bg-rail-accent/80 text-white font-black uppercase tracking-widest py-4 px-12 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl">Load More Heritage</button>
                 </div>
@@ -234,6 +246,7 @@
                         <option value="Karachi">Karachi Cantonment</option>
                         <option value="Lahore">Lahore Junction</option>
                         <option value="Rawalpindi">Rawalpindi Station</option>
+                        <option value="Peshawar">Peshawar Cantt</option>
                     </select>
                 </div>
                 <div id="scorecards-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-left"></div>
@@ -290,11 +303,7 @@
                 <p class="text-xl md:text-4xl text-gray-500 dark:text-gray-400 leading-relaxed max-w-5xl mx-auto font-light mb-24 italic">
                     "Documenting the heritage and modern evolution of Pakistan Railways through cinematic storytelling and data-driven insights."
                 </p>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <div class="bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-800">
-                        <span id="stat-views" class="text-4xl md:text-6xl font-black text-rail-accent block italic mb-2">0</span>
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Views Today</span>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                     <div class="bg-gray-50 dark:bg-gray-800/40 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-800">
                         <span class="text-4xl md:text-6xl font-black text-rail-accent block italic mb-2">35K+</span>
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Subscribers</span>
@@ -395,11 +404,6 @@
     </div>
 
 <script>
-/**
- * RAILSPK UNIFIED MASTER SYSTEM v6.3
- * CLEANUP: Removed Comments and Review Submission Logic
- */
-
 // --- 1. GLOBAL STATE & HELPERS ---
 let db, auth, user, adminAuthorised = false;
 let YT_KEY = null, YT_CHANNEL = null; 
@@ -445,11 +449,14 @@ const firebaseConfig = {
     appId: "1:282037027182:web:6b4f8bb420eb410374c17f" 
 };
 
+let messaging; // Global variable define karein
+
 async function initFirebase() {
     try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         db = firebase.firestore(); auth = firebase.auth();
-        
+        messaging = firebase.messaging();
+
         await auth.signInAnonymously();
         
         auth.onAuthStateChanged(async u => {
@@ -475,6 +482,34 @@ async function initFirebase() {
             }
         });
     } catch (e) { console.error("Firebase Connection Failed:", e); }
+}
+
+async function enableNotifications() {
+    if (!messaging) {
+        console.error("Messaging not initialized yet.");
+        return;
+    }
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('Notification permission granted.');
+            
+            // Token hasil karein
+            const token = await messaging.getToken({ 
+                vapidKey: 'BM8ed0cwNdM-Q7NIKmxnvbr251_BEOz4DkMRfBpIKqC2AlNNuQRP7HbQIKZs6-wYYefBCLUW5ragtjDDx2ctOwE'
+            });
+
+            if (token) {
+                console.log("User Token:", token);
+                await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('subscribers').doc(token).set({
+                    subscribedAt: Date.now()
+                });
+                showNotification("Success", "Ab aapko Railway Updates milti raheingi!");
+            }
+        }
+    } catch (error) {
+        console.error('Error getting notification token:', error);
+    }
 }
 
 // --- TRAINS DATA ---
@@ -505,36 +540,33 @@ function routeTo(e, p){
     handleRouting(); 
 }
 function handleRouting(){ 
+    // Current path extract karna
     let p = window.location.pathname.split('/').pop() || 'home'; 
     if(p.endsWith('.html')) p = p.replace('.html', ''); 
     if(p === '' || p === 'index') p = 'home'; 
+
+    // --- Dynamic Canonical URL Update ---
+    const baseUrl = "https://therails.pk";
+    const canonicalLink = document.getElementById('dynamic-canonical');
+    if (canonicalLink) {
+        // Agar home page hai to sirf base URL, warna path ke sath
+        const newCanonical = p === 'home' ? baseUrl + '/' : baseUrl + '/' + p;
+        canonicalLink.setAttribute('href', newCanonical);
+    }
+
+    // --- Dynamic Title Update (Indexing ke liye zaroori) ---
+    const pageName = p.charAt(0).toUpperCase() + p.slice(1);
+    document.title = p === 'home' 
+        ? "The RAILSPK - Pakistan Railways Hub | Reviews & Vlogs" 
+        : `${pageName} - The RAILSPK`;
+
+    // Existing UI Logic
     document.querySelectorAll('.page-view').forEach(v => v.classList.toggle('active', v.id === p + '-view'));
     window.scrollTo(0, 0); 
-    if (p === 'home') { trackDailyView(); if(YT_KEY) fetchVideos(); }
+    
+    if (p === 'home') {if(YT_KEY) fetchVideos(); }
     if (p === 'gallery') renderGallery();
     if (p === 'reviews') renderTrainCards();
-}
-
-// --- 4. ANALYTICS ---
-async function trackDailyView() {
-    if (!user || sessionStorage.getItem('railspk_v_today')) return;
-    const today = new Date().toISOString().split('T')[0];
-    const ref = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('analytics').doc(today);
-    try {
-        await db.runTransaction(async t => {
-            const doc = await t.get(ref);
-            if (!doc.exists) t.set(ref, { views: 1 });
-            else t.update(ref, { views: (doc.data().views || 0) + 1 });
-        });
-        sessionStorage.setItem('railspk_v_today', 'true');
-    } catch (e) {}
-    ref.onSnapshot(doc => { if (doc.exists) { 
-        const c = doc.data().views || 0; 
-        const h = document.getElementById('daily-views-header');
-        const s = document.getElementById('stat-views');
-        if(h) h.innerText = c.toLocaleString(); 
-        if(s) s.innerText = c.toLocaleString(); 
-    }});
 }
 
 // --- 5. YOUTUBE API ---
