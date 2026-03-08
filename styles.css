@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
+
+/* --- 1. CORE RESET & BASE --- */
+body { 
+    font-family: 'Inter', sans-serif; 
+    -webkit-tap-highlight-color: transparent; 
+    scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+
+/* --- 2. PAGE TRANSITIONS --- */
+.page-view { display: none; }
+.page-view.active { 
+    display: block; 
+    animation: pageIn 0.8s cubic-bezier(0.23, 1, 0.32, 1); 
+}
+
+@keyframes pageIn { 
+    from { opacity: 0; transform: translateY(40px); filter: blur(10px); } 
+    to { opacity: 1; transform: translateY(0); filter: blur(0); } 
+}
+
+/* --- 3. HERO & CINEMATIC EFFECTS --- */
+#hero-section { background: #0a0f1a; }
+.hero-background { 
+    position: absolute; 
+    inset: 0; 
+    background-size: cover; 
+    background-position: center; 
+    background-image: url('images/train_background.webp'); 
+    filter: brightness(0.3) saturate(1.2); 
+    transform: scale(1.05);
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, #0a0f1a 5%, rgba(10, 15, 26, 0.6) 40%, transparent 100%);
+}
+
+/* --- 4. NAVIGATION DRAWER (MOBILE) --- */
+#mobile-menu { 
+    position: fixed; 
+    top: 0; 
+    right: 0; 
+    height: 100vh; 
+    width: 100%; 
+    z-index: 100; 
+    transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1); 
+    transform: translateX(100%); 
+    display: flex; 
+    flex-direction: column; 
+    backdrop-filter: blur(20px);
+}
+#mobile-menu.active { transform: translateX(0); }
+
+/* --- 5. PREMIUM CARDS (GLASSMORPHISM) --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hub-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #4f46e5;
+}
+
+/* --- 6. RATINGS & STARS --- */
+.stars { color: #f59e0b !important; }
+
+/* --- 7. TOAST NOTIFICATIONS (RAILSPK DESIGN) --- */
+.toast-notification {
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    background: #0a0f1a; 
+    color: #fff; 
+    padding: 20px 30px; 
+    border-radius: 25px; 
+    border-left: 6px solid #4f46e5; 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6); 
+    z-index: 9999; 
+    transform: translateY(250%); 
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.toast-notification.active { transform: translateY(0); }
+
+/* --- 8. UTILITIES --- */
+.custom-scrollbar::-webkit-scrollbar { width: 3px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+
+.animate-fade-in { animation: fadeIn 1.2s ease-out forwards; }
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(20px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* --- 9. VIDEO & GALLERY HOVERS --- */
+.vlog-card img, .gallery-card img {
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.vlog-card:hover img, .gallery-card:hover img {
+    transform: scale(1.08);
+}
+
+/* --- 10. REVIEWS & FORM FIXES --- */
+input[type="text"], select {
+    transition: all 0.3s ease;
+}
+input[type="text"]:focus {
+    transform: scale(1.01);
+}
