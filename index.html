@@ -10,16 +10,19 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     
     <!-- Primary SEO -->
-    <title id="site-title">The RAILSPK - Pakistan Railways Hub | Reviews & Vlogs</title>
+    <title id="site-title">RAILSPK | Digital Legacy Project</title>
     <meta name="description" content="Official portal for Pakistan Railways fans. Explore wallpapers, reviews, fares, and cinematic travel vlogs.">
     <meta name="keywords" content="Pakistan Railways, Train Reviews, Railway Vlogs, Railspk, Train Fares, Railway Community, Train Vlogs, Train Travel, Pakistan Railways, Shalimar Express Reviews, Green line Reviews, Karakoram Express Reviews, Pak Business Express Reviews">
     <meta name="author" content="RAILSPK Team">
 
     <link id="dynamic-canonical" rel="canonical" href="https://therails.pk/">
-    <link rel="icon" href="images/favicon.ico?v=3" type="image/x-icon">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="manifest" href="images/site.webmanifest">
+    <link rel="manifest" href="manifest.json">
 
-    <meta property="og:title" content="The RAILSPK - Pakistan Railways Hub">
+    <meta property="og:title" content="RAILSPK | Digital Legacy Project">
     <meta property="og:url" content="https://therails.pk/">
     <meta property="og:description" content="Documenting the Digital Legacy of Pakistan Railways.">
 
@@ -63,7 +66,7 @@
     <header class="fixed top-0 inset-x-0 z-[60] bg-white/70 dark:bg-rail-dark/70 backdrop-blur-2xl border-b border-gray-100 dark:border-white/5 h-20 flex items-center">
         <div class="max-w-screen-2xl mx-auto px-6 w-full flex justify-between items-center">
             <a href="/home" onclick="routeTo(event, '/home')" class="group flex items-center space-x-2">
-                <span class="text-2xl md:text-3xl font-black italic text-rail-accent uppercase tracking-tighter">The RAILSPK</span>
+                <span class="text-2xl md:text-3xl font-black italic text-rail-accent uppercase tracking-tighter">RAILSPK</span>
             </a>
             
             <nav class="hidden lg:flex items-center space-x-8 text-[10px] font-black uppercase tracking-[0.2em]">
@@ -73,17 +76,15 @@
                 <a href="/community" onclick="routeTo(event, '/community')" data-i18n="nav_community" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Community</a>
             </nav>
 
-            <div class="flex items-center space-x-3">
-                <!-- Language Switcher -->
-                <select id="lang-switch" onchange="changeLang(this.value)" class="bg-gray-100 dark:bg-gray-800 text-[10px] font-black uppercase p-2 rounded-lg outline-none cursor-pointer border border-transparent focus:border-rail-accent transition-all">
-                    <option value="en">EN</option>
-                    <option value="ur">اردو</option>
-                </select>
-
                 <button id="theme-toggle" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:scale-110 transition-transform">
                     <i id="theme-toggle-dark-icon" class="fas fa-moon"></i>
                     <i id="theme-toggle-light-icon" class="fas fa-sun hidden"></i>
+                </button><div class="flex items-center gap-6">
+                <button onclick="openGeneralBookingModal()" class="flex items-center gap-2.5 bg-rail-accent/10 text-rail-accent text-[9px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border border-rail-accent/20 hover:bg-rail-accent hover:text-white transition">
+                    <i class="fas fa-ticket-alt"></i>
+                    Book a Ticket
                 </button>
+                    </div>
                 <button class="lg:hidden p-2 text-gray-600 dark:text-gray-300" onclick="toggleMenu()"><i class="fas fa-bars-staggered text-2xl"></i></button>
             </div>
         </div>
@@ -154,7 +155,7 @@
         </section>
 
         <!-- --- REVIEWS VIEW --- -->
-        <section id="reviews-view" class="page-view">
+            <section id="reviews-view" class="page-view">
             <div class="max-w-screen-2xl mx-auto px-6 py-32 text-center">
                 <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-8 tracking-tighter text-gray-900 dark:text-white" data-i18n="title_reviews">Train <span class="text-rail-accent">Scorecards</span></h2>
                 
@@ -298,7 +299,7 @@
                 <a href="https://instagram.com/realinventivecadet" rel="nofollow" target="_blank" class="text-2xl text-gray-400 hover:text-pink-500 transition-all hover:scale-125"><i class="fab fa-instagram"></i></a>
                 <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHww3O" rel="nofollow" target="_blank" class="text-2xl text-gray-400 hover:text-green-500 transition-all hover:scale-125"><i class="fab fa-whatsapp"></i></a>
             </div>
-            <p class="text-gray-500 text-[9px] tracking-[0.6em] font-black uppercase italic mb-8">© 2026 The RAILSPK | Digital Legacy Project</p>
+            <p class="text-gray-500 text-[9px] tracking-[0.6em] font-black uppercase italic mb-8">© 2026 RAILSPK | Digital Legacy Project</p>
             <div class="flex justify-center space-x-8 text-[9px] font-black uppercase tracking-widest text-gray-400">
                 <a href="/privacy" onclick="routeTo(event, '/privacy')" class="hover:text-rail-accent transition">Privacy</a>
                 <a href="/terms" onclick="routeTo(event, '/terms')" class="hover:text-rail-accent transition">Terms</a>
@@ -330,6 +331,82 @@
             <div id="explore-modal-content" class="p-10 md:p-20"></div>
         </div>
     </div>
+
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg p-8 md:p-10 relative animate-fade-in custom-scrollbar overflow-y-auto max-h-[90vh]">
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h2 class="text-3xl font-black uppercase italic text-gray-900 dark:text-white">Request Ticket</h2>
+                <p class="text-rail-accent font-bold tracking-widest text-xs uppercase mt-2">RAILSPK Verified Booking Service</p>
+            </div>
+            <button onclick="closeModal('booking-modal')" class="text-gray-500 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <form id="booking-form" class="space-y-4">
+            <select id="booking-class" class="w-full bg-gray-50 dark:bg-rail-dark p-4 rounded-2xl border border-gray-100 dark:border-white/10 outline-none text-sm font-bold" required>
+                <option value="">Select Train First</option>
+            </select>
+
+            <div id="booking-fare-dropdown" class="hidden">
+                <select id="booking-fare" class="w-full bg-gray-50 dark:bg-rail-dark p-4 rounded-2xl border border-gray-100 dark:border-white/10 outline-none text-sm font-bold text-rail-accent" required>
+                    <option value="">Select Class</option>
+                </select>
+            </div>
+
+            <div id="price-breakdown" class="bg-rail-accent/5 border border-rail-accent/20 p-6 rounded-[2rem] space-y-2 hidden animate-fade-in">
+                <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    <span>Official Ticket Price</span>
+                    <span id="base-fare" class="text-gray-700 dark:text-gray-200">Rs. 0</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-rail-accent">
+                    <span>Verified Service Charges (Commission)</span>
+                    <span id="service-fee">Rs. 0</span>
+                </div>
+                <hr class="border-gray-100 dark:border-white/5 my-2">
+                <div class="flex justify-between text-lg font-black italic uppercase">
+                    <span class="text-gray-900 dark:text-white">Total Payable (Verified)</span>
+                    <span id="total-price" class="text-rail-accent">Rs. 0</span>
+                </div>
+                <p class="text-[9px] text-gray-500 pt-2 italic leading-relaxed">*Note: This total includes verified official pricing + our commission. We will confirm details on WhatsApp.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" placeholder="Your Full Name" required class="w-full bg-gray-50 dark:bg-rail-dark p-4 rounded-2xl border border-gray-100 dark:border-white/10 outline-none text-xs text-white">
+                <input type="tel" placeholder="WhatsApp Number" required class="w-full bg-gray-50 dark:bg-rail-dark p-4 rounded-2xl border border-gray-100 dark:border-white/10 outline-none text-xs text-white">
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
+                <h4 class="text-xs font-black uppercase tracking-[0.3em] mb-4 text-gray-400">Payment Methods</h4>
+                <div class="space-y-3">
+                    <div class="bg-gray-50 dark:bg-rail-dark border border-gray-100 dark:border-white/10 p-5 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg text-orange-500 font-bold">N</span> <div>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white">Nayapay (RAILSPK)</span>
+                                <span class="block text-[10px] text-gray-500">Official Business Account</span>
+                            </div>
+                        </div>
+                        <span class="text-rail-accent font-black tracking-widest text-xs uppercase italic">03080589590</span>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-rail-dark border border-gray-100 dark:border-white/10 p-5 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-wallet text-green-500 text-lg"></i>
+                            <div>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white">Easypaisa</span>
+                                <span class="block text-[10px] text-gray-500">Verified Wallet</span>
+                            </div>
+                        </div>
+                        <span class="text-rail-accent font-black tracking-widest text-xs uppercase italic">03198550419</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-rail-dark dark:bg-rail-accent text-white py-4 mt-6 rounded-2xl font-black uppercase italic tracking-widest shadow-lg hover:scale-105 transition-all duration-300">
+                <i class="fab fa-whatsapp mr-2 text-lg"></i>
+                Request via WhatsApp
+            </button>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>

@@ -5,6 +5,7 @@ body {
     font-family: 'Inter', sans-serif; 
     -webkit-tap-highlight-color: transparent; 
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -23,7 +24,7 @@ body {
 }
 
 /* --- 3. HERO & CINEMATIC EFFECTS --- */
-#hero-section { background: #0a0f1a; }
+#hero-section { background: #0a0f1a; position: relative; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 .hero-background { 
     position: absolute; 
     inset: 0; 
@@ -56,7 +57,31 @@ body {
 }
 #mobile-menu.active { transform: translateX(0); }
 
-/* --- 5. PREMIUM CARDS (GLASSMORPHISM) --- */
+/* --- 5. CATEGORY PILLS (TABS) --- */
+.cat-pill {
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.cat-pill.active {
+    background-color: #4f46e5;
+    color: white;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+    transform: translateY(-2px);
+    border-color: transparent;
+}
+
+.cat-pill:hover:not(.active) {
+    background-color: rgba(79, 70, 229, 0.1);
+    border-color: #4f46e5;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* --- 6. PREMIUM CARDS & GLASSMORPHISM --- */
 .glass-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(12px);
@@ -69,10 +94,10 @@ body {
     border-color: #4f46e5;
 }
 
-/* --- 6. RATINGS & STARS --- */
+/* --- 7. RATINGS & STARS --- */
 .stars { color: #f59e0b !important; }
 
-/* --- 7. TOAST NOTIFICATIONS (RAILSPK DESIGN) --- */
+/* --- 8. TOAST NOTIFICATIONS (RAILSPK DESIGN) --- */
 .toast-notification {
     position: fixed; 
     bottom: 30px; 
@@ -90,28 +115,33 @@ body {
 }
 .toast-notification.active { transform: translateY(0); }
 
-/* --- 8. UTILITIES --- */
+/* --- 9. SKELETON LOADERS (PERFORMANCE) --- */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+.dark .skeleton {
+    background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%);
+}
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* --- 10. UTILITIES & ANIMATIONS --- */
+.animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
 .custom-scrollbar::-webkit-scrollbar { width: 3px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
 
-.animate-fade-in { animation: fadeIn 1.2s ease-out forwards; }
-@keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(20px); } 
-    to { opacity: 1; transform: translateY(0); } 
-}
+/* Aspect Ratio Fixes */
+.aspect-video { aspect-ratio: 16 / 9; }
+.aspect-square { aspect-ratio: 1 / 1; }
 
-/* --- 9. VIDEO & GALLERY HOVERS --- */
-.vlog-card img, .gallery-card img {
-    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.vlog-card:hover img, .gallery-card:hover img {
-    transform: scale(1.08);
-}
-
-/* --- 10. REVIEWS & FORM FIXES --- */
-input[type="text"], select {
+/* Form Elements */
+input[type="text"], select, textarea {
     transition: all 0.3s ease;
 }
-input[type="text"]:focus {
-    transform: scale(1.01);
-}
+input[type="text"]:focus { transform: scale(1.01); border-color: #4f46e5; }

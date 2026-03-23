@@ -1,5 +1,4 @@
-// --- 1. GLOBAL STATE & TRANSLATIONS ---
-let currentLang = localStorage.getItem('railspk_lang') || 'en';
+// --- 1. GLOBAL STATE ---
 let db, auth, user, adminAuthorised = false;
 let YT_KEY = null, YT_CHANNEL = null; 
 let yt_token = null, allReviews = [];
@@ -9,82 +8,17 @@ let editingPostId = null;
 let postComments = [];
 const sessionStartTime = Date.now();
 
-const translations = {
-    en: {
-        nav_home: "Home",
-        nav_gallery: "Gallery",
-        nav_reviews: "Reviews",
-        nav_community: "Community",
-        hero_desc: "Documenting the heritage and cinematic evolution of Pakistan Railways through digital storytelling.",
-        btn_explore: "Explore Scorecards",
-        stat_subs: "Active Subs",
-        stat_vlogs: "Heritage Vlogs",
-        stat_reach: "Total Reach",
-        stat_uptime: "Cloud Uptime",
-        title_vlogs: "Latest Vlogs",
-        title_reviews: "Train Scorecards",
-        search_placeholder: "Search train name...",
-        footer_copy: "© 2026 The RAILSPK | Digital Legacy Project",
-        load_more: "Load More",
-        explore_more: "Explore More",
-        btn_post: "Post",
-        opinion_placeholder: "Share your experience...",
-        rating_label: "Hub Rating",
-        official_broadcast: "Official Broadcast",
-        edit: "Edit",
-        delete: "Delete",
-        show_less: "Show Less",
-        read_more: "READ MORE...",
-        comm_discussion: "Community Discussion",
-        observer: "Observer",
-        railspk_reply: "RAILSPK Reply:",
-        reply_placeholder: "Reply...",
-        btn_send: "SEND",
-        btn_send_small: "Send",
-        no_opinions: "No opinions yet.",
-        write_opinion: "Write your opinion...",
-        no_search_results: "No trains matched your search.",
-        terminal_all: "All Terminals"
-    },
-    ur: {
-        nav_home: "ہوم",
-        nav_gallery: "گیلری",
-        nav_reviews: "ریویوز",
-        nav_community: "کمیونٹی",
-        hero_desc: "پاکستان ریلویز کی وراثت اور ارتقاء کو ڈیجیٹل کہانیوں کے ذریعے محفوظ کرنا۔",
-        btn_explore: "اسکور کارڈز دیکھیں",
-        stat_subs: "سبسکرائبرز",
-        stat_vlogs: "وی لاگز",
-        stat_reach: "رسائی",
-        stat_uptime: "کلاؤڈ ایکٹو",
-        title_vlogs: "تازہ ترین وی لاگز",
-        title_reviews: "ٹرین اسکور کارڈز",
-        search_placeholder: "ٹرین کا نام تلاش کریں...",
-        footer_copy: "© 2026 دی ریلز پی کے | ڈیجیٹل لیجیسی پروجیکٹ",
-        load_more: "مزید دیکھیں",
-        explore_more: "مزید معلومات",
-        btn_post: "پوسٹ",
-        opinion_placeholder: "اپنا تجربہ شیئر کریں...",
-        rating_label: "ریٹنگ",
-        official_broadcast: "سرکاری اعلان",
-        edit: "ترمیم",
-        delete: "حذف",
-        show_less: "کم دکھائیں",
-        read_more: "مزید پڑھیں...",
-        comm_discussion: "عوامی گفتگو",
-        observer: "مشاہدہ کار",
-        railspk_reply: "ریلز پی کے کا جواب:",
-        reply_placeholder: "جواب دیں...",
-        btn_send: "بھیجیں",
-        btn_send_small: "بھیجیں",
-        no_opinions: "ابھی تک کوئی رائے نہیں آئی۔",
-        write_opinion: "اپنی رائے لکھیں...",
-        no_search_results: "آپ کی تلاش کے مطابق کوئی ٹرین نہیں ملی۔",
-        terminal_all: "تمام ٹرمینلز"
-    }
+// *--- COMMISSION STRUCTURE (Transparency Fix) ---*
+// Har class ke hisaab se fix commission define kiya gaya hai
+const commissionRates = {
+    "AC Business": 500,
+    "AC Standard": 400,
+    "AC Sleeper": 600,
+    "Economy": 200,
+    "AC Parlor": 550
 };
 
-// --- 2. PERFORMANCE & LANGUAGE HELPERS ---
+// --- 2. PERFORMANCE HELPERS ---
 function debounce(func, timeout = 300) {
     let timer;
     return (...args) => {
@@ -93,31 +27,10 @@ function debounce(func, timeout = 300) {
     };
 }
 
-function changeLang(lang) {
-    currentLang = lang;
-    localStorage.setItem('railspk_lang', lang);
-    applyTranslations();
-    document.documentElement.dir = (lang === 'ur') ? 'rtl' : 'ltr';
-    document.body.classList.toggle('font-urdu', lang === 'ur');
-    handleRouting();
-}
-
-function applyTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[currentLang][key]) {
-            el.innerHTML = translations[currentLang][key];
-        }
-    });
-    const searchInput = document.getElementById('train-search-input');
-    if (searchInput) searchInput.placeholder = translations[currentLang].search_placeholder;
-}
-
 function formatTimestamp(ts) {
-    if(!ts) return currentLang === 'ur' ? "ابھی" : "Now";
+    if(!ts) return "Now";
     const d = new Date(ts);
-    const locale = currentLang === 'ur' ? 'ur-PK' : 'en-PK';
-    return d.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function escapeHTML(s) { if(!s) return ""; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -149,11 +62,10 @@ async function initFirebase() {
         db = firebase.firestore(); 
         auth = firebase.auth();
 
-        // Safe Messaging Init (Fixes addEventListener crash)
         if (firebase.messaging.isSupported()) {
             messaging = firebase.messaging();
         } else {
-            console.warn("Firebase Messaging is not supported in this environment.");
+            console.warn("Firebase Messaging is not supported.");
         }
 
         await auth.signInAnonymously();
@@ -168,7 +80,6 @@ async function initFirebase() {
                     YT_KEY = Object.keys(data)[0]; 
                     YT_CHANNEL = data[YT_KEY]; 
                 }
-                applyTranslations();
                 startGlobalListeners(); 
                 handleRouting(); 
             }
@@ -178,15 +89,31 @@ async function initFirebase() {
 
 // --- 4. TRAINS DATA ---
 const trainsData = [
-    { id: 'greenline', name: 'Green Line Express', route: 'Karachi ⟷ Islamabad', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Bahawalpur', 'Khanewal', 'Lahore', 'Rawalpindi', 'Islamabad'], slides: ['greenline_7.webp','greenline_2.webp','greenline_1.webp','greenline_4.webp','greenline_5.webp','greenline_6.webp','greenline_8.webp','greenline_9.webp'], fares: [{class:"AC Parlor",price:"Rs. 12,250"},{class:"Economy",price:"Rs. 6,150"},{class:"AC Business",price:"Rs. 13,950"},{class:"AC Standard",price:"Rs. 11,150"}], stats: { punctuality: '95%', cleanliness: 5, food: 4, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { parlor: '01', business: '06', standard: '06', economy: '05', diningcar: '01' } },
-    { id: 'shalimar', name: 'Shalimar Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Faisalabad', 'Lahore'], slides: ['shalimar_8.webp','shalimar_2.webp','shalimar_3.webp','shalimar_4.webp','shalimar_5.webp','shalimar_6.webp','shalimar_7.webp','shalimar_8.webp','shalimar_1.webp'], fares: [{class:"AC Parlor",price:"Rs. 10,700"},{class:"Economy",price:"Rs.4,010"},{class:"AC Business",price:"Rs. 11,400"},{class:"AC Standard",price:"Rs. 8,700"}], stats: { punctuality: '95%', cleanliness: 5, food: 5, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { parlor: '01', business: '01', standard: '02', economy: '11', diningcar: '01' } },
-    { id: 'karakoram', name: 'Karakoram Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Bahawalpur', 'Khanewal', 'Toba Tek Singh', 'Faisalabad', 'Lahore'], slides: ['karakoram_express_train_rake.webp','millat_express_vs_karakoram_express.webp'], fares: [{class:"AC Business",price:"Rs. 10,500"},{class:"Economy",price:"Rs. 4,750"},{class:"AC Standard",price:"Rs. 8,300"}], stats: { punctuality: '90%', cleanliness: 4, food: 3, behavior: 3 }, amenities: ['ac'], composition: { business: '02', economy: '11', standard: '02' } },
-    { id: 'pakbusiness', name: 'Pak Business Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Nawabshah', 'Rohri', 'Rahim Yar Khan', 'Bahawalpur', 'Khanewal', 'Chicha Watni', 'Sahiwal', 'Raiwind', 'Kot lakhpat', 'Lahore'], slides: ['business_1.webp','business_2.webp','business_3.webp','business_4.webp','business_5.webp','business_6.webp','business_7.webp'], fares: [{class:"AC Standard",price:"Rs. 8,700"},{class:"Economy",price:"Rs. 5,350"}], stats: { punctuality: '90%', cleanliness: 5, food: 5, behavior: 5 }, amenities: ['wifi', 'charging', 'bedding', 'dining', 'ac'], composition: { standard: '04', economy: '11', diningcar: '01' } },
-    { id: 'allamaiqbal', name: 'Allama Iqbal Express', route: 'Karachi ⟷ Sialkot', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore', 'Sialkot'], slides: ['allama_1.webp','allama_2.webp','allama_3.webp','allama_4.webp'], fares: [{class:"AC Standard",price:"Rs. 6,800"},{class:"Economy",price:"Rs. 3,500"}], stats: { punctuality: '75%', cleanliness: 3, food: 3, behavior: 4 }, amenities: ['charging', 'dining', 'ac'], composition: { business: '04', economy: '10' } },
-    { id: 'mehran', name: 'Mehran Express', route: 'Karachi ⟷ Mirpur Khas', cities: ['Karachi', 'Hyderabad', 'Mirpur Khas'], slides: ['mehran_4.webp','mehran_2.webp','mehran_3.webp','mehran_1.webp'], fares: [{class:"Economy",price:"Rs. 800"}], stats: { punctuality: '70%', cleanliness: 2, food: 2, behavior: 3 }, amenities: ['dining'], composition: { economy: '10' } },
-    { id: 'khybermail', name: 'Khyber Mail Express', route: 'Karachi ⟷ Peshawar', cities: ['Karachi', 'Multan', 'Lahore', 'Peshawar'], slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 13,000"},{class:"Economy",price:"Rs. 4,000"}], stats: { punctuality: '82%', cleanliness: 3, food: 3, behavior: 4 }, amenities: ['charging', 'bedding', 'dining', 'ac'], composition: { business: '03', standard: '02', economy: '08' } },
-    { id: 'sukkur', name: 'Sukkur Express', route: 'Karachi ⟷ Jacobabad', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Sukkur', 'Shikarpur', 'Jacobabad'], slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 6,500"},{class:"Economy",price:"Rs. 1,700"},{class:"AC Standard",price:"Rs. 3,200"},{class:"AC Business",price:"Rs. 4,150"}], stats: { punctuality: '65%', cleanliness: 4, food: 3, behavior: 3 }, amenities: ['charging', 'dining', 'ac'], composition: {sleeper: '01', business: '01', standard: '02', economy: '12' } },
-    { id: 'karachi', name: 'Karachi Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Nawabshah', 'Rohri', 'Bahawalpur', 'Multan', 'Khanewal', 'Sahiwal', 'Okara', 'Raiwind', 'Kot lakhpat', 'Lahore'], slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 14,850"},{class:"Economy",price:"Rs. 5,000"},{class:"AC Standard",price:"Rs. 8,700"},{class:"AC Business",price:"Rs. 11,550"}], stats: { punctuality: '85%', cleanliness: 4, food: 4, behavior: 4 }, amenities: ['charging', 'dining', 'ac'], composition: {sleeper: '02', business: '01', standard: '02', economy: '12' } }
+    // Express Category
+    { id: 'greenline', category: 'express', name: 'Green Line Express', route: 'Karachi ⟷ Islamabad', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Bahawalpur', 'Khanewal', 'Lahore', 'Rawalpindi', 'Islamabad'], slides: ['greenline_7.webp','greenline_2.webp','greenline_1.webp'], fares: [{class:"AC Business",price:"Rs. 13,950"},{class:"Economy",price:"Rs. 6,150"}], stats: { punctuality: '95%', cleanliness: 5 } },
+    { id: 'shalimar', category: 'express', name: 'Shalimar Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Faisalabad', 'Lahore'], slides: ['shalimar_8.webp','shalimar_2.webp'], fares: [{class:"AC Parlor",price:"Rs. 10,700"},{class:"Economy",price:"Rs.4,010"}], stats: { punctuality: '95%', cleanliness: 5 } },
+    { id: 'karakoram', category: 'express', name: 'Karakoram Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Faisalabad', 'Lahore'], slides: ['karakoram_express_train_rake.webp'], fares: [{class:"AC Business",price:"Rs. 10,500"},{class:"Economy",price:"Rs. 4,750"}], stats: { punctuality: '90%', cleanliness: 4 }, amenities: ['ac'] },
+    { id: 'pakbusiness', category: 'express', name: 'Pak Business Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore'], slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 8,700"},{class:"Economy",price:"Rs. 5,350"}], stats: { punctuality: '90%', cleanliness: 5 } },
+    { id: 'karachi', category: 'express', name: 'Karachi Express', route: 'Karachi ⟷ Lahore', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Multan', 'Khanewal', 'Lahore'], slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 14,850"},{class:"Economy",price:"Rs. 5,000"}], stats: { punctuality: '85%', cleanliness: 4 } },
+    { id: 'sukkur', category: 'express', name: 'Sukkur Express', route: 'Karachi ⟷ Jacobabad', cities: ['Karachi', 'Hyderabad', 'Rohri', 'Sukkur', 'Jacobabad'], slides: ['coming_soon.avif'], fares: [{class:"AC Standard",price:"Rs. 3,200"},{class:"Economy",price:"Rs. 1,700"}], stats: { punctuality: '65%', cleanliness: 4 } },
+    { id: 'allamaiqbal', category: 'mail', name: 'Allama Iqbal Express', route: 'Karachi ⟷ Sialkot', cities: ['Karachi', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore', 'Sialkot'], slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 3,500"}], stats: { punctuality: '75%', cleanliness: 3 } },
+    { id: 'rehmanbaba', category: 'mail', name: 'Rehman Baba Express', route: 'Karachi ⟷ Peshawar', cities: ['Karachi', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore', 'Sialkot'], slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 3,500"}], stats: { punctuality: '75%', cleanliness: 3 } },
+    { id: 'hazara', category: 'mail', name: 'Hazara Express', route: 'Karachi ⟷ Havelian', cities: ['Karachi', 'Rohri', 'Khanewal', 'Sahiwal', 'Lahore', 'Sialkot'], slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 3,500"}], stats: { punctuality: '75%', cleanliness: 3 } },
+
+    
+    // Mail Category
+    { id: 'khybermail', category: 'mail', name: 'Khyber Mail Express', route: 'Karachi ⟷ Peshawar', cities: ['Karachi', 'Multan', 'Lahore', 'Peshawar'], slides: ['coming_soon.avif'], fares: [{class:"AC Sleeper",price:"Rs. 13,000"},{class:"Economy",price:"Rs. 4,000"}], stats: { punctuality: '82%', cleanliness: 3 } },    
+    // Railcar Category
+    { id: 'subakkharam', category: 'railcar', name: 'Subak Kharam', route: 'Lahore ⟷ Rawalpindi', cities: ['Lahore', 'Gujranwala', 'Jhelum', 'Rawalpindi'], slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 2,100"},{class:"Economy",price:"Rs. 1,100"}], stats: { punctuality: '98%', cleanliness: 5 } },
+    { id: 'subakraftar', category: 'railcar', name: 'Subak Raftar', route: 'Lahore ⟷ Rawalpindi', cities: ['Lahore', 'Gujranwala', 'Jhelum', 'Rawalpindi'], slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 2,100"},{class:"Economy",price:"Rs. 1,100"}], stats: { punctuality: '98%', cleanliness: 5 } },
+    { id: 'rawal', category: 'railcar', name: 'Rawalpindi Express', route: 'Lahore ⟷ Rawalpindi', cities: ['Lahore', 'Gujranwala', 'Jhelum', 'Rawalpindi'], slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 2,100"},{class:"Economy",price:"Rs. 1,100"}], stats: { punctuality: '98%', cleanliness: 5 } },
+    { id: 'musapak', category: 'railcar', name: 'Musa Pak Express', route: 'Lahore ⟷ Multan', cities: ['Lahore', 'Gujranwala', 'Jhelum', 'Rawalpindi'], slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 2,100"},{class:"Economy",price:"Rs. 1,100"}], stats: { punctuality: '98%', cleanliness: 5 } },
+    { id: 'islamabad', category: 'railcar', name: 'Islamabad Express', route: 'Lahore ⟷ Islamabad', cities: ['Lahore', 'Gujranwala', 'Jhelum', 'Rawalpindi'], slides: ['coming_soon.avif'], fares: [{class:"AC Business",price:"Rs. 2,100"},{class:"Economy",price:"Rs. 1,100"}], stats: { punctuality: '98%', cleanliness: 5 } },
+
+    // Local Category
+    { id: 'mehran', category: 'local', name: 'Mehran Express', route: 'Karachi ⟷ Mirpur Khas', cities: ['Karachi', 'Hyderabad', 'Mirpur Khas'], slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], stats: { punctuality: '70%', cleanliness: 2 } },
+    { id: 'shahlatif', category: 'local', name: 'Shah Latif Express', route: 'Karachi ⟷ Mirpur Khas', cities: ['Karachi', 'Hyderabad', 'Mirpur Khas'], slides: ['coming_soon.avif'], fares: [{class:"Economy",price:"Rs. 800"}], stats: { punctuality: '70%', cleanliness: 2 } }
+
 ];
 
 const galleryData = [
@@ -218,13 +145,10 @@ function handleRouting(){
     }
 
     const pageName = p.charAt(0).toUpperCase() + p.slice(1);
-    document.title = p === 'home' 
-        ? "The RAILSPK - Pakistan Railways Hub | Reviews & Vlogs" 
-        : `${pageName} - The RAILSPK`;
+    document.title = p === 'home' ? "RAILSPK | Digital Legacy Project" : `${pageName} - The RAILSPK`;
 
     document.querySelectorAll('.page-view').forEach(v => v.classList.toggle('active', v.id === p + '-view'));
     window.scrollTo(0, 0); 
-    applyTranslations();
     
     if (p === 'home') { if(YT_KEY) fetchVideos(); }
     if (p === 'gallery') renderGallery();
@@ -232,7 +156,7 @@ function handleRouting(){
     if (p === 'community') { fetchUpdates(); startPollsListener(); }
 }
 
-// --- 6. SEARCH & FILTER (OPTIMIZED) ---
+// --- 6. SEARCH & FILTER ---
 const handleSearchOptimized = debounce(() => {
     const searchInput = document.getElementById('train-search-input');
     const filterSelect = document.getElementById('terminal-filter');
@@ -251,7 +175,6 @@ const handleSearchOptimized = debounce(() => {
     renderTrainCards(filtered);
 });
 
-// Purane handleSearch function ko naye debounce version se link karna
 function handleSearch() { handleSearchOptimized(); }
 
 // --- 7. YOUTUBE API ---
@@ -281,11 +204,10 @@ async function fetchVideos(isLoadMore = false) {
 function renderVideoCards(items, isLoadMore) {
     const container = document.getElementById('video-cards-container');
     if (!isLoadMore) container.innerHTML = ''; 
-    const t = translations[currentLang];
 
     items.forEach(v => {
         const title = escapeHTML(v.snippet.title);
-        const publishDate = new Date(v.snippet.publishedAt).toLocaleDateString(currentLang === 'ur' ? 'ur-PK' : 'en-PK', { day: '2-digit', month: 'short' });
+        const publishDate = new Date(v.snippet.publishedAt).toLocaleDateString('en-PK', { day: '2-digit', month: 'short' });
         container.innerHTML += `
         <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden shadow-xl group cursor-pointer transition-all hover:translate-y-[-5px] relative" onclick="openVideo('${v.id.videoId}')">
             <div class="absolute top-4 left-4 z-10 ${v.color} text-white text-[8px] font-black px-3 py-1 rounded-full tracking-widest uppercase shadow-lg">${v.badge} • ${publishDate}</div>
@@ -298,14 +220,13 @@ function renderVideoCards(items, isLoadMore) {
     });
 }
 
-// --- 8. DYNAMIC UI RENDERING (I18N COMPATIBLE) ---
+// --- 8. DYNAMIC UI RENDERING ---
 function renderTrainCards(dataToRender = trainsData) {
     const grid = document.getElementById('scorecards-grid'); 
     if (!grid) return;
-    const t = translations[currentLang];
 
     if (dataToRender.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 font-black uppercase italic tracking-widest">${t.no_search_results}</div>`;
+        grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 font-black uppercase italic tracking-widest">No trains found for this search.</div>`;
         return;
     }
 
@@ -320,11 +241,11 @@ function renderTrainCards(dataToRender = trainsData) {
                 <div class="w-full md:w-[45%] space-y-5">
                     <div><h3 class="text-2xl font-black uppercase italic text-gray-900 dark:text-white">${train.name}</h3><p class="text-rail-accent font-black text-[9px] uppercase tracking-widest mt-1">${train.route}</p></div>
                     <div class="bg-gray-50 dark:bg-rail-dark p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 space-y-2">
-                        <div class="flex justify-between items-center"><span class="text-xs font-bold uppercase tracking-widest text-gray-400">${t.rating_label}</span><span class="stars text-lg">${'★'.repeat(Math.round(avg)) || '☆☆☆☆☆'}</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs font-bold uppercase tracking-widest text-gray-400">Hub Rating</span><span class="stars text-lg">${'★'.repeat(Math.round(avg)) || '☆☆☆☆☆'}</span></div>
                         <hr class="border-gray-200 dark:border-gray-600 my-2">
                         ${train.fares.map(f=>`<div class="flex justify-between items-center pb-2 last:border-0"><span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">${f.class}</span><span class="text-rail-accent font-black text-xs italic">${f.price}</span></div>`).join('')}
                     </div>
-                    <button onclick="openExploreModal('${train.id}')" class="w-full bg-rail-dark dark:bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg italic">${t.explore_more}</button>
+                    <button onclick="openExploreModal('${train.id}')" class="w-full bg-rail-dark dark:bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg italic">Explore More</button>
                 </div>
                 <div class="w-full md:w-[55%] h-64 rounded-3xl overflow-hidden relative bg-gray-100 dark:bg-gray-700 cursor-pointer" onclick="openSliderModal(${JSON.stringify(slides).replace(/"/g, '&quot;')}, 0)">
                     <img src="images/${train.slides[0]}" loading="lazy" class="w-full h-full object-cover">
@@ -332,23 +253,23 @@ function renderTrainCards(dataToRender = trainsData) {
             </div>
 
             <div class="px-10 pb-10 pt-6 border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-rail-dark/20">
-                <h4 class="text-[10px] font-black uppercase tracking-widest text-rail-accent mb-4">${t.comm_discussion}</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-rail-accent mb-4">COMMUNITY DISCUSSION</h4>
                 <div class="space-y-3 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                     ${filtered.map(r => `
-                        <div class="bg-white dark:bg-rail-dark p-4 rounded-2xl border border-gray-50 dark:border-gray-800 shadow-sm">
+                        <div class="bg-white dark:bg-rail-dark p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                             <div class="flex justify-between items-start mb-1">
-                                <span class="text-[9px] font-black text-rail-accent uppercase italic">${t.observer}</span>
+                                <span class="text-[9px] font-black text-rail-accent uppercase italic">Observer</span>
                                 <span class="stars text-[8px]">${'★'.repeat(r.rating)}</span>
                             </div>
                             <p class="text-xs text-gray-500 dark:text-gray-300 italic">"${escapeHTML(r.comment)}"</p>
-                            ${r.adminReply ? `<div class="mt-2 pl-3 border-l-2 border-rail-accent"><p class="text-[8px] font-black text-rail-accent uppercase">${t.railspk_reply}</p><p class="text-[10px] italic text-gray-500">${escapeHTML(r.adminReply)}</p></div>` : adminAuthorised ? `
-                                <div class="mt-2 flex gap-2"><input type="text" id="review-reply-${r.id}" placeholder="${t.reply_placeholder}" class="flex-1 bg-gray-50 dark:bg-rail-dark p-2 rounded-lg text-[9px] border outline-none"><button onclick="submitAdminReply('${r.id}', 'reviews', 'review-reply-${r.id}')" class="bg-rail-dark text-white px-3 rounded-lg text-[8px] font-bold">${t.btn_send}</button></div>` : ''}
-                        </div>`).join('') || `<p class="text-[9px] text-gray-400 italic text-center py-4 uppercase">${t.no_opinions}</p>`}
+                            ${r.adminReply ? `<div class="mt-2 pl-3 border-l-2 border-rail-accent"><p class="text-[8px] font-black text-rail-accent uppercase">RAILSPK Reply</p><p class="text-[10px] italic text-gray-500">${escapeHTML(r.adminReply)}</p></div>` : adminAuthorised ? `
+                                <div class="mt-2 flex gap-2"><input type="text" id="review-reply-${r.id}" placeholder="Write official reply..." class="flex-1 bg-gray-50 dark:bg-rail-dark p-2 rounded-lg text-[9px] border outline-none"><button onclick="submitAdminReply('${r.id}', 'reviews', 'review-reply-${r.id}')" class="bg-rail-dark text-white px-3 rounded-lg text-[8px] font-bold">SEND</button></div>` : ''}
+                        </div>`).join('') || `<p class="text-[9px] text-gray-400 italic text-center py-4 uppercase">No opinions yet</p>`}
                 </div>
                 <form onsubmit="handleReviewSubmit(event, '${train.id}')" class="flex gap-3">
                     <select class="bg-white dark:bg-rail-dark p-3 rounded-xl text-[10px] font-black outline-none border border-gray-100 dark:border-gray-700 w-24"><option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option></select>
-                    <input type="text" placeholder="${t.opinion_placeholder}" required class="flex-1 bg-white dark:bg-rail-dark p-3 rounded-xl text-xs outline-none border border-gray-100 dark:border-gray-700">
-                    <button type="submit" class="bg-rail-accent text-white px-6 rounded-xl font-black text-[10px] uppercase tracking-widest">${t.btn_post}</button>
+                    <input type="text" placeholder="Share your opinion..." required class="flex-1 bg-white dark:bg-rail-dark p-3 rounded-xl text-xs outline-none border border-gray-100 dark:border-gray-700">
+                    <button type="submit" class="bg-rail-accent text-white px-6 rounded-xl font-black text-[10px] uppercase tracking-widest">POST</button>
                 </form>
             </div>
         </div>`;
@@ -357,7 +278,6 @@ function renderTrainCards(dataToRender = trainsData) {
 
 function fetchUpdates() {
     if (!user) return;
-    const t = translations[currentLang];
     db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates').onSnapshot(snap => {
         const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b)=>b.timestamp-a.timestamp);
         const container = document.getElementById('updates-container'); if (!container) return;
@@ -369,14 +289,14 @@ function fetchUpdates() {
             return `
             <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-xl text-left flex flex-col mb-8 h-full">
                 <div class="flex justify-between mb-4 text-[9px] font-black uppercase text-gray-400">
-                    <span>${t.official_broadcast}</span>
-                    <div class="flex gap-3">${adminAuthorised ? `<button onclick="openEditModal('${u.id}')" class="text-rail-accent hover:underline uppercase">${t.edit}</button><button onclick="deletePost('${u.id}')" class="text-red-500 hover:underline uppercase">${t.delete}</button>` : ''}<span>${formatTimestamp(u.timestamp)}</span></div>
+                    <span>OFFICIAL BROADCAST</span>
+                    <div class="flex gap-3">${adminAuthorised ? `<button onclick="openEditModal('${u.id}')" class="text-rail-accent hover:underline uppercase">EDIT</button><button onclick="deletePost('${u.id}')" class="text-red-500 hover:underline uppercase">DELETE</button>` : ''}<span>${formatTimestamp(u.timestamp)}</span></div>
                 </div>
                 <div class="mb-6 h-56 bg-gray-50 dark:bg-rail-dark rounded-3xl overflow-hidden cursor-pointer" onclick="openSliderModal(${JSON.stringify(u.imageUrls || []).replace(/"/g, '&quot;')}, 0)">
                     ${u.imageUrls && u.imageUrls.length > 0 ? `<img src="${u.imageUrls[0]}" loading="lazy" class="w-full h-full object-cover">` : `<div class="flex items-center justify-center h-full opacity-20"><i class="fas fa-bullhorn text-4xl"></i></div>`}
                 </div>
                 <h3 class="text-xl font-black uppercase italic mb-3 text-gray-900 dark:text-white leading-tight">${u.title}</h3>
-                <div class="text-gray-500 dark:text-gray-400 text-sm mb-6 flex-grow leading-relaxed italic">${parsePostContent(displayC)} ${u.content.length > threshold ? `<button onclick="togglePost('${u.id}')" class="text-rail-accent font-black uppercase text-[10px] ml-1 hover:underline">${isExpanded ? t.show_less : t.read_more}</button>` : ""}</div>
+                <div class="text-gray-500 dark:text-gray-400 text-sm mb-6 flex-grow leading-relaxed italic">${parsePostContent(displayC)} ${u.content.length > threshold ? `<button onclick="togglePost('${u.id}')" class="text-rail-accent font-black uppercase text-[10px] ml-1 hover:underline">${isExpanded ? "Show Less" : "Read More"}</button>` : ""}</div>
                 <div class="flex items-center gap-6 mb-5 pt-4 border-t border-gray-50 dark:border-gray-700/50">
                     <button onclick="handleReaction('${u.id}', 'heart')" class="flex items-center gap-2 group"><span class="text-lg">❤️</span><span class="text-[10px] font-black text-gray-400">${u.reactions?.heart || 0}</span></button>
                     <button onclick="handleReaction('${u.id}', 'surprised')" class="flex items-center gap-2 group"><span class="text-lg">😮</span><span class="text-[10px] font-black text-gray-400">${u.reactions?.surprised || 0}</span></button>
@@ -384,18 +304,23 @@ function fetchUpdates() {
                     <button onclick="handleReaction('${u.id}', 'angry')" class="flex items-center gap-2 group"><span class="text-lg">😡</span><span class="text-[10px] font-black text-gray-400">${u.reactions?.angry || 0}</span></button>
                 </div>
                 <div class="mt-4 pt-6 border-t border-gray-50 dark:border-gray-700/50">
-                    <h4 class="text-[10px] font-black uppercase tracking-widest text-rail-accent mb-4">${t.comm_discussion}</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-rail-accent mb-4">COMMUNITY DISCUSSION</h4>
                     <div class="space-y-3 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                         ${thisPostComments.map(c => `
-                            <div class="bg-gray-50 dark:bg-rail-dark/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800"><div class="flex justify-between items-start mb-1"><span class="text-[9px] font-black text-rail-accent uppercase">${t.observer}</span><span class="text-[7px] text-gray-400">${formatTimestamp(c.timestamp)}</span></div><p class="text-xs text-gray-600 dark:text-gray-300 italic">"${escapeHTML(c.text)}"</p>${c.adminReply ? `<div class="mt-2 pl-3 border-l-2 border-rail-accent"><p class="text-[8px] font-black text-rail-accent uppercase">${t.railspk_reply}</p><p class="text-[11px] text-gray-500 italic">${escapeHTML(c.adminReply)}</p></div>` : adminAuthorised ? `<div class="mt-2 flex gap-2"><input type="text" id="reply-to-${c.id}" placeholder="${t.reply_placeholder}" class="flex-1 bg-white dark:bg-rail-dark p-2 rounded-lg text-[10px] border outline-none"><button onclick="submitAdminReply('${c.id}', 'communityComments', 'reply-to-${c.id}')" class="bg-rail-dark text-white px-3 rounded-lg text-[8px] font-bold uppercase">${t.btn_send}</button></div>` : ''}</div>`).join('') || `<p class="text-[9px] text-gray-400 italic text-center py-2 uppercase">${t.no_opinions}</p>`}
+                            <div class="bg-gray-50 dark:bg-rail-dark/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800"><div class="flex justify-between items-start mb-1"><span class="text-[9px] font-black text-rail-accent uppercase">Observer</span><span class="text-[7px] text-gray-400">${formatTimestamp(c.timestamp)}</span></div><p class="text-xs text-gray-600 dark:text-gray-300 italic">"${escapeHTML(c.text)}"</p>${c.adminReply ? `<div class="mt-2 pl-3 border-l-2 border-rail-accent"><p class="text-[8px] font-black text-rail-accent uppercase">RAILSPK Reply</p><p class="text-[11px] text-gray-500 italic">${escapeHTML(c.adminReply)}</p></div>` : adminAuthorised ? `<div class="mt-2 flex gap-2"><input type="text" id="reply-to-${c.id}" placeholder="Reply..." class="flex-1 bg-white dark:bg-rail-dark p-2 rounded-lg text-[10px] border outline-none"><button onclick="submitAdminReply('${c.id}', 'communityComments', 'reply-to-${c.id}')" class="bg-rail-dark text-white px-3 rounded-lg text-[8px] font-bold uppercase">SEND</button></div>` : ''}</div>`).join('') || `<p class="text-[9px] text-gray-400 italic text-center py-2 uppercase">No opinions yet</p>`}
                     </div>
                     <form onsubmit="handlePostCommentSubmit(event, '${u.id}')" class="flex gap-2">
-                        <input type="text" placeholder="${t.write_opinion}" required class="flex-1 bg-gray-50 dark:bg-rail-dark p-3 rounded-xl text-xs outline-none border border-gray-100 dark:border-gray-700"><button type="submit" class="bg-rail-accent text-white px-5 rounded-xl font-black text-[10px] uppercase">${t.btn_send_small}</button>
+                        <input type="text" placeholder="Write your opinion..." required class="flex-1 bg-gray-50 dark:bg-rail-dark p-3 rounded-xl text-xs outline-none border border-gray-100 dark:border-gray-700"><button type="submit" class="bg-rail-accent text-white px-5 rounded-xl font-black text-[10px] uppercase">SEND</button>
                     </form>
                 </div>
             </div>`;
         }).join('');
     });
+}
+
+function togglePost(postId) {
+    expandedPosts[postId] = !expandedPosts[postId];
+        fetchUpdates(); 
 }
 
 // --- 9. ADMIN ACTIONS ---
@@ -493,7 +418,88 @@ function startPollsListener() {
     }); 
 }
 
-// --- 11. UI MODALS & UTILS ---
+// *--- 11. TICKET BOOKING LOGIC (New Fix) ---*
+// transparency fix: Real-time price breakdown show krny ke liye
+
+const trainsDataLookup = {
+    "greenline": "Green Line Express (Karachi ⟷ Isb)",
+    "shalimar": "Shalimar Express (Karachi ⟷ Lahore)",
+    // ... baki trains add krlein as needed for header dropdown
+};
+
+function openGeneralBookingModal() {
+    const classSelect = document.getElementById('booking-class');
+    const breakdown = document.getElementById('price-breakdown');
+    
+    // Header sy open hua hai, isliye trains select krny ka dropdown dikhayen
+    classSelect.innerHTML = '<option value="">Select Train First</option>' + 
+        trainsData.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+
+    // Jab train select ho, to usky fares populate karein
+    classSelect.onchange = (e) => {
+        const trainId = e.target.value;
+        const train = trainsData.find(t => t.id === trainId);
+        
+        if(!train) {
+            document.getElementById('booking-fare-dropdown').classList.add('hidden');
+            breakdown.classList.add('hidden');
+            return;
+        }
+
+        // Fare dropdown fill karein
+        const fareSelect = document.getElementById('booking-fare');
+        fareSelect.innerHTML = '<option value="">Select Class</option>' + 
+            train.fares.map(f => `<option value="${f.class}" data-price="${f.price}">${f.class}</option>`).join('');
+        
+        document.getElementById('booking-fare-dropdown').classList.remove('hidden');
+        breakdown.classList.add('hidden'); // Hide breakdown until fare is selected
+        
+        // Jab fare select ho, to breakdown dikhayen
+        fareSelect.onchange = () => {
+            const selectedOption = fareSelect.options[fareSelect.selectedIndex];
+            if (!selectedOption.value) {
+                breakdown.classList.add('hidden');
+                return;
+            }
+
+            const basePriceStr = selectedOption.getAttribute('data-price').replace(/[^0-9]/g, '');
+            const basePrice = parseInt(basePriceStr);
+            const commission = commissionRates[selectedOption.value] || 0;
+            
+            document.getElementById('base-fare').innerText = `Rs. ${basePrice.toLocaleString()}`;
+            document.getElementById('service-fee').innerText = `Rs. ${commission.toLocaleString()}`;
+            document.getElementById('total-price').innerText = `Rs. ${(basePrice + commission).toLocaleString()}`;
+            
+            breakdown.classList.remove('hidden');
+        };
+    };
+
+    document.getElementById('booking-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function handleBookingSubmit(e) {
+    e.preventDefault();
+    const trainSelect = document.getElementById('booking-class');
+    const fareSelect = document.getElementById('booking-fare');
+    const name = e.target.querySelector('input[placeholder="Your Full Name"]').value;
+    const phone = e.target.querySelector('input[placeholder="WhatsApp Number"]').value;
+    
+    if(!trainSelect.value || !fareSelect.value) { alert("Please select train and class."); return; }
+    
+    const trainName = trainSelect.options[trainSelect.selectedIndex].text;
+    const className = fareSelect.value;
+    const totalPrice = document.getElementById('total-price').innerText;
+
+    // Commission/Transparency fixed Note for WhatsApp
+    const message = `RAILSPK Ticket Request:%0AName: ${name}%0ATrain: ${trainName}%0AClass: ${className}%0ATotal Payable (verified): ${totalPrice}%0A%0APlease confirm booking.`;
+    window.open(`https://wa.me/923198550419?text=${message}`, '_blank');
+    
+    closeModal('booking-modal');
+    e.target.reset();
+}
+
+// --- 12. UI MODALS & UTILS ---
 function toggleMenu() {
     const menu = document.getElementById('mobile-menu'); const isActive = menu.classList.toggle('active');
     document.body.style.overflow = isActive ? 'hidden' : 'auto';
@@ -541,12 +547,12 @@ function showNotification(title, message) {
     setTimeout(() => { toast.classList.remove('active'); setTimeout(() => toast.remove(), 500); }, 5000);
 }
 
-// --- 12. LISTENERS ---
+// --- 13. LISTENERS ---
 function startGlobalListeners() {
     if (!user) return;
     db.collection('artifacts').doc(appId).collection('public').doc('data').collection('communityComments')
         .onSnapshot(snap => {
-            snap.docChanges().forEach(change => { if (change.type === "added" && change.doc.data().timestamp > sessionStartTime) showNotification(translations[currentLang].new_opinion, change.doc.data().text.substring(0, 30) + "..."); });
+            snap.docChanges().forEach(change => { if (change.type === "added" && change.doc.data().timestamp > sessionStartTime) showNotification("New Opinion", change.doc.data().text.substring(0, 30) + "..."); });
             postComments = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); fetchUpdates(); 
         });
 
@@ -558,7 +564,7 @@ function startGlobalListeners() {
 
     db.collection('artifacts').doc(appId).collection('public').doc('data').collection('updates')
         .onSnapshot(snap => {
-            snap.docChanges().forEach(change => { if (change.type === "added" && change.doc.data().timestamp > sessionStartTime) showNotification(translations[currentLang].new_broadcast, change.doc.data().title); });
+            snap.docChanges().forEach(change => { if (change.type === "added" && change.doc.data().timestamp > sessionStartTime) showNotification("New Broadcast", change.doc.data().title); });
             fetchUpdates(); 
         });
 }
@@ -574,11 +580,11 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('theme-toggle').onclick = () => { document.documentElement.classList.toggle('dark'); };
     document.getElementById('update-form')?.addEventListener('submit', postUpdate);
     document.getElementById('poll-form')?.addEventListener('submit', postPoll);
+    
+    // *--- Booking Form Listener ---*
+    document.getElementById('booking-form')?.addEventListener('submit', handleBookingSubmit);
+    
     document.getElementById('admin-trigger').onclick = promptAdmin;
-
-    const lp = document.getElementById('lang-switch');
-    if(lp) lp.value = currentLang;
-    if (currentLang === 'ur') { document.documentElement.dir = 'rtl'; document.body.classList.add('font-urdu'); }
 
     const searchInput = document.getElementById('train-search-input');
     if (searchInput) searchInput.addEventListener('input', handleSearchOptimized);
