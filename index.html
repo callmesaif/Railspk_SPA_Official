@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Resource Hints: Performance optimization -->
-    <link rel="preconnect" href="https://www.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" media="print" onload="this.media='all'">
     
     <!-- Primary SEO -->
     <title id="site-title">RAILSPK | Digital Legacy Project</title>
@@ -64,31 +64,35 @@
 
     <!-- Responsive Header -->
     <header class="fixed top-0 inset-x-0 z-[60] bg-white/70 dark:bg-rail-dark/70 backdrop-blur-2xl border-b border-gray-100 dark:border-white/5 h-20 flex items-center">
-        <div class="max-w-screen-2xl mx-auto px-6 w-full flex justify-between items-center">
-            <a href="/home" onclick="routeTo(event, '/home')" class="group flex items-center space-x-2">
-                <span class="text-2xl md:text-3xl font-black italic text-rail-accent uppercase tracking-tighter">RAILSPK</span>
-            </a>
-            
-            <nav class="hidden lg:flex items-center space-x-8 text-[10px] font-black uppercase tracking-[0.2em]">
-                <a href="/home" onclick="routeTo(event, '/home')" data-i18n="nav_home" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Home</a>
-                <a href="/gallery" onclick="routeTo(event, '/gallery')" data-i18n="nav_gallery" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Gallery</a>
-                <a href="/reviews" onclick="routeTo(event, '/reviews')" data-i18n="nav_reviews" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Reviews</a> 
-                <a href="/community" onclick="routeTo(event, '/community')" data-i18n="nav_community" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Community</a>
-            </nav>
+    <div class="max-w-screen-2xl mx-auto px-6 w-full flex justify-between items-center">
+        <a href="/" onclick="routeTo(event, '/home')" class="group flex items-center space-x-2">
+            <span class="text-2xl md:text-3xl font-black italic text-rail-accent uppercase tracking-tighter">RAILSPK</span>
+        </a>
+        
+        <nav class="hidden lg:flex items-center space-x-8 text-[10px] font-black uppercase tracking-[0.2em]">
+            <a href="/" onclick="routeTo(event, '/home')" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Home</a>
+            <a href="/reviews" onclick="routeTo(event, '/reviews')" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Reviews</a> 
+            <a href="/community" onclick="routeTo(event, '/community')" class="hover:text-rail-accent transition-colors py-2 border-b-2 border-transparent hover:border-rail-accent">Community</a>
+            <a href="/support" onclick="routeTo(event, '/support')" class="nav-link text-rail-accent">Support</a>
+        </nav>
 
-                <button id="theme-toggle" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:scale-110 transition-transform">
-                    <i id="theme-toggle-dark-icon" class="fas fa-moon"></i>
-                    <i id="theme-toggle-light-icon" class="fas fa-sun hidden"></i>
-                </button><div class="flex items-center gap-6">
-                <button onclick="openGeneralBookingModal()" class="flex items-center gap-2.5 bg-rail-accent/10 text-rail-accent text-[9px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border border-rail-accent/20 hover:bg-rail-accent hover:text-white transition">
-                    <i class="fas fa-ticket-alt"></i>
-                    Book a Ticket
-                </button>
-                    </div>
-                <button class="lg:hidden p-2 text-gray-600 dark:text-gray-300" onclick="toggleMenu()"><i class="fas fa-bars-staggered text-2xl"></i></button>
-            </div>
+        <div class="flex items-center space-x-4">
+            <button onclick="openGeneralBookingModal()" class="hidden md:flex items-center gap-2.5 bg-rail-accent/10 text-rail-accent text-[9px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border border-rail-accent/20 hover:bg-rail-accent hover:text-white transition">
+                <i class="fas fa-ticket-alt"></i>
+                Book a Ticket
+            </button>
+
+            <button id="theme-toggle" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:scale-110 transition-transform">
+                <i id="theme-toggle-dark-icon" class="fas fa-moon"></i>
+                <i id="theme-toggle-light-icon" class="fas fa-sun hidden"></i>
+            </button>
+
+            <button class="lg:hidden p-2 text-gray-600 dark:text-gray-300" onclick="toggleMenu()">
+                <i class="fas fa-bars-staggered text-2xl"></i>
+            </button>
         </div>
-    </header>
+    </div>
+</header>
 
     <!-- Mobile Navigation Drawer -->
     <div id="mobile-menu" class="bg-white dark:bg-rail-dark p-10 shadow-2xl">
@@ -97,21 +101,20 @@
             <button onclick="toggleMenu()" class="text-4xl text-gray-400">&times;</button>
         </div>
         <div class="flex flex-col space-y-8">
-            <a href="/home" data-i18n="nav_home" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/home'); toggleMenu();">Home</a>
-            <a href="/gallery" data-i18n="nav_gallery" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/gallery'); toggleMenu();">Gallery</a>
+            <a href="/" data-i18n="nav_home" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/home'); toggleMenu();">Home</a>
             <a href="/reviews" data-i18n="nav_reviews" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/reviews'); toggleMenu();">Reviews</a>
             <a href="/community" data-i18n="nav_community" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/community'); toggleMenu();">Community</a>
-            <a href="/about" data-i18n="nav_about" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/about'); toggleMenu();">About</a>
+            <a href="/support" data-i18n="nav_support" class="text-4xl font-black uppercase tracking-tighter" onclick="routeTo(event, '/support'); toggleMenu();">Support</a>
         </div>
     </div>
 
     <main id="main-content">
         <!-- --- HOME VIEW --- -->
-        <section id="home-view" class="page-view active">
-            <!-- Hero -->
+    <section id="home-view" class="page-view active">
+                <!-- Hero -->
             <div id="hero-section" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-                <div class="hero-background absolute inset-0 scale-110 motion-safe:animate-[pulse_15s_infinite]"></div>
-                <div class="hero-overlay absolute inset-0"></div>
+            <div class="hero-background absolute inset-0 scale-110 motion-safe:animate-[pulse_15s_infinite]" role="img" aria-label="Pakistan Railways Train Background"></div>
+            <div class="hero-overlay absolute inset-0"></div>
     
                 <div class="relative z-10 max-w-screen-xl mx-auto px-6 text-center">
                     <div class="inline-flex items-center space-x-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
@@ -145,14 +148,13 @@
 
             <!-- Vlogs with Skeletons -->
             <div class="py-32 max-w-screen-2xl mx-auto px-6">
-                 <h2 class="text-4xl md:text-7xl font-black uppercase italic mb-20 tracking-tighter" data-i18n="title_vlogs">Latest <span class="text-rail-accent">Vlogs</span></h2>
-                 <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                    <div class="skeleton h-64 rounded-[2.5rem]"></div>
-                    <div class="skeleton h-64 rounded-[2.5rem] hidden sm:block"></div>
-                    <div class="skeleton h-64 rounded-[2.5rem] hidden lg:block"></div>
-                 </div>
-            </div>
-        </section>
+                <h2 class="text-4xl md:text-7xl font-black uppercase italic mb-20 tracking-tighter" data-i18n="title_vlogs">Latest <span class="text-rail-accent">Vlogs</span></h2>
+            <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div class="skeleton h-64 w-full rounded-[2.5rem]"></div>
+            <div class="skeleton h-64 w-full rounded-[2.5rem] hidden sm:block"></div>
+            <div class="skeleton h-64 w-full rounded-[2.5rem] hidden lg:block"></div>
+        </div>
+    </div>
 
         <!-- --- REVIEWS VIEW --- -->
             <section id="reviews-view" class="page-view">
@@ -189,36 +191,59 @@
         </section>
 
         <!-- --- COMMUNITY VIEW --- -->
-        <section id="community-view" class="page-view">
-             <div class="max-w-screen-xl mx-auto px-6 py-32">
-                <h2 class="text-5xl md:text-8xl font-black uppercase italic text-center mb-16 tracking-tighter" data-i18n="nav_community">Railway <span class="text-rail-accent">Cloud</span></h2>
-                <div id="polls-container" class="mb-16 space-y-12"></div>
-                <div id="admin-panel" class="hidden mb-16 bg-rail-accent/5 border-2 border-dashed border-rail-accent/30 p-10 rounded-[3.5rem]">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 text-left">
-                        <form id="update-form" class="space-y-4">
-                            <input type="text" id="update-title" placeholder="Headline" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl outline-none">
-                            <textarea id="update-content" placeholder="Content..." required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl h-32 outline-none"></textarea>
-                            <input type="file" id="update-image-file" multiple class="w-full">
-                            <button type="submit" id="update-btn" class="w-full bg-rail-accent text-white py-5 rounded-3xl font-black uppercase tracking-widest">Publish</button>
-                        </form>
-                        <form id="poll-form" class="space-y-4">
-                            <input type="text" id="poll-question" placeholder="Poll Question?" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl">
-                            <input type="text" id="poll-options" placeholder="Opt1, Opt2..." required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl">
-                            <button type="submit" class="w-full bg-gray-900 text-white py-5 rounded-3xl font-black uppercase tracking-widest">Deploy Poll</button>
-                        </form>
-                    </div>
+       <section id="community-view" class="page-view relative min-h-screen bg-rail-dark overflow-hidden">
+            <div class="view-container px-6 py-32">
+        <div class="text-center mb-16 animate-fade-in">
+            <h2 class="text-5xl md:text-8xl font-black uppercase italic tracking-tighter text-white">
+                Railway <span class="text-rail-accent">Cloud</span>
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 mb-2 px-2">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rail-accent opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rail-accent"></span>
+                    </span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Live Polls</h4>
                 </div>
-                <div id="updates-container" class="grid grid-cols-1 md:grid-cols-2 gap-10"></div>
+                <div id="polls-container" class="scroll-column pr-4 custom-scrollbar">
+                    </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 mb-2 px-2">
+                    <i class="fas fa-bullhorn text-rail-accent text-xs"></i>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Official Broadcast</h4>
+                </div>
+                <div id="updates-container" class="scroll-column pr-4 custom-scrollbar">
+                    </div>
+            </div>
+
+                </div>
             </div>
         </section>
 
-        <!-- --- GALLERY VIEW --- -->
-        <section id="gallery-view" class="page-view">
-            <div class="max-w-screen-2xl mx-auto px-6 py-32 text-center">
-                <h2 class="text-5xl md:text-9xl font-black uppercase italic mb-16 tracking-tight" data-i18n="nav_gallery">Railway <span class="text-rail-accent">Gallery</span></h2>
-                <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left"></div>
+        <div id="admin-panel" class="hidden mt-20 bg-rail-accent/5 border-2 border-dashed border-rail-accent/20 p-10 rounded-[3rem] animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <form id="update-form" class="space-y-4">
+                    <input type="text" id="update-title" placeholder="Headline" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl outline-none text-white">
+                    <textarea id="update-content" placeholder="Content..." required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl h-32 outline-none text-white"></textarea>
+                    <input type="file" id="update-image-file" multiple class="w-full text-[10px] text-gray-400">
+                    <button type="submit" id="update-btn" class="w-full bg-rail-accent text-white py-5 rounded-3xl font-black uppercase tracking-widest hover:scale-[1.02] transition">Publish to Cloud</button>
+                </form>
+                <form id="poll-form" class="space-y-4">
+                    <input type="text" id="poll-question" placeholder="Poll Question?" required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl text-white">
+                    <input type="text" id="poll-options" placeholder="Option 1, Option 2..." required class="w-full bg-white dark:bg-gray-800 p-5 rounded-3xl text-white">
+                    <button type="submit" class="w-full bg-gray-900 text-white py-5 rounded-3xl font-black uppercase tracking-widest hover:scale-[1.02] transition">Deploy Poll</button>
+                </form>
             </div>
-        </section>
+        </div>
+
+    </div>
+</section>
 
         <!-- --- ABOUT VIEW --- -->
         <section id="about-view" class="page-view">
@@ -286,6 +311,64 @@
         </section>
     </main>
 
+    <section id="support-view" class="page-view py-32">
+    <div class="view-container px-6">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-fade-in">
+            <h2 class="text-5xl md:text-8xl font-black uppercase italic tracking-tighter text-white">
+                Support <span class="text-rail-accent">Center</span>
+            </h2>
+            <p class="text-gray-400 mt-4 uppercase tracking-[0.4em] text-[10px] font-black">24/7 Digital Concierge</p>
+        </div>
+
+        <!-- Quick Contact Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+            <a href="https://wa.me/923198550419" target="_blank" class="glass-card p-8 rounded-[2.5rem] text-center hover:border-rail-accent transition-all group">
+                <i class="fab fa-whatsapp text-4xl text-green-500 mb-4 group-hover:scale-110 transition"></i>
+                <h3 class="text-sm font-black uppercase italic mb-2">Instant Chat</h3>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Response in < 5 mins</p>
+            </a>
+            <div onclick="routeTo(event, 'reviews')" class="glass-card p-8 rounded-[2.5rem] text-center cursor-pointer hover:border-rail-accent transition-all group">
+                <i class="fas fa-ticket-alt text-4xl text-rail-accent mb-4 group-hover:scale-110 transition"></i>
+                <h3 class="text-sm font-black uppercase italic mb-2">Track Booking</h3>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Check status via ID</p>
+            </div>
+            <a href="mailto:railoverspkofficial@gmail.com" class="glass-card p-8 rounded-[2.5rem] text-center hover:border-rail-accent transition-all group">
+                <i class="fas fa-envelope-open-text text-4xl text-blue-500 mb-4 group-hover:scale-110 transition"></i>
+                <h3 class="text-sm font-black uppercase italic mb-2">Official Inquiry</h3>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">railoverspkofficial@gmail.com</p>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <!-- FAQ Section -->
+            <div class="space-y-6">
+                <h4 class="text-xs font-black uppercase tracking-[0.3em] text-rail-accent mb-8 border-l-4 border-rail-accent pl-4">Frequent Questions</h4>
+                <div class="space-y-4" id="faq-container">
+                    <!-- FAQs will be injected by JS -->
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="glass-card p-10 rounded-[3rem] border-rail-accent/20">
+                <h4 class="text-xl font-black uppercase italic mb-8">Send a Message</h4>
+                <form id="support-form" class="space-y-4">
+                    <input type="text" placeholder="Full Name" required class="w-full bg-rail-dark p-4 rounded-2xl border border-white/10 outline-none text-xs focus:border-rail-accent transition">
+                    <input type="email" placeholder="Email Address" required class="w-full bg-rail-dark p-4 rounded-2xl border border-white/10 outline-none text-xs focus:border-rail-accent transition">
+                    <select class="w-full bg-rail-dark p-4 rounded-2xl border border-white/10 outline-none text-xs font-bold text-gray-400">
+                        <option>General Inquiry</option>
+                        <option>Booking Issue</option>
+                        <option>Refund Request</option>
+                        <option>Technical Feedback</option>
+                    </select>
+                    <textarea placeholder="How can we help you?" required class="w-full bg-rail-dark p-4 rounded-2xl border border-white/10 outline-none text-xs h-32 focus:border-rail-accent transition"></textarea>
+                    <button type="submit" class="w-full bg-rail-accent py-4 rounded-2xl font-black uppercase italic tracking-widest hover:scale-[1.02] transition shadow-xl">Transmit Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
     <!-- Footer -->
     <footer class="py-32 border-t border-gray-100 dark:border-white/5 text-center px-6">
         <div class="max-w-screen-xl mx-auto">
@@ -332,8 +415,8 @@
         </div>
     </div>
 
-    <div id="booking-modal" class="hidden fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-lg p-8 md:p-10 relative animate-fade-in custom-scrollbar overflow-y-auto max-h-[90vh]">
+        <div id="booking-modal" class="hidden fixed inset-0 bg-black/90 z-[100] items-center justify-center p-4">    
+            <div class="glass-card w-full max-w-lg p-8 md:p-10 relative animate-fade-in custom-scrollbar overflow-y-auto max-h-[90vh]">
         <div class="flex justify-between items-start mb-6">
             <div>
                 <h2 class="text-3xl font-black uppercase italic text-gray-900 dark:text-white">Request Ticket</h2>
@@ -381,7 +464,7 @@
                     <div class="bg-gray-50 dark:bg-rail-dark border border-gray-100 dark:border-white/10 p-5 rounded-2xl flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <span class="text-lg text-orange-500 font-bold">N</span> <div>
-                                <span class="text-xs font-bold text-gray-900 dark:text-white">Nayapay (RAILSPK)</span>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white">Nayapay</span>
                                 <span class="block text-[10px] text-gray-500">Official Business Account</span>
                             </div>
                         </div>
