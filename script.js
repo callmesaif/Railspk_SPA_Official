@@ -135,7 +135,9 @@ function handleRouting(){
     const pageName = p.charAt(0).toUpperCase() + p.slice(1);
     document.title = p === 'home' ? "RAILSPK | Digital Legacy Project" : `${pageName} - The RAILSPK`;
 
-    document.querySelectorAll('.page-view').forEach(v => v.classList.toggle('active', v.id === p + '-view'));
+    document.querySelectorAll('.page-view').forEach(v => {
+        v.style.display = (v.id === p + '-view') ? 'block' : 'none';
+    });
     window.scrollTo(0, 0); 
     
     if (p === 'home') { if(YT_KEY) fetchVideos(); }
@@ -200,9 +202,12 @@ function renderVideoCards(items, isLoadMore) {
         <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden shadow-xl group cursor-pointer transition-all hover:translate-y-[-5px] relative" onclick="openVideo('${v.id.videoId}')">
             <div class="absolute top-4 left-4 z-10 ${v.color} text-white text-[8px] font-black px-3 py-1 rounded-full tracking-widest uppercase shadow-lg">${v.badge} • ${publishDate}</div>
             <div class="aspect-video relative overflow-hidden bg-gray-200 dark:bg-gray-700">
-                <img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${v.id.videoId}/hqdefault.jpg'" loading="lazy" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500"><i class="fas fa-play text-white text-3xl"></i></div>
-            </div>
+        <img src="https://img.youtube.com/vi/${v.id.videoId}/maxresdefault.jpg" 
+            onerror="this.src='https://img.youtube.com/vi/${v.id.videoId}/hqdefault.jpg'" 
+            alt="${title}" 
+            width="480" height="270" 
+            loading="lazy" 
+            class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
             <div class="p-6 text-left"><h3 class="text-[11px] md:text-xs font-black uppercase line-clamp-2 text-gray-900 dark:text-white leading-tight">${title}</h3></div>
         </div>`;
     });
@@ -235,14 +240,13 @@ function renderTrainCards(dataToRender = trainsData) {
                     </div>
                     <button onclick="openExploreModal('${train.id}')" class="w-full bg-rail-dark dark:bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg italic">Explore More</button>
                 </div>
-                <div class="w-full md:w-[55%] h-64 rounded-3xl overflow-hidden relative bg-gray-100 dark:bg-gray-700 cursor-pointer" onclick="openSliderModal(${JSON.stringify(slides).replace(/"/g, '&quot;')}, 0)">
-                    <img src="images/${train.slides[0]}" 
-                         alt="Cinematic view of ${train.name}" 
-                         loading="lazy" 
-                         width="600" 
-                         height="400" 
-                         class="w-full h-full object-cover">
-                </div>
+        <div class="w-full md:w-[55%] h-64 rounded-3xl overflow-hidden relative bg-gray-100 dark:bg-gray-700 cursor-pointer" onclick="openSliderModal(${JSON.stringify(slides).replace(/"/g, '&quot;')}, 0)">
+            <img src="images/${train.slides[0]}" 
+                alt="${train.name} Cinematic View" 
+                width="600" height="400" 
+                loading="lazy" 
+            class="w-full h-full object-cover">
+        </div>
             </div>
 
             <div class="px-10 pb-10 pt-6 border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-rail-dark/20">
